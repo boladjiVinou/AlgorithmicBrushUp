@@ -1,5 +1,8 @@
 package chapter1;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.stream.Stream;
 
@@ -168,15 +171,120 @@ public class Fundamentals
 	 * 
 	 1.1.17
 	 this function will lead to stack overflow because we execute the next recurvise methode with a negative number without breaking early
+	 
+	 1.1.18
+	 mystery(2,25) -> mystery(4,12)+2
+	 mystery(4,12) -> mystery(8,6)
+	 mystery(8,6) -> mystery(16,3)
+	 mystery(16,3)-> mystery(32,1) +16
+	 mystery(32,1) -> mystery(64,0)+32
+	 mystery(64,0) -> 0
+	 mystery(2,25) = 50
+	 
+	 mystery(3,11) -> mystery(6, 5) + 3
+	 mystery(6,5) -> mystery(12,2)+6
+	 mystery(12,2) -> mystery(24,1)
+	 mystery(24,1) -> mystery(48,0)+24
+	 mystery(3,11) = 33
+	 
+	 mystery compute a multiplication of a by b
+	 
+	 Replace + by *
+	 
+	 mystery(2,25) -> mystery(4,12) + 2
+	 mystery(4,12) -> mystery(16, 6)
+	 mystery(16,6) -> mystery (256,3)
+	 mystery(256,3) -> mystery(65536,1)+256
+	 mystery(65536,1) -> 65536
+	 mystery(2,25) = 33554432
+	 it computes a power b
 	 * */
 	public static String exR1(int n)
 	{
 	if (n <= 0) return "";
 	return exR1(n-3) + n + exR1(n-2) + n;
 	}
-	public static void test() 
+	public static int mystery(int a, int b)
 	{
+	if (b == 0) return 0;
+	if (b % 2 == 0) return mystery(a+a, b/2);
+	return mystery(a+a, b/2) + a;
+	}
+	
+	public static long basicFibonacci(int N)
+	{
+		if (N == 0) return 0;
+		if (N == 1) return 1;
+		return basicFibonacci(N-1) + basicFibonacci(N-2);
+	}
+	public static long _1_1_19(int N)
+	{
+		if (N == 0) return 0;
+		if (N == 1) return 1;
+		long[] tmp = new long[2];
+		tmp[0] = 0;
+		tmp[1] = 1;
+		for(int i = 2; i<=N;i++) 
+		{
+			long val = tmp[0];
+			tmp[0] = tmp[1];
+			tmp[1] = val + tmp[1];
+		}
+		return tmp[1];
+	}
+	public static double _1_1_20(int n) 
+	{
+		// ln(m*n) = ln(m)+ln(n)
+		if(n<2) 
+		{
+			return 0;
+		}
+		return Math.log(n)+_1_1_20(n-1);
+	}
+	public static void _1_1_21() 
+	{
+		var output = new ByteArrayOutputStream();
+		try 
+		{
+			System.in.transferTo(output);
+			try(output)
+			{
+				System.out.println("|Name |number#1 |number#2 |result|");
+				for(var line: output.toString().split("\n")) 
+				{
+					var parts = line.split(" ");
+					if(parts.length == 3) 
+					{
+						String result = "";
+						var num = Integer.parseInt(parts[1].trim());
+						var denom = Integer.parseInt(parts[2].trim());
+						result = denom != 0 ? String.format("%.3f", (double) num/denom) : "";
+						System.out.println(String.format("%s | %s | %s | %s |",parts[0], parts[1], parts[2], result));
+					}
+					else 
+					{
+						System.out.println("");
+					}
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			System.out.println("Something went wrong");
+		}
+	}
+	public static void test() 
+	{/*
+		for(int i = 47; i<50; i++) 
+		{
+			var expected = basicFibonacci(i);
+			var computed = _1_1_19(i);
+			if(computed != expected) 
+			{
+				System.out.println("Wrong value "+i+" expected "+expected+" computed "+computed);
+			}
+		}*/
 
-		System.out.println(exR1(6));
+		_1_1_21();
 	}
 }
