@@ -1,0 +1,109 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|d:\\algorithmlearning\\repository\\algorithmicbrushup\\skiena\\skiena\\datastructures\\mysinglelinkedlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|solutionrelative:skiena\\datastructures\\mysinglelinkedlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{330B792F-5B4B-4768-8791-E00C82821807}|skienaTests\\skienaTests.csproj|d:\\algorithmlearning\\repository\\algorithmicbrushup\\skiena\\skienatests\\chapter3test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{330B792F-5B4B-4768-8791-E00C82821807}|skienaTests\\skienaTests.csproj|solutionrelative:skienatests\\chapter3test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|d:\\algorithmlearning\\repository\\algorithmicbrushup\\skiena\\skiena\\chapter3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|solutionrelative:skiena\\chapter3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{330B792F-5B4B-4768-8791-E00C82821807}|skienaTests\\skienaTests.csproj|d:\\algorithmlearning\\repository\\algorithmicbrushup\\skiena\\skienatests\\mstestsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{330B792F-5B4B-4768-8791-E00C82821807}|skienaTests\\skienaTests.csproj|solutionrelative:skienatests\\mstestsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|d:\\algorithmlearning\\repository\\algorithmicbrushup\\skiena\\skiena\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}|skiena\\skiena.csproj|solutionrelative:skiena\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MySingleLinkedList.cs",
+              "DocumentMoniker": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\datastructures\\MySingleLinkedList.cs",
+              "RelativeDocumentMoniker": "skiena\\datastructures\\MySingleLinkedList.cs",
+              "ToolTip": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\datastructures\\MySingleLinkedList.cs",
+              "RelativeToolTip": "skiena\\datastructures\\MySingleLinkedList.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADEAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T01:54:00.629Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Chapter3Test.cs",
+              "DocumentMoniker": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skienaTests\\Chapter3Test.cs",
+              "RelativeDocumentMoniker": "skienaTests\\Chapter3Test.cs",
+              "ToolTip": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skienaTests\\Chapter3Test.cs",
+              "RelativeToolTip": "skienaTests\\Chapter3Test.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAIwDUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T01:34:38.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MSTestSettings.cs",
+              "DocumentMoniker": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skienaTests\\MSTestSettings.cs",
+              "RelativeDocumentMoniker": "skienaTests\\MSTestSettings.cs",
+              "ToolTip": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skienaTests\\MSTestSettings.cs",
+              "RelativeToolTip": "skienaTests\\MSTestSettings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T01:34:30.927Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Chapter3.cs",
+              "DocumentMoniker": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\Chapter3.cs",
+              "RelativeDocumentMoniker": "skiena\\Chapter3.cs",
+              "ToolTip": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\Chapter3.cs",
+              "RelativeToolTip": "skiena\\Chapter3.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAADUAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T01:15:50.171Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\Program.cs",
+              "RelativeDocumentMoniker": "skiena\\Program.cs",
+              "ToolTip": "D:\\AlgorithmLearning\\Repository\\AlgorithmicBrushUp\\skiena\\skiena\\Program.cs",
+              "RelativeToolTip": "skiena\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T22:49:55.131Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

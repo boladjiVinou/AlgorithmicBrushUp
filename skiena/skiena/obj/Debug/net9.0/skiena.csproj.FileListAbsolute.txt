@@ -1,0 +1,15 @@
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\bin\Debug\net9.0\skiena.exe
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\bin\Debug\net9.0\skiena.deps.json
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\bin\Debug\net9.0\skiena.runtimeconfig.json
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\bin\Debug\net9.0\skiena.dll
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\bin\Debug\net9.0\skiena.pdb
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.GeneratedMSBuildEditorConfig.editorconfig
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.AssemblyInfoInputs.cache
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.AssemblyInfo.cs
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.csproj.CoreCompileInputs.cache
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.sourcelink.json
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.dll
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\refint\skiena.dll
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.pdb
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\skiena.genruntimeconfig.cache
+D:\AlgorithmLearning\Repository\AlgorithmicBrushUp\skiena\skiena\obj\Debug\net9.0\ref\skiena.dll

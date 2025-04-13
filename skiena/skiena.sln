@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "skiena", "skiena\skiena.csproj", "{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "skienaTests", "skienaTests\skienaTests.csproj", "{330B792F-5B4B-4768-8791-E00C82821807}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D8AC6E9-8207-407F-B6DB-8A5A2D191842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{330B792F-5B4B-4768-8791-E00C82821807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{330B792F-5B4B-4768-8791-E00C82821807}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{330B792F-5B4B-4768-8791-E00C82821807}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{330B792F-5B4B-4768-8791-E00C82821807}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1BB35B99-7A97-4ACF-962E-C14E65555F7F}
+	EndGlobalSection
+EndGlobal
