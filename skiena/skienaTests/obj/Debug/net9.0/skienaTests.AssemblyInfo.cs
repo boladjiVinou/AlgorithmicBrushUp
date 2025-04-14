@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("skienaTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e81bb2315cb8225e14d041f55bf859090f7e4bc4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aad40eab5fdb95ccc0e8ada755321c77cce81214")]
 [assembly: System.Reflection.AssemblyProductAttribute("skienaTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("skienaTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
