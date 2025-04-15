@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures
 {
-    public class MyArray<T> where T : IEquatable<T>
+    public class MyArray<T> : IEnumerable<T>  where T : IEquatable<T>
     {
         private int capacity = 1;
         private int size = 0;
@@ -77,6 +78,19 @@ namespace skiena.datastructures
                 }
                 data[i] = value;
             }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < size; i++) 
+            {
+                yield return data[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

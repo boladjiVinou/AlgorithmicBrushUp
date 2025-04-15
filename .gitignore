@@ -1,9 +1,9 @@
 ./.metadata/*
 /.metadata/
-./skiena/TestResults/*
-./*/*/bin/*
-./*/*/obj/*
-./skiena/.vs/*
+/skiena/TestResults/*
+/*/*/bin/*
+/*/*/obj/*
+/skiena/.vs/*
 */skiena/TestResults/*
 */*/*/bin/*
 */*/*/obj/*
