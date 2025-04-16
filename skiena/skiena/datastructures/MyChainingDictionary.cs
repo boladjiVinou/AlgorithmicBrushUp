@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures
 {
-    public class MyChainingDictionary<T> where T : IEquatable<T>, IEnumerable<T>
+    public class MyChainingDictionary<T> : IEnumerable<T> where T : IEquatable<T>
     {
         private MySingleLinkedList<T>[] dataByKeys = Array.Empty<MySingleLinkedList<T>>();
         private double loadFactor = 0.75;
@@ -29,8 +29,10 @@ namespace skiena.datastructures
             {
                 dataByKeys[idx] = new MySingleLinkedList<T>();
             }
-            dataByKeys[idx].add(elem);
-            ++size;
+            if (dataByKeys[idx].AddIfNotEquals(elem)) 
+            {
+                ++size;
+            }
         }
 
         private void resize() 
@@ -62,20 +64,43 @@ namespace skiena.datastructures
             int idx = elem.GetHashCode() % dataByKeys.Length;
             if (dataByKeys[idx] != null) 
             {
-                dataByKeys[idx].remove(elem);
+                size -= dataByKeys[idx].remove(elem);
             }
-            --size;
+        }
+
+        public bool Contains(T elem) 
+        {
+            int idx = elem.GetHashCode() % dataByKeys.Length;
+            if (dataByKeys[idx] != null) 
+            {
+                return dataByKeys[idx].Any(x => x.Equals(elem));
+            }
+            return false;
+        }
+
+        public int getSize() 
+        {
+            return size;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
             foreach (var entry in dataByKeys) 
             {
+                if (entry == null) 
+                {
+                    continue;
+                }
                 foreach (var item in entry) 
                 {
                     yield return item;
                 }
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

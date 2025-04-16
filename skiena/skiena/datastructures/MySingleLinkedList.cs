@@ -66,14 +66,44 @@ namespace skiena.datastructures
             }
         }
 
-        public void remove(T value) 
+        public bool AddIfNotEquals(T value) 
         {
             if (value == null)
             {
-                return;
+                return false;
+            }
+            var tmp = new LinkedNode<T>(value);
+            if (root == null)
+            {
+                root = tmp;
+            }
+            else
+            {
+                LinkedNode<T> curr = root;
+                LinkedNode<T> prev = null;
+                while (curr != null)
+                {
+                    if (curr.Value.Equals(value)) 
+                    {
+                        return false;
+                    }
+                    prev = curr;
+                    curr = curr.Next;
+                }
+                prev.Next = tmp;
+            }
+            return true;
+        }
+
+        public int remove(T value) 
+        {
+            if (value == null)
+            {
+                return 0;
             }
             var curr = root;
             LinkedNode<T> prev = null;
+            int nbRemoved = 0;
             while (curr != null) 
             {
                 if (!curr.Value.Equals(value)) 
@@ -91,7 +121,9 @@ namespace skiena.datastructures
                     root = curr.Next;
                 }
                 curr = curr.Next;
+                ++nbRemoved;
             }
+            return nbRemoved;
         }
 
         public IEnumerator<T> GetEnumerator()
