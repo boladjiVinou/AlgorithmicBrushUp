@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("skiena")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68268fd24db7a33c0f8be65eefcf35487b094bbc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28f09b69f96d9e945b4978f3a17bbeaed0aa6b37")]
 [assembly: System.Reflection.AssemblyProductAttribute("skiena")]
 [assembly: System.Reflection.AssemblyTitleAttribute("skiena")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
