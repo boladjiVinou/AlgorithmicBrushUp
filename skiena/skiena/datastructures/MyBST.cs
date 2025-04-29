@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace skiena.datastructures
 {
-    public class MyBST<T> where T : IEquatable<T>, IComparable<T>
+    public class MyBST<T> : IEnumerable<T> where T : IEquatable<T>, IComparable<T>
     {
         public MyBSTNode<T>? root { get; set; }
 
@@ -29,6 +31,39 @@ namespace skiena.datastructures
             {
                 root = root.remove(root, val);
             }
+        }
+
+        public bool isABST() 
+        {
+            if (root == null) 
+            {
+                return true;
+            }
+            Queue<MyBSTNode<T>> nodesQueue = new Queue<MyBSTNode<T>>();
+            nodesQueue.Enqueue(root);
+            while (nodesQueue.Count > 0) 
+            {
+                var node = nodesQueue.Dequeue();
+                var left = node.getLeft();
+                var right = node.getRight();
+                if (left != null && left.Value.CompareTo(node.Value) < 0)
+                {
+                    nodesQueue.Enqueue(left);
+                }
+                else if (left != null)
+                {
+                    return false;
+                }
+                if (right != null && right.Value.CompareTo(node.Value) >= 0)
+                {
+                    nodesQueue.Enqueue(right);
+                }
+                else if(right != null)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public IEnumerable<T> inOrderIteration() 
@@ -132,6 +167,33 @@ namespace skiena.datastructures
                     }
                 }
             }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return inOrderIteration().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public T? getMaximum() 
+        {
+            if (root == null) 
+            {
+                return default(T);
+            }
+            return root.getMaximum().Value;
+        }
+        public T? getMinimum()
+        {
+            if (root == null)
+            {
+                return default(T);
+            }
+            return root.getMinimum().Value;
         }
     }
 }
