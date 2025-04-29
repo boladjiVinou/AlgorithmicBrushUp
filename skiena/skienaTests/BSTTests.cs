@@ -125,7 +125,7 @@ namespace skienaTests
 
 
         [TestMethod]
-        public void givenABSTWithDataWhenIteratingInPostorderThenThePreorderShouldBeValid()
+        public void givenABSTWithDataWhenIteratingInPostorderThenThePostOrderShouldBeValid()
         {
             MyBST<int> bst = new MyBST<int>();
             bst.add(10);
@@ -146,7 +146,7 @@ namespace skienaTests
         }
 
         [TestMethod]
-        public void givenABSTWithDataWhenIteratingInOrderThenThePreorderShouldBeValid()
+        public void givenABSTWithDataWhenIteratingInOrderThenTheorderShouldBeValid()
         {
             MyBST<int> bst = new MyBST<int>();
             Random random = new Random();
