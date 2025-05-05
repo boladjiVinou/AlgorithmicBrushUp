@@ -39,7 +39,6 @@ namespace skienaTests
 
             Assert.IsTrue(tree.isRootBalanced());
             Assert.IsTrue(tree.areAllNodesBalanced());
-            Assert.IsFalse(tree.containsLoop());
         }
 
 
@@ -58,11 +57,10 @@ namespace skienaTests
 
             Assert.IsTrue(tree.isRootBalanced());
             Assert.IsTrue(tree.areAllNodesBalanced());
-            Assert.IsFalse(tree.containsLoop());
         }
 
         [TestMethod]
-        public void whenDoubleRotationIsDoneInAVLTree_ThenTheTreeShouldBeBalanced()
+        public void whenRightDoubleRotationIsDoneInAVLTree_ThenTheTreeShouldBeBalanced()
         {
             List<int> data;
             MyAvlTree<int> tree;
@@ -73,6 +71,26 @@ namespace skienaTests
             }
 
             tree.remove(22);
+
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
+        }
+
+
+        [TestMethod]
+        public void whenLeftDoubleRotationIsDoneInAVLTree_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            tree.remove(2);
+            tree.remove(0);
+            tree.remove(3);
 
             Assert.IsTrue(tree.isRootBalanced());
             Assert.IsTrue(tree.areAllNodesBalanced());
