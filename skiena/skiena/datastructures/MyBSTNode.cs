@@ -16,19 +16,19 @@ namespace skiena.datastructures
                 return modifiableValue;
             }
         } 
-        private MyBSTNode<T>? left;
-        private MyBSTNode<T>? right;
-        private MyBSTNode<T>? parent = ancestor;
+        protected MyBSTNode<T>? left;
+        protected MyBSTNode<T>? right;
+        protected MyBSTNode<T>? parent = ancestor;
 
 
-        public void insert(T val) 
+        public virtual MyBSTNode<T> insert(T val) 
         {
             var comparisonRes = Value.CompareTo(val);
             if (Value.CompareTo(val) > 0)
             {
                 if (left == null)
                 {
-                    left = new MyBSTNode<T>(this, val);
+                    left = createChild(val);
                 }
                 else
                 {
@@ -39,19 +39,25 @@ namespace skiena.datastructures
             {
                 if (right == null)
                 {
-                    right = new MyBSTNode<T>(this, val);
+                    right = createChild(val);
                 }
                 else
                 {
                     right.insert(val);
                 }
             }
+            return this;
         }
-        public MyBSTNode<T>? getLeft()
+
+        protected virtual MyBSTNode<T> createChild(T val) 
+        {
+            return new MyBSTNode<T>(this, val);
+        }
+        public virtual MyBSTNode<T>? getLeft()
         {
             return left;
         }
-        public MyBSTNode<T>? getRight() 
+        public virtual  MyBSTNode<T>? getRight() 
         {
             return right;
         }
@@ -64,11 +70,11 @@ namespace skiena.datastructures
         {
             return right != null;
         }
-        private void setLeft(MyBSTNode<T>? pLeft)
+        protected void setLeft(MyBSTNode<T>? pLeft)
         {
             left = pLeft;
         }
-        private void setRight(MyBSTNode<T>? pRight) 
+        protected void setRight(MyBSTNode<T>? pRight) 
         {
             right = pRight;
         }
@@ -96,40 +102,40 @@ namespace skiena.datastructures
             return min;
         }
 
-        public MyBSTNode<T>? getSuccessorInRightSubtree() 
+        public MyBSTNode<T>? searchMinimumExcept(MyBSTNode<T> nodeToSkip)
+        {
+            MyBSTNode<T>? curr = this;
+            MyBSTNode<T>? min = null;
+            MyBSTNode<T>? prevMin = null;
+            while (curr != null)
+            {
+                prevMin = min;
+                min = curr;
+                curr = curr.getLeft();
+            }
+            if (min == nodeToSkip)
+            {
+                return prevMin;
+            }
+            return min;
+        }
+
+        public MyBSTNode<T>? searchSuccessorInRightSubtree() 
         {
             MyBSTNode<T>? right = getRight();
-            if (right != null)
+            if (right != null )
             {
                 return right.getMinimum();
             }
             return null;
         }
 
-        private MyBSTNode<T>? searchSuccessorAmongParent()
-        {
-            if (isLeftChild())
-            {
-                return parent;
-            }
-            var par = parent;
-            while (par != null && par.isRightChild())
-            {
-                par = par.parent;
-            }
-            if (par != null) 
-            {
-                par = par.parent;
-            }
-            return par;
-        }
-
-        private bool isLeftChild() 
+        protected bool isLeftChild() 
         {
             return parent?.left == this;
         }
 
-        private bool isRightChild() 
+        protected bool isRightChild() 
         {
             return parent?.right == this;
         }
@@ -161,7 +167,7 @@ namespace skiena.datastructures
             return par;
         }
 
-        private void replaceBy(MyBSTNode<T> node) 
+        protected void replaceBy(MyBSTNode<T>? node) 
         {
             if (isLeftChild())
             {
@@ -171,11 +177,11 @@ namespace skiena.datastructures
             {
                 parent?.setRight(node);
             }
-            node.parent = parent;
+            node?.setParent(parent);
             this.parent = null;
         }
 
-        public MyBSTNode<T>? remove(MyBSTNode<T>? root,T val)
+        public virtual MyBSTNode<T>? removeFirst(MyBSTNode<T>? root,T val)
         {
             if (root == null) 
             {
@@ -184,11 +190,11 @@ namespace skiena.datastructures
             var comparisonRes = Value.CompareTo(val);
             if (comparisonRes > 0)
             {
-                left = getLeft()?.remove(left, val);
+                left = getLeft()?.removeFirst(left, val);
             }
             else if (comparisonRes < 0)
             {
-                right = getRight()?.remove(right, val);
+                right = getRight()?.removeFirst(right, val);
             }
             else if (left == null && right != null)
             {
@@ -208,11 +214,11 @@ namespace skiena.datastructures
             }
             else if (right != null && left != null)
             {
-                MyBSTNode<T>? successor = getSuccessorInRightSubtree();
+                MyBSTNode<T>? successor = searchSuccessorInRightSubtree();
                 if (successor != null) // it is garantee to have a successor in this case
                 {
                     T newValue = successor.Value;
-                    right = remove(right, successor.Value);
+                    right = getRight()?.removeFirst(right, successor.Value);
                     modifiableValue = newValue;
                 }
             }
@@ -220,7 +226,7 @@ namespace skiena.datastructures
         }
 
 
-        private void setParent(MyBSTNode<T>? node) 
+        protected void setParent(MyBSTNode<T>? node) 
         {
             parent = node;
         }

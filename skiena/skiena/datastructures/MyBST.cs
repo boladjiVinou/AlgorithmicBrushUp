@@ -10,26 +10,31 @@ namespace skiena.datastructures
 {
     public class MyBST<T> : IEnumerable<T> where T : IEquatable<T>, IComparable<T>
     {
-        public MyBSTNode<T>? root { get; set; }
+        protected MyBSTNode<T>? root { get; set; }
 
         public void add(T val)
         {
             if (root == null) 
             {
-                root = new MyBSTNode<T>(null, val);
+                root = createNode(val);
             }
             else
             {
-                root.insert(val);
+                root = root.insert(val);
             }
         }
-      
+
+        protected virtual MyBSTNode<T> createNode(T val) 
+        {
+           return new MyBSTNode<T>(null, val);
+        }
+
 
         public void remove(T val) 
         {
             if (root != null) 
             {
-                root = root.remove(root, val);
+                root = root.removeFirst(root, val);
             }
         }
 

@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 namespace skienaTests
 {
     [TestClass]
-    public sealed class BSTTests
+    public class BSTTests
     {
+        protected virtual MyBST<int> createTree() 
+        {
+            return new MyBST<int>();
+        }
         [TestMethod]
         public void givenABSWithDataWhenIteratingThenTheOrderShouldBeRespected()
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
             
@@ -35,7 +39,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataWhenDeletingAValueThenTheBSTShouldStayABST() 
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
             for (int j = 0; j < 10; j++)
@@ -53,7 +57,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWhenInsertingAValueThenTheBSTShouldStayABST()
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
 
@@ -70,7 +74,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataTheMaximumShouldBeTheGreatestValue() 
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
 
@@ -87,7 +91,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataTheMinimumShouldBeTheLowestValue()
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
 
@@ -104,7 +108,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataWhenIteratingInPreorderThenThePreorderShouldBeValid() 
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             bst.add(10);
             bst.add(5);
             bst.add(15);
@@ -127,7 +131,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataWhenIteratingInPostorderThenThePostOrderShouldBeValid()
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             bst.add(10);
             bst.add(5);
             bst.add(15);
@@ -148,7 +152,7 @@ namespace skienaTests
         [TestMethod]
         public void givenABSTWithDataWhenIteratingInOrderThenTheorderShouldBeValid()
         {
-            MyBST<int> bst = new MyBST<int>();
+            MyBST<int> bst = createTree();
             Random random = new Random();
             List<int> vals = new List<int>();
 
