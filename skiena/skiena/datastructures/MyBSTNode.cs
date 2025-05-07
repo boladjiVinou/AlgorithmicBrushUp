@@ -230,6 +230,6 @@ namespace skiena.datastructures
         {
             parent = node;
         }
-        public MyBSTNode<T>? getParent() { return parent; }
+        public virtual MyBSTNode<T>? getParent() { return parent; }
     }
 }
