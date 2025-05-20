@@ -37,7 +37,7 @@ namespace skiena.datastructures
                     right = right.insert(val);
                 }
             }
-            return rebalanceIfNeeded() ?? this;
+            return rebalanceIfNeeded();
         }
 
         private void recomputeHeight()
@@ -126,38 +126,38 @@ namespace skiena.datastructures
             node?.setParent(this);
         }
 
-        private MyAvlNode<T>? rebalanceIfNeeded()
+        private MyAvlNode<T> rebalanceIfNeeded()
         {
             int balance = computeBalance();
             if (balance > 1)
             {
                 var tmpLeft = getLeft();
+                var rightChildOfLeftChild = tmpLeft?.getRight();
                 if (tmpLeft?.computeBalance() > 0)// outer insert
                 {
                     tmpLeft.rotateRight();
                     return tmpLeft;
                 }
-                else if (tmpLeft != null) // inner insert
+                else if (tmpLeft != null && rightChildOfLeftChild != null) // inner insert
                 {
-                    var rightChildOfLeftChild =tmpLeft.getRight();
-                    rightChildOfLeftChild?.rotateLeft();
-                    rightChildOfLeftChild?.rotateRight();
+                    rightChildOfLeftChild.rotateLeft();
+                    rightChildOfLeftChild.rotateRight();
                     return rightChildOfLeftChild;
                 }
             }
             else if (balance < -1)
             {
                 var tmpRight = getRight();
+                var leftChildOfRightChild = tmpRight.getLeft();
                 if (tmpRight?.computeBalance() < 0)// outer insert
                 {
-                    tmpRight?.rotateLeft();
+                    tmpRight.rotateLeft();
                     return tmpRight;
                 }
-                else if(tmpRight != null) // inner insert
+                else if(tmpRight != null && leftChildOfRightChild != null) // inner insert
                 {
-                    var leftChildOfRightChild = tmpRight.getLeft();
-                    leftChildOfRightChild?.rotateRight();
-                    leftChildOfRightChild?.rotateLeft();
+                    leftChildOfRightChild.rotateRight();
+                    leftChildOfRightChild.rotateLeft();
                     return leftChildOfRightChild;
                 }
             }

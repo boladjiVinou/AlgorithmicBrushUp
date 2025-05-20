@@ -12,7 +12,7 @@ namespace skiena.datastructures
     {
         protected MyBSTNode<T>? root { get; set; }
 
-        public void add(T val)
+        public virtual void add(T val)
         {
             if (root == null) 
             {

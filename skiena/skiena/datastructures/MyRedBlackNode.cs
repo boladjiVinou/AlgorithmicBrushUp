@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,9 +10,7 @@ namespace skiena.datastructures
 {
     public class MyRedBlackNode<T> : MyBSTNode<T> where T : IEquatable<T>, IComparable<T>
     {
-        private int height;
         private bool isRed = true;
-        private int blackHeight;
         public MyRedBlackNode(MyBSTNode<T>? ancestor, T val) : base(ancestor, val)
         {
         }
@@ -40,19 +40,7 @@ namespace skiena.datastructures
                     right = right.insert(val);
                 }
             }
-            return rebalanceIfNeeded() ?? this;
-        }
-
-        private bool checkConsecutiveRed() 
-        {
-            var tmpParent = (MyRedBlackNode<T>?)getParent();
-            return tmpParent != null && isRed && tmpParent.isRed;
-        }
-
-        private bool hasRedAunt()
-        {
-            MyRedBlackNode<T>? aunt = getAunt();
-            return aunt != null && aunt.isRed;
+            return rebalanceIfNeeded();
         }
 
         private MyRedBlackNode<T>? getAunt()
@@ -75,182 +63,140 @@ namespace skiena.datastructures
             return aunt;
         }
 
-        /*
-        A color flip involves:
-        Changing the color of the parent to black
-        Changing the color of the uncle to black
-        Changing the color of the grandparent to red
-        */
         private void flipColor() 
         {
-            getParent()?.flipColorFlag();
-            getParent()?.getParent()?.flipColorFlag();
-            getAunt()?.flipColorFlag();
+            getParent()?.setRed(false);
+            getParent()?.getParent()?.setRed(true);
+            getAunt()?.setRed(false);
         }
 
-        private void flipColorFlag() 
+        private void updateRootColorIfNeeded() 
         {
-            isRed = !isRed;
-        }
-
-        public override MyRedBlackNode<T>? getParent() { return (MyRedBlackNode<T> ?)base.getParent(); }
-
-        private MyRedBlackNode<T>? rebalanceIfNeeded()
-        {
-            int balance = computeBalance();
-            if (balance > 1)
+            if (getParent() == null && isRed) 
             {
-                var tmpLeft = getLeft();
-                if (tmpLeft?.computeBalance() > 0)// outer insert
+                isRed = false;
+            }
+        }
+        private void setRed(bool red) 
+        {
+            this.isRed = red;
+        }
+        public override MyRedBlackNode<T>? getParent() 
+        { 
+            return (MyRedBlackNode<T> ?)base.getParent(); 
+        }
+
+        private bool isRoot() 
+        {
+            return getParent() == null;
+        }
+        private MyRedBlackNode<T> rebalanceIfNeeded()
+        {
+            // I fix conflicts by being on grand parent level
+            if (isRoot() && isRed) 
+            {
+                updateRootColorIfNeeded();
+                return this;
+            }
+            var tmpLeft = getLeft();
+            var tmpRight = getRight();
+            if (tmpLeft != null && tmpRight != null && tmpLeft.isRed && tmpRight.isRed)// two red children
+            {
+                List<MyRedBlackNode<T>?> grandChildren = new List<MyRedBlackNode<T>?>()
+                { tmpLeft.getLeft(),tmpLeft.getRight(), tmpRight.getLeft(), tmpRight.getRight()};
+                var problematicGrandChild =  grandChildren.Where(x => x != null && x.isRed);
+                if (problematicGrandChild.Any())
                 {
-                    tmpLeft.rotateRight();
-                    return tmpLeft;
+                    problematicGrandChild.Single()?.flipColor();
                 }
-                else if (tmpLeft != null) // inner insert
+                return this;
+            }
+            else if (tmpLeft != null && tmpLeft.isRed && (tmpRight == null || !tmpRight.isRed))// left child red other black
+            {
+                var rightChildOfLeftChild = tmpLeft.getRight();
+                var leftChildOfLeftChild = tmpLeft.getLeft();
+                if (rightChildOfLeftChild != null && rightChildOfLeftChild.isRed)
                 {
-                    var rightChildOfLeftChild = tmpLeft.getRight();
-                    rightChildOfLeftChild?.rotateLeft();
-                    rightChildOfLeftChild?.rotateRight();
+                    // inner
+                    rightChildOfLeftChild.rotateLeft();
+                    rightChildOfLeftChild.rotateRight();
+                    setRed(true);
+                    rightChildOfLeftChild.setRed(false);
                     return rightChildOfLeftChild;
                 }
-            }
-            else if (balance < -1)
-            {
-                var tmpRight = getRight();
-                if (tmpRight?.computeBalance() < 0)// outer insert
+                else if (leftChildOfLeftChild != null && leftChildOfLeftChild.isRed) 
                 {
-                    tmpRight?.rotateLeft();
-                    return tmpRight;
+                    // outer
+                    tmpLeft.rotateRight();
+                    tmpLeft.setRed(false);
+                    setRed(true);
+                    return tmpLeft;
                 }
-                else if (tmpRight != null) // inner insert
+            }
+            else if (tmpRight != null && tmpRight.isRed && (tmpLeft == null || !tmpLeft.isRed))// right child red other black
+            {
+                var rightChildOfRightChild = tmpRight.getRight();
+                var leftChildOfRightChild = tmpRight.getLeft();
+                
+                if (leftChildOfRightChild != null && leftChildOfRightChild.isRed)
                 {
-                    var leftChildOfRightChild = tmpRight.getLeft();
-                    leftChildOfRightChild?.rotateRight();
-                    leftChildOfRightChild?.rotateLeft();
+                    // inner
+                    leftChildOfRightChild.rotateRight();
+                    leftChildOfRightChild.rotateLeft();
+                    setRed(true);
+                    leftChildOfRightChild.setRed(false);
                     return leftChildOfRightChild;
                 }
+                else if (rightChildOfRightChild != null && rightChildOfRightChild.isRed)
+                {
+                    // outer
+                    tmpRight.rotateLeft();
+                    tmpRight.setRed(false);
+                    setRed(true);
+                    return tmpRight;
+                }
             }
-            recomputeHeight();
-            recomputeBlackHeight();
             return this;
         }
 
-
-        private void recomputeHeight()
-        {
-            height = Math.Max(computeLeftHeight(), computeRightHeight());
-        }
-
-        private int computeRightHeight()
-        {
-            var tmpRight = getRight();
-            if (tmpRight != null)
-            {
-                return tmpRight.height + 1;
-            }
-            return 0;
-        }
-
-        private int computeLeftHeight()
-        {
-            var tmpLeft = getLeft();
-            if (tmpLeft != null)
-            {
-                return tmpLeft.height + 1;
-            }
-            return 0;
-        }
-
-        private void recomputeBlackHeight()
-        {
-            blackHeight = Math.Max(computeLeftBlackHeight(), computeRightBlackHeight());
-        }
-
-        private int computeRightBlackHeight()
-        {
-            var tmpRight = getRight();
-            if (tmpRight != null)
-            {
-                return tmpRight.blackHeight + (isRed ? 0 : 1);
-            }
-            return 0;
-        }
-
-        private int computeLeftBlackHeight()
-        {
-            var tmpLeft = getLeft();
-            if (tmpLeft != null)
-            {
-                return tmpLeft.blackHeight + (isRed ? 0 : 1);
-            }
-            return 0;
-        }
         private void rotateRight()
         {
             var tmpRight = getRight();
-            var oldParent = (MyRedBlackNode<T>?)getParent();
+            var oldParent = getParent();
             replaceBy(tmpRight);
             if (oldParent != null)
             {
                 setRight(oldParent);
                 becomeParent(oldParent);
             }
-
-            updateHeights(tmpRight, oldParent);
         }
 
         private void rotateLeft()
         {
             var tmpLeft = getLeft();
-            var oldParent = (MyRedBlackNode<T>?)getParent();
+            var oldParent = getParent();
             replaceBy(tmpLeft);
             if (oldParent != null)
             {
                 setLeft(oldParent);
                 becomeParent(oldParent);
             }
-
-            updateHeights(tmpLeft, oldParent);
         }
 
-        private void updateHeights(MyRedBlackNode<T>? tmpRight, MyRedBlackNode<T>? oldParent)
-        {
-            List<MyRedBlackNode<T>?> nodesToUpdate =
-            [
-                tmpRight,
-                oldParent,
-                this,
-                (MyRedBlackNode<T>?)getParent(),
-            ];
-            foreach (var touchedNodes in nodesToUpdate)
-            {
-                touchedNodes?.recomputeHeight();
-                touchedNodes?.recomputeBlackHeight();
-            }
-        }
         private void becomeParent(MyRedBlackNode<T>? node)
         {
             setParent(node?.getParent());
             if (node != null && node.isLeftChild())
             {
-                ((MyRedBlackNode<T>?)node?.getParent())?.setLeft(this);
+                (node?.getParent())?.setLeft(this);
             }
             else if (node != null)
             {
-                ((MyRedBlackNode<T>?)node?.getParent())?.setRight(this);
+                (node?.getParent())?.setRight(this);
             }
             node?.setParent(this);
         }
 
-        private int computeBalance()
-        {
-            return computeLeftHeight() - computeRightHeight();
-        }
-
-        public bool isBalanced()
-        {
-            return Math.Abs(computeBalance()) <= 1;
-        }
         public override MyRedBlackNode<T>? getLeft()
         {
             return (MyRedBlackNode<T>?)base.getLeft();
