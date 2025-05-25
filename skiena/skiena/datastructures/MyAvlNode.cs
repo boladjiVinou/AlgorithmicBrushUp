@@ -69,7 +69,7 @@ namespace skiena.datastructures
         {
             var tmpRight = getRight();
             var oldParent = (MyAvlNode<T>?)getParent();
-            replaceBy(tmpRight);
+            replaceCurrentReferenceInTreeBy(tmpRight);
             if (oldParent != null) 
             {
                 setRight(oldParent);
@@ -92,7 +92,7 @@ namespace skiena.datastructures
         {
             var tmpLeft = getLeft();
             var oldParent = (MyAvlNode<T>?)getParent();
-            replaceBy(tmpLeft);
+            replaceCurrentReferenceInTreeBy(tmpLeft);
             if (oldParent != null)
             {
                 setLeft(oldParent);
@@ -170,9 +170,9 @@ namespace skiena.datastructures
             return computeLeftHeight() - computeRightHeight();
         }
 
-        public override MyAvlNode<T>? removeFirst(MyBSTNode<T>? root, T val) 
+        public override MyAvlNode<T>? removeFirst(T val) 
         {
-            return ((MyAvlNode<T>?)base.removeFirst(root, val))?.rebalanceIfNeeded();
+            return ((MyAvlNode<T>?)base.removeFirst(val))?.rebalanceIfNeeded();
         }
         protected override MyAvlNode<T> createChild(T val)
         {

@@ -10,9 +10,32 @@ namespace skiena.datastructures
 {
     public class MyRedBlackNode<T> : MyBSTNode<T> where T : IEquatable<T>, IComparable<T>
     {
-        private bool isRed = true;
+        private enum Color 
+        {
+            Red,
+            Black,
+            DoubleBlack
+        }
+        private Color color = Color.Red;
+        private class MyNullRedBlackNode: MyRedBlackNode<T>
+        {
+            public MyNullRedBlackNode(MyBSTNode<T>? ancestor, T val) : base(ancestor, val)
+            {
+                color = Color.Black;
+            }
+        }
         public MyRedBlackNode(MyBSTNode<T>? ancestor, T val) : base(ancestor, val)
         {
+            color = (ancestor == null) ? Color.Black : Color.Red;
+        }
+
+        public bool isNullNodeInstance() 
+        {
+            return this is MyNullRedBlackNode;
+        }
+        private MyRedBlackNode<T> createNullNode() 
+        {
+            return new MyNullRedBlackNode(this, default(T));
         }
 
         public override MyRedBlackNode<T> insert(T val)
@@ -26,7 +49,7 @@ namespace skiena.datastructures
                 }
                 else
                 {
-                    left = left.insert(val);
+                    left = left?.insert(val);
                 }
             }
             else
@@ -37,10 +60,15 @@ namespace skiena.datastructures
                 }
                 else
                 {
-                    right = right.insert(val);
+                    right = right?.insert(val);
                 }
             }
-            return rebalanceIfNeeded();
+            return rebalanceIfNeededAfterInsertion();
+        }
+
+        public static bool isNodeNull(MyBSTNode<T>? node)
+        {
+            return node == null || asRedBlackNode(node).isNullNodeInstance();
         }
 
         private MyRedBlackNode<T>? getAunt()
@@ -65,21 +93,24 @@ namespace skiena.datastructures
 
         private void flipColor() 
         {
-            getParent()?.setRed(false);
-            getParent()?.getParent()?.setRed(true);
-            getAunt()?.setRed(false);
+            getParent()?.setColor(Color.Black);
+            getParent()?.getParent()?.setColor(Color.Red);
+            getAunt()?.setColor(Color.Black);
         }
-
+        public bool isRed() 
+        {
+            return color == Color.Red;
+        }
         private void updateRootColorIfNeeded() 
         {
-            if (getParent() == null && isRed) 
+            if (getParent() == null && isRed())
             {
-                isRed = false;
+                color = Color.Black;
             }
         }
-        private void setRed(bool red) 
+        private void setColor(Color color) 
         {
-            this.isRed = red;
+            this.color = color;
         }
         public override MyRedBlackNode<T>? getParent() 
         { 
@@ -90,69 +121,69 @@ namespace skiena.datastructures
         {
             return getParent() == null;
         }
-        private MyRedBlackNode<T> rebalanceIfNeeded()
+        private MyRedBlackNode<T> rebalanceIfNeededAfterInsertion()
         {
             // I fix conflicts by being on grand parent level
-            if (isRoot() && isRed) 
+            if (isRoot() && isRed())
             {
                 updateRootColorIfNeeded();
                 return this;
             }
             var tmpLeft = getLeft();
             var tmpRight = getRight();
-            if (tmpLeft != null && tmpRight != null && tmpLeft.isRed && tmpRight.isRed)// two red children
+            if (tmpLeft != null && tmpRight != null && tmpLeft.isRed() && tmpRight.isRed())// two red children
             {
                 List<MyRedBlackNode<T>?> grandChildren = new List<MyRedBlackNode<T>?>()
                 { tmpLeft.getLeft(),tmpLeft.getRight(), tmpRight.getLeft(), tmpRight.getRight()};
-                var problematicGrandChild =  grandChildren.Where(x => x != null && x.isRed);
+                var problematicGrandChild =  grandChildren.Where(x => x != null && x.isRed());
                 if (problematicGrandChild.Any())
                 {
                     problematicGrandChild.Single()?.flipColor();
                 }
                 return this;
             }
-            else if (tmpLeft != null && tmpLeft.isRed && (tmpRight == null || !tmpRight.isRed))// left child red other black
+            else if (tmpLeft != null && tmpLeft.isRed() && (tmpRight == null || !tmpRight.isRed()))// left child red other black
             {
                 var rightChildOfLeftChild = tmpLeft.getRight();
                 var leftChildOfLeftChild = tmpLeft.getLeft();
-                if (rightChildOfLeftChild != null && rightChildOfLeftChild.isRed)
+                if (rightChildOfLeftChild != null && rightChildOfLeftChild.isRed())
                 {
                     // inner
                     rightChildOfLeftChild.rotateLeft();
                     rightChildOfLeftChild.rotateRight();
-                    setRed(true);
-                    rightChildOfLeftChild.setRed(false);
+                    setColor(Color.Red);
+                    rightChildOfLeftChild.setColor(Color.Black);
                     return rightChildOfLeftChild;
                 }
-                else if (leftChildOfLeftChild != null && leftChildOfLeftChild.isRed) 
+                else if (leftChildOfLeftChild != null && leftChildOfLeftChild.isRed())
                 {
                     // outer
                     tmpLeft.rotateRight();
-                    tmpLeft.setRed(false);
-                    setRed(true);
+                    tmpLeft.setColor(Color.Black);
+                    setColor(Color.Red);
                     return tmpLeft;
                 }
             }
-            else if (tmpRight != null && tmpRight.isRed && (tmpLeft == null || !tmpLeft.isRed))// right child red other black
+            else if (tmpRight != null && tmpRight.isRed() && (tmpLeft == null || !tmpLeft.isRed()))// right child red other black
             {
                 var rightChildOfRightChild = tmpRight.getRight();
                 var leftChildOfRightChild = tmpRight.getLeft();
                 
-                if (leftChildOfRightChild != null && leftChildOfRightChild.isRed)
+                if (leftChildOfRightChild != null && leftChildOfRightChild.isRed())
                 {
                     // inner
                     leftChildOfRightChild.rotateRight();
                     leftChildOfRightChild.rotateLeft();
-                    setRed(true);
-                    leftChildOfRightChild.setRed(false);
+                    setColor(Color.Red);
+                    leftChildOfRightChild.setColor(Color.Black);
                     return leftChildOfRightChild;
                 }
-                else if (rightChildOfRightChild != null && rightChildOfRightChild.isRed)
+                else if (rightChildOfRightChild != null && rightChildOfRightChild.isRed())
                 {
                     // outer
                     tmpRight.rotateLeft();
-                    tmpRight.setRed(false);
-                    setRed(true);
+                    tmpRight.setColor(Color.Black);
+                    setColor(Color.Red);
                     return tmpRight;
                 }
             }
@@ -163,7 +194,7 @@ namespace skiena.datastructures
         {
             var tmpRight = getRight();
             var oldParent = getParent();
-            replaceBy(tmpRight);
+            replaceCurrentReferenceInTreeBy(tmpRight);
             if (oldParent != null)
             {
                 setRight(oldParent);
@@ -175,7 +206,7 @@ namespace skiena.datastructures
         {
             var tmpLeft = getLeft();
             var oldParent = getParent();
-            replaceBy(tmpLeft);
+            replaceCurrentReferenceInTreeBy(tmpLeft);
             if (oldParent != null)
             {
                 setLeft(oldParent);
@@ -204,6 +235,185 @@ namespace skiena.datastructures
         public override MyRedBlackNode<T>? getRight()
         {
             return (MyRedBlackNode<T>?)base.getRight();
+        }
+
+        public override MyBSTNode<T>? removeFirst(T val)
+        {
+            var comparisonRes = Value.CompareTo(val);
+            if (comparisonRes > 0)
+            {
+                left = getLeft()?.removeFirst(val);
+            }
+            else if (comparisonRes < 0)
+            {
+                right = getRight()?.removeFirst(val);
+            }
+            else if (left == null && right != null)
+            {
+                replaceCurrentReferenceInTreeBy(right);
+                MyRedBlackNode<T>? tmpRight = isRed() ? asRedBlackNode(right): recolorReplacingNode(right);
+                return tmpRight?.repairIfNeededAfterDeletion();
+            }
+            else if (right == null && left != null)
+            {
+                replaceCurrentReferenceInTreeBy(left);
+                var tmpLeft = isRed() ? asRedBlackNode(left) : recolorReplacingNode(left);
+                return tmpLeft?.repairIfNeededAfterDeletion();
+            }
+            else if (right != null && left != null)
+            {
+                MyBSTNode<T>? successor = searchSuccessorInRightSubtree();
+                if (successor != null) // it is garantee to have a successor in this case
+                {
+                    T newValue = successor.Value;
+                    right = getRight()?.removeFirst(successor.Value);
+                    modifiableValue = newValue;
+                }
+            }
+            else 
+            {
+                if (!isRed())
+                {
+                    return recolorReplacingNode(null);
+                }
+                else 
+                {
+                    return null;
+                }
+            }
+            return asRedBlackNode(this)?.repairIfNeededAfterDeletion();
+        }
+
+        private MyRedBlackNode<T> recolorReplacingNode(MyBSTNode<T>? node)
+        {
+            var tmpNode = asRedBlackNode(node);
+
+            if (tmpNode == null)
+            {
+                tmpNode = createNullNode();
+            }
+            tmpNode.setColor(!tmpNode.isRed() && !isRed() ? Color.DoubleBlack : Color.Black);
+
+            return tmpNode;
+        }
+
+        static  MyRedBlackNode<T>? asRedBlackNode(MyBSTNode<T>? node) 
+        {
+            return (MyRedBlackNode<T>?)node;
+        }
+
+        private MyRedBlackNode<T> repairIfNeededAfterDeletion() 
+        {
+            //I fix issues from double black's parent level
+            if (getParent() == null) 
+            {
+                updateRootColorIfNeeded();
+            }
+            if (color == Color.DoubleBlack) 
+            {
+                return this; // will be fixed on parent level
+            }
+            var tmpLeft = getLeft();
+            var tmpRight = getRight();
+            if (tmpLeft != null && tmpLeft.color == Color.DoubleBlack)
+            {
+                // Case 1 sibling is red
+                if (tmpRight != null && tmpRight.color == Color.Red)
+                {
+                    setColor(Color.Red);
+                    tmpRight.setColor(Color.Black);
+                    tmpRight?.rotateLeft();
+                }
+                tmpRight = getRight();
+                var rightChildOfRightChild = tmpRight?.getRight();
+                var leftChildOfRightChild = tmpRight?.getLeft();
+                List<MyRedBlackNode<T>?> rightChildren = new List<MyRedBlackNode<T>?>()
+                {
+                    rightChildOfRightChild,leftChildOfRightChild
+                };
+                // case 2 sibling is black all its children black
+                if (tmpRight == null || (tmpRight.color == Color.Black && rightChildren.All(x => x == null || !x.isRed())))
+                {
+                    tmpRight?.setColor(Color.Red);
+                    setColor(isRed() ? Color.Black : Color.DoubleBlack);
+                }
+                // case 3 sibling black  sibling left child red
+                else if (tmpRight != null && tmpRight.color == Color.Black && (leftChildOfRightChild?.isRed()).GetValueOrDefault())
+                {
+                    tmpRight.setColor(Color.Red);
+                    leftChildOfRightChild?.setColor(Color.Black);
+                    leftChildOfRightChild?.rotateRight();
+                    return repairIfNeededAfterDeletion(); // from here it is garanteed to not enter again in case 3
+                }
+                // case 4 sibling black sibling right child red
+                else if (tmpRight != null && tmpRight.color == Color.Black && (rightChildOfRightChild?.isRed()).GetValueOrDefault())
+                {
+                    tmpRight.setColor(color);
+                    setColor(Color.Black);
+                    rightChildOfRightChild?.setColor(Color.Black);
+                    tmpRight.rotateLeft();
+                }
+
+                removeDoubleBlackColor(tmpLeft);
+            }
+            else if (tmpRight != null && tmpRight.color == Color.DoubleBlack) 
+            {
+                // Case 1 sibling is red
+                if (tmpLeft != null && tmpLeft.color == Color.Red)
+                {
+                    setColor(Color.Red);
+                    tmpLeft.setColor(Color.Black);
+                    tmpLeft?.rotateRight();
+                }
+                tmpLeft = getLeft();
+                var rightChildOfLeftChild = tmpLeft?.getRight();
+                var leftChildOfLeftChild = tmpLeft?.getLeft();
+                List<MyRedBlackNode<T>?> leftChildren = new List<MyRedBlackNode<T>?>()
+                {
+                    rightChildOfLeftChild, leftChildOfLeftChild
+                };
+                // case 2 sibling is black all its children black
+                if (tmpLeft == null || (tmpLeft.color == Color.Black && leftChildren.All(x => x == null || !x.isRed())))
+                {
+                    tmpLeft?.setColor(Color.Red);
+                    setColor(isRed() ? Color.Black : Color.DoubleBlack);
+                }
+                // case 3  sibling black  sibling left child red
+                else if (tmpLeft != null && tmpLeft.color == Color.Black && (leftChildOfLeftChild?.isRed()).GetValueOrDefault())
+                {
+                    tmpLeft.setColor(Color.Red);
+                    leftChildOfLeftChild?.setColor(Color.Black);
+                    leftChildOfLeftChild?.rotateLeft();
+                    return repairIfNeededAfterDeletion();  // from here it is garanteed to not enter again in case 3
+                }
+                // case 4  sibling black sibling right child red
+                else if (tmpLeft != null && tmpLeft.color == Color.Black && (rightChildOfLeftChild?.isRed()).GetValueOrDefault())
+                {
+                    tmpLeft.setColor(color);
+                    setColor(Color.Black);
+                    rightChildOfLeftChild?.setColor(Color.Black);
+                    tmpLeft.rotateRight();
+                }
+
+                removeDoubleBlackColor(tmpRight);
+            }
+            return this;
+        }
+
+        private void removeDoubleBlackColor(MyRedBlackNode<T> node)
+        {
+            node.setColor(Color.Black);// removing double black flag
+            if (node.isNullNodeInstance())
+            {
+                if (node.isLeftChild())
+                {
+                    node.getParent()?.setLeft(null);
+                }
+                else 
+                {
+                    node.getParent()?.setRight(null);
+                }
+            }
         }
     }
 }

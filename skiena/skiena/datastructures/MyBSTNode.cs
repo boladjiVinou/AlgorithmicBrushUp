@@ -8,7 +8,7 @@ namespace skiena.datastructures
 {
     public class MyBSTNode<T>(MyBSTNode<T>? ancestor,T val) where T : IEquatable<T>, IComparable<T>
     {
-        private T modifiableValue = val;
+        protected T modifiableValue = val;
         public T Value 
         {
             get 
@@ -167,7 +167,7 @@ namespace skiena.datastructures
             return par;
         }
 
-        protected void replaceBy(MyBSTNode<T>? node) 
+        protected void replaceCurrentReferenceInTreeBy(MyBSTNode<T>? node) 
         {
             if (isLeftChild())
             {
@@ -181,36 +181,26 @@ namespace skiena.datastructures
             this.parent = null;
         }
 
-        public virtual MyBSTNode<T>? removeFirst(MyBSTNode<T>? root,T val)
+        public virtual MyBSTNode<T>? removeFirst(T val)
         {
-            if (root == null) 
-            {
-                return null;
-            }
             var comparisonRes = Value.CompareTo(val);
             if (comparisonRes > 0)
             {
-                left = getLeft()?.removeFirst(left, val);
+                left = getLeft()?.removeFirst(val);
             }
             else if (comparisonRes < 0)
             {
-                right = getRight()?.removeFirst(right, val);
+                right = getRight()?.removeFirst(val);
             }
             else if (left == null && right != null)
             {
-                replaceBy(right);
-                if (this == root) 
-                {
-                    return right;
-                }
+                replaceCurrentReferenceInTreeBy(right);
+                return right;
             }
-            else if (right == null && left != null) 
+            else if (right == null && left != null)
             {
-                replaceBy(left);
-                if (this == root)
-                {
-                    return left;
-                }
+                replaceCurrentReferenceInTreeBy(left);
+                return left;
             }
             else if (right != null && left != null)
             {
@@ -218,11 +208,16 @@ namespace skiena.datastructures
                 if (successor != null) // it is garantee to have a successor in this case
                 {
                     T newValue = successor.Value;
-                    right = getRight()?.removeFirst(right, successor.Value);
+                    right = getRight()?.removeFirst(successor.Value);
                     modifiableValue = newValue;
                 }
             }
-            return root;
+            else 
+            {
+                // the current node is the node to delete and has no children
+                return null;
+            }
+            return this;
         }
 
 

@@ -30,11 +30,11 @@ namespace skiena.datastructures
         }
 
 
-        public void remove(T val) 
+        public virtual void remove(T val) 
         {
             if (root != null) 
             {
-                root = root.removeFirst(root, val);
+                root = root.removeFirst(val);
             }
         }
 
