@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures
 {
+    // course: https://courses.ms.wits.ac.za/~steve/aaa/book/large/RedBlack.html
     public class MyRedBlackNode<T> : MyBSTNode<T> where T : IEquatable<T>, IComparable<T>
     {
         private enum Color 
@@ -36,6 +37,10 @@ namespace skiena.datastructures
         private MyRedBlackNode<T> createNullNode() 
         {
             return new MyNullRedBlackNode(this, default(T));
+        }
+        protected override MyRedBlackNode<T> createChild(T val)
+        {
+            return new MyRedBlackNode<T>(this, val);
         }
 
         public override MyRedBlackNode<T> insert(T val)
@@ -78,14 +83,15 @@ namespace skiena.datastructures
             {
                 return null;
             }
+            var tmpGrandParent = tmpParent.getParent();
             MyRedBlackNode<T>? aunt;
-            if (isLeftChild())
+            if (tmpParent.isLeftChild())
             {
-                aunt = tmpParent.getRight();
+                aunt = tmpGrandParent?.getRight();
             }
             else
             {
-                aunt = tmpParent.getLeft();
+                aunt = tmpGrandParent?.getLeft();
             }
 
             return aunt;
@@ -272,7 +278,7 @@ namespace skiena.datastructures
             }
             else 
             {
-                if (!isRed())
+                if (!isRed() && getParent() != null)
                 {
                     return recolorReplacingNode(null);
                 }
@@ -304,7 +310,7 @@ namespace skiena.datastructures
 
         private MyRedBlackNode<T> repairIfNeededAfterDeletion() 
         {
-            //I fix issues from double black's parent level
+            //I fix issues from double black node's parent level
             if (getParent() == null) 
             {
                 updateRootColorIfNeeded();
@@ -403,7 +409,7 @@ namespace skiena.datastructures
         private void removeDoubleBlackColor(MyRedBlackNode<T> node)
         {
             node.setColor(Color.Black);// removing double black flag
-            if (node.isNullNodeInstance())
+            if (node.isNullNodeInstance()) // destroy Nil node
             {
                 if (node.isLeftChild())
                 {
@@ -414,6 +420,28 @@ namespace skiena.datastructures
                     node.getParent()?.setRight(null);
                 }
             }
+        }
+
+        public int countBlackPathLength() 
+        {
+
+            var tmpLeft = asRedBlackNode(left);
+            var tmpRight = asRedBlackNode(right);
+            int leftLength = 0;
+            int rightLength = 0;
+            if (tmpLeft != null) 
+            {
+                leftLength = tmpLeft.countBlackPathLength();
+            }
+            if (tmpRight != null)
+            {
+                rightLength = tmpRight.countBlackPathLength();
+            }
+            if (leftLength != rightLength) 
+            {
+                throw new InvalidDataException("Different lengths of black path on a node");
+            }
+            return leftLength + (isRed() ? 0 : 1);
         }
     }
 }
