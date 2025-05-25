@@ -43,13 +43,79 @@ namespace skienaTests
         }
 
 
+        [TestMethod]
+        public void whenRemovingLeafInRedBlackTree_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyRedBlackTree<int> tree;
+            createFilledRedBlackTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            tree.remove(5);
+
+            Assert.IsTrue(tree.isTreeValid());
+        }
+
+        [TestMethod]
+        public void whenRemovingLeftBlackNodeWithRedParentAndRedChild_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyRedBlackTree<int> tree;
+            createFilledRedBlackTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            tree.remove(2);
+
+            Assert.IsTrue(tree.isTreeValid());
+        }
+
+        [TestMethod]
+        public void whenRemovingRightBlackNodeWithRedParentAndRedChild_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyRedBlackTree<int> tree;
+            createFilledRedBlackTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            tree.remove(78);
+
+            Assert.IsTrue(tree.isTreeValid());
+        }
+
+        [TestMethod]
+        public void whenRemovingRootINTree_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyRedBlackTree<int> tree;
+            createFilledRedBlackTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            Assert.IsTrue(tree.getRootValue() == 41);
+            tree.remove(41);
+
+            Assert.IsTrue(tree.isTreeValid());
+        }
+
+
 
         private void createFilledRedBlackTree(out List<int> data, out MyRedBlackTree<int> tree)
         {
             data = new List<int>() { 41,
             67,
             34,
-            0,
+            1,
             69,
             24,
             78,

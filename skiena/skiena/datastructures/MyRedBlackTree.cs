@@ -13,6 +13,10 @@ namespace skiena.datastructures
             return new MyRedBlackNode<T>(null, val);
         }
 
+        public T getRootValue() 
+        {
+            return root.Value;
+        }
         public bool isTreeValid()
         {
             if (root != null)

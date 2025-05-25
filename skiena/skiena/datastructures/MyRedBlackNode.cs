@@ -36,7 +36,7 @@ namespace skiena.datastructures
         }
         private MyRedBlackNode<T> createNullNode() 
         {
-            return new MyNullRedBlackNode(this, default(T));
+            return new MyNullRedBlackNode(getParent(), default(T));
         }
         protected override MyRedBlackNode<T> createChild(T val)
         {
@@ -343,15 +343,15 @@ namespace skiena.datastructures
                     tmpRight?.setColor(Color.Red);
                     setColor(isRed() ? Color.Black : Color.DoubleBlack);
                 }
-                // case 3 sibling black  sibling left child red
+                // case 3 sibling black inner child red
                 else if (tmpRight != null && tmpRight.color == Color.Black && (leftChildOfRightChild?.isRed()).GetValueOrDefault())
                 {
                     tmpRight.setColor(Color.Red);
                     leftChildOfRightChild?.setColor(Color.Black);
                     leftChildOfRightChild?.rotateRight();
-                    return repairIfNeededAfterDeletion(); // from here it is garanteed to not enter again in case 3
+                    return repairIfNeededAfterDeletion(); 
                 }
-                // case 4 sibling black sibling right child red
+                // case 4 sibling black outer child red
                 else if (tmpRight != null && tmpRight.color == Color.Black && (rightChildOfRightChild?.isRed()).GetValueOrDefault())
                 {
                     tmpRight.setColor(color);
@@ -384,20 +384,20 @@ namespace skiena.datastructures
                     tmpLeft?.setColor(Color.Red);
                     setColor(isRed() ? Color.Black : Color.DoubleBlack);
                 }
-                // case 3  sibling black  sibling left child red
-                else if (tmpLeft != null && tmpLeft.color == Color.Black && (leftChildOfLeftChild?.isRed()).GetValueOrDefault())
+                // case 3  sibling black  inner child red
+                else if (tmpLeft != null && tmpLeft.color == Color.Black && (rightChildOfLeftChild?.isRed()).GetValueOrDefault())
                 {
                     tmpLeft.setColor(Color.Red);
-                    leftChildOfLeftChild?.setColor(Color.Black);
-                    leftChildOfLeftChild?.rotateLeft();
-                    return repairIfNeededAfterDeletion();  // from here it is garanteed to not enter again in case 3
+                    rightChildOfLeftChild?.setColor(Color.Black);
+                    rightChildOfLeftChild?.rotateLeft();
+                    return repairIfNeededAfterDeletion();
                 }
-                // case 4  sibling black sibling right child red
-                else if (tmpLeft != null && tmpLeft.color == Color.Black && (rightChildOfLeftChild?.isRed()).GetValueOrDefault())
+                // case 4  sibling black outer child red
+                else if (tmpLeft != null && tmpLeft.color == Color.Black && (leftChildOfLeftChild?.isRed()).GetValueOrDefault())
                 {
                     tmpLeft.setColor(color);
                     setColor(Color.Black);
-                    rightChildOfLeftChild?.setColor(Color.Black);
+                    leftChildOfLeftChild?.setColor(Color.Black);
                     tmpLeft.rotateRight();
                 }
 
