@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.trees
 {
     public class MyBSTNode<T>(MyBSTNode<T>? ancestor,T val) where T : IEquatable<T>, IComparable<T>
     {
@@ -178,7 +178,7 @@ namespace skiena.datastructures
                 parent?.setRight(node);
             }
             node?.setParent(parent);
-            this.parent = null;
+            parent = null;
         }
 
         public virtual MyBSTNode<T>? removeFirst(T val)

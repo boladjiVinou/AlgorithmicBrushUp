@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.lists
 {
-    public class MySingleLinkedList<T>  : IEnumerable<T> , IEquatable<MySingleLinkedList<T>> where T : IEquatable<T>
+    public class MyDoubleLinkedList<T> : IEnumerable<T> where T : IEquatable<T>
     {
         public LinkedNode<T> root { get; set; }
 
-        public int count() 
+        public int count()
         {
             LinkedNode<T> curr = root;
             int count = 0;
-            while (curr != null) 
+            while (curr != null)
             {
                 ++count;
                 curr = curr.Next;
@@ -23,54 +18,38 @@ namespace skiena.datastructures
             return count;
         }
 
-        public void reverse() 
+        public void reverse()
         {
+            if (isEmpty())
+            {
+                return;
+            }
             LinkedNode<T> curr = root;
             LinkedNode<T> prev = null;
-            while (curr != null) 
+            while (curr != null)
             {
                 var tmp = curr.Next;
                 curr.Next = prev;
+                if (prev != null) 
+                {
+                    prev.Previous = curr;
+                }
                 prev = curr;
                 curr = tmp;
             }
             root = prev;
+            root.Previous = null;
         }
-
-        public bool isEmpty()
+        public bool isEmpty() 
         {
             return root == null;
         }
 
-        public void add(T value) 
-        {
-            if (value == null) 
-            {
-                return;
-            }
-            var tmp = new LinkedNode<T>(value);
-            if (root == null)
-            {
-                root = tmp;
-            }
-            else 
-            {
-                LinkedNode<T> curr = root;
-                LinkedNode<T> prev = null;
-                while (curr != null)
-                {
-                    prev = curr;
-                    curr = curr.Next;
-                }
-                prev.Next = tmp;
-            }
-        }
-
-        public bool AddIfNotEquals(T value) 
+        public void add(T value)
         {
             if (value == null)
             {
-                return false;
+                return;
             }
             var tmp = new LinkedNode<T>(value);
             if (root == null)
@@ -83,53 +62,68 @@ namespace skiena.datastructures
                 LinkedNode<T> prev = null;
                 while (curr != null)
                 {
-                    if (curr.Value.Equals(value)) 
-                    {
-                        return false;
-                    }
                     prev = curr;
                     curr = curr.Next;
                 }
                 prev.Next = tmp;
+                tmp.Previous = prev;
             }
-            return true;
         }
 
-        public int remove(T value) 
+        public void remove(T value)
         {
             if (value == null)
             {
-                return 0;
+                return;
             }
             var curr = root;
             LinkedNode<T> prev = null;
-            int nbRemoved = 0;
-            while (curr != null) 
+            while (curr != null)
             {
-                if (!curr.Value.Equals(value)) 
+                if (!curr.Value.Equals(value))
                 {
                     prev = curr;
                     curr = curr.Next;
                     continue;
                 }
-                if (prev != null)
+                curr = detachNode(curr);
+                if (prev == null) 
                 {
-                    prev.Next = curr.Next;
+                    root = curr;
                 }
-                else 
-                {
-                    root = curr.Next;
-                }
-                curr = curr.Next;
-                ++nbRemoved;
             }
-            return nbRemoved;
+        }
+
+        /*
+         Break the link of the passed node with its previous and next. and return next
+         */
+        private static LinkedNode<T> detachNode(LinkedNode<T> node)
+        {
+            if (node == null) 
+            {
+                return null;
+            }
+
+            var prev = node.Previous;
+            if (prev != null) 
+            {
+                prev.Next = node.Next;
+            }
+            node.Previous = null;
+
+            var next = node.Next;
+            if (next != null) 
+            {
+                next.Previous = prev;
+            }
+            node.Next = null;
+            return next;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
             var curr = root;
-            while (curr != null) 
+            while (curr != null)
             {
                 yield return curr.Value;
                 curr = curr.Next;
@@ -141,9 +135,9 @@ namespace skiena.datastructures
             return GetEnumerator();
         }
 
-        public bool Equals(MySingleLinkedList<T>? other)
+        public bool Equals(MyDoubleLinkedList<T>? other)
         {
-            if (other == null) 
+            if (other == null)
             {
                 return false;
             }
@@ -151,9 +145,9 @@ namespace skiena.datastructures
             var otherEnumerator = other.GetEnumerator();
             bool currHasNext = myEnumerator.MoveNext();
             bool otherHasNext = otherEnumerator.MoveNext();
-            while (currHasNext && otherHasNext) 
+            while (currHasNext && otherHasNext)
             {
-                if (myEnumerator.Current != null  && !myEnumerator.Current.Equals(otherEnumerator.Current))
+                if (myEnumerator.Current != null && !myEnumerator.Current.Equals(otherEnumerator.Current))
                 {
                     return false;
                 }

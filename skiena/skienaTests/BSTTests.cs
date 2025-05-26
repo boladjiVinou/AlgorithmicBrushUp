@@ -1,4 +1,4 @@
-﻿using skiena.datastructures;
+﻿using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;

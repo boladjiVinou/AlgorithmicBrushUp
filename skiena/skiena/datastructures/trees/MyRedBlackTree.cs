@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.trees
 {
     public class MyRedBlackTree<T> : MyBST<T> where T : IEquatable<T>, IComparable<T>
     {

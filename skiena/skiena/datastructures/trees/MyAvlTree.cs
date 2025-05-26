@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.trees
 {
     public class MyAvlTree<T> : MyBST<T> where T : IEquatable<T>, IComparable<T>
     {
@@ -17,7 +17,7 @@ namespace skiena.datastructures
         {
             if (root == null) 
             {
-                return default(T);
+                return default;
             }
             return root.Value;
         }

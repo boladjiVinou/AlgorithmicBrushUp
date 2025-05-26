@@ -6,7 +6,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.trees
 {
     // course: https://courses.ms.wits.ac.za/~steve/aaa/book/large/RedBlack.html
     public class MyRedBlackNode<T> : MyBSTNode<T> where T : IEquatable<T>, IComparable<T>
@@ -27,7 +27,7 @@ namespace skiena.datastructures
         }
         public MyRedBlackNode(MyBSTNode<T>? ancestor, T val) : base(ancestor, val)
         {
-            color = (ancestor == null) ? Color.Black : Color.Red;
+            color = ancestor == null ? Color.Black : Color.Red;
         }
 
         public bool isNullNodeInstance() 
@@ -36,7 +36,7 @@ namespace skiena.datastructures
         }
         private MyRedBlackNode<T> createNullNode() 
         {
-            return new MyNullRedBlackNode(getParent(), default(T));
+            return new MyNullRedBlackNode(getParent(), default);
         }
         protected override MyRedBlackNode<T> createChild(T val)
         {
@@ -338,7 +338,7 @@ namespace skiena.datastructures
                     rightChildOfRightChild,leftChildOfRightChild
                 };
                 // case 2 sibling is black all its children black
-                if (tmpRight == null || (tmpRight.color == Color.Black && rightChildren.All(x => x == null || !x.isRed())))
+                if (tmpRight == null || tmpRight.color == Color.Black && rightChildren.All(x => x == null || !x.isRed()))
                 {
                     tmpRight?.setColor(Color.Red);
                     setColor(isRed() ? Color.Black : Color.DoubleBlack);
@@ -379,7 +379,7 @@ namespace skiena.datastructures
                     rightChildOfLeftChild, leftChildOfLeftChild
                 };
                 // case 2 sibling is black all its children black
-                if (tmpLeft == null || (tmpLeft.color == Color.Black && leftChildren.All(x => x == null || !x.isRed())))
+                if (tmpLeft == null || tmpLeft.color == Color.Black && leftChildren.All(x => x == null || !x.isRed()))
                 {
                     tmpLeft?.setColor(Color.Red);
                     setColor(isRed() ? Color.Black : Color.DoubleBlack);
@@ -424,7 +424,6 @@ namespace skiena.datastructures
 
         public int countBlackPathLength() 
         {
-
             var tmpLeft = asRedBlackNode(left);
             var tmpRight = asRedBlackNode(right);
             int leftLength = 0;

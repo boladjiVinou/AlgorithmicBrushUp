@@ -1,4 +1,4 @@
-﻿namespace skiena.datastructures
+﻿namespace skiena.datastructures.lists
 {
     public class LinkedNode<T>(T val) where T : IEquatable<T>
     {

@@ -6,7 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.datastructures
+namespace skiena.datastructures.trees
 {
     public class MyBST<T> : IEnumerable<T> where T : IEquatable<T>, IComparable<T>
     {
@@ -188,7 +188,7 @@ namespace skiena.datastructures
         {
             if (root == null) 
             {
-                return default(T);
+                return default;
             }
             return root.getMaximum().Value;
         }
@@ -196,7 +196,7 @@ namespace skiena.datastructures
         {
             if (root == null)
             {
-                return default(T);
+                return default;
             }
             return root.getMinimum().Value;
         }
