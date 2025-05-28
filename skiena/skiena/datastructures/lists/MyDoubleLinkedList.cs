@@ -8,7 +8,7 @@ namespace skiena.datastructures.lists
 
         public int count()
         {
-            LinkedNode<T> curr = root;
+            LinkedNode<T>? curr = root;
             int count = 0;
             while (curr != null)
             {
@@ -24,8 +24,8 @@ namespace skiena.datastructures.lists
             {
                 return;
             }
-            LinkedNode<T> curr = root;
-            LinkedNode<T> prev = null;
+            LinkedNode<T>? curr = root;
+            LinkedNode<T>? prev = null;
             while (curr != null)
             {
                 var tmp = curr.Next;
@@ -58,8 +58,8 @@ namespace skiena.datastructures.lists
             }
             else
             {
-                LinkedNode<T> curr = root;
-                LinkedNode<T> prev = null;
+                LinkedNode<T>? curr = root;
+                LinkedNode<T>? prev = null;
                 while (curr != null)
                 {
                     prev = curr;
@@ -77,7 +77,7 @@ namespace skiena.datastructures.lists
                 return;
             }
             var curr = root;
-            LinkedNode<T> prev = null;
+            LinkedNode<T>? prev = null;
             while (curr != null)
             {
                 if (!curr.Value.Equals(value))
@@ -97,7 +97,7 @@ namespace skiena.datastructures.lists
         /*
          Break the link of the passed node with its previous and next. and return next
          */
-        private static LinkedNode<T> detachNode(LinkedNode<T> node)
+        private static LinkedNode<T>? detachNode(LinkedNode<T> node)
         {
             if (node == null) 
             {

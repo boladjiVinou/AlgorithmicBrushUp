@@ -10,7 +10,7 @@ namespace skiena.datastructures
 {
     public class MyStack<T> : IEnumerable<T> where T : IEquatable<T>
     {
-        private LinkedNode<T> root;
+        private LinkedNode<T>? root;
         private int size = 0;
         public void push(T val)
         {

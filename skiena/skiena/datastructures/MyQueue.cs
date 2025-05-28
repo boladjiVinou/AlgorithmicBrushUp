@@ -10,8 +10,8 @@ namespace skiena.datastructures
 {
     public class MyQueue<T> : IEnumerable<T> where T : IEquatable<T>
     {
-        private LinkedNode<T> root;
-        private LinkedNode<T> last;
+        private LinkedNode<T>? root;
+        private LinkedNode<T>? last;
         private int size = 0;
         public void enqueue(T val) 
         {

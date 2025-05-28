@@ -10,22 +10,26 @@ namespace skiena.datastructures
     {
         private List<string> data = [];
         private List<char> charBuffer = [];
+        private int size;
+
         public void append(string s)
         {
             flushCharBuffer();
             data.Add(s);
+            size += data[data.Count-1].Length;
         }
 
         public void appendLine(string s)
         {
             append(s);
-            data.Add($"{Environment.NewLine}");
+            append($"{Environment.NewLine}");
         }
         private void flushCharBuffer()
         {
             if (charBuffer.Any())
             {
                 data.Add(new string(charBuffer.ToArray()));
+                size += data[data.Count - 1].Length;
                 charBuffer.Clear();
             }
         }
@@ -39,6 +43,17 @@ namespace skiena.datastructures
         {
             flushCharBuffer();
             return string.Join("", data);
+        }
+
+        public void clear() 
+        {
+            data.Clear();
+            charBuffer.Clear();
+        }
+
+        public int getSize() 
+        {
+            return size;
         }
     }
 }

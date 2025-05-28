@@ -10,8 +10,8 @@ namespace skiena.datastructures
 {
     public class MyDeque<T> : IEnumerable<T> where T : IEquatable<T>
     {
-        private LinkedNode<T> root;
-        private LinkedNode<T> last;
+        private LinkedNode<T>? root;
+        private LinkedNode<T>? last;
         private int size = 0;
         public void pushEnd(T val)
         {
@@ -55,6 +55,10 @@ namespace skiena.datastructures
             T val = root.Value;
             bool updateLast = root == last;
             root = root.Next;
+            if (root != null) 
+            {
+                root.Previous = null;
+            }
             if (updateLast)
             {
                 last = root;
@@ -72,6 +76,10 @@ namespace skiena.datastructures
             T val = last.Value;
             bool updateRoot = root == last;
             last = last.Previous;
+            if (last != null) 
+            {
+                last.Next = null;
+            }
             if (updateRoot)
             {
                 root = last;

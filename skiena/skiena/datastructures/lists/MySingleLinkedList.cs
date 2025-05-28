@@ -9,11 +9,11 @@ namespace skiena.datastructures.lists
 {
     public class MySingleLinkedList<T>  : IEnumerable<T> , IEquatable<MySingleLinkedList<T>> where T : IEquatable<T>
     {
-        public LinkedNode<T> root { get; set; }
+        public LinkedNode<T>? root { get; set; }
 
         public int count() 
         {
-            LinkedNode<T> curr = root;
+            LinkedNode<T>? curr = root;
             int count = 0;
             while (curr != null) 
             {
@@ -25,8 +25,8 @@ namespace skiena.datastructures.lists
 
         public void reverse() 
         {
-            LinkedNode<T> curr = root;
-            LinkedNode<T> prev = null;
+            LinkedNode<T>? curr = root;
+            LinkedNode<T>? prev = null;
             while (curr != null) 
             {
                 var tmp = curr.Next;
@@ -55,8 +55,8 @@ namespace skiena.datastructures.lists
             }
             else 
             {
-                LinkedNode<T> curr = root;
-                LinkedNode<T> prev = null;
+                LinkedNode<T>? curr = root;
+                LinkedNode<T>? prev = null;
                 while (curr != null)
                 {
                     prev = curr;
@@ -79,8 +79,8 @@ namespace skiena.datastructures.lists
             }
             else
             {
-                LinkedNode<T> curr = root;
-                LinkedNode<T> prev = null;
+                LinkedNode<T>? curr = root;
+                LinkedNode<T>? prev = null;
                 while (curr != null)
                 {
                     if (curr.Value.Equals(value)) 
@@ -102,7 +102,7 @@ namespace skiena.datastructures.lists
                 return 0;
             }
             var curr = root;
-            LinkedNode<T> prev = null;
+            LinkedNode<T>? prev = null;
             int nbRemoved = 0;
             while (curr != null) 
             {
