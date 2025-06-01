@@ -28,7 +28,7 @@ namespace skiena.datastructures.trees
                 throw new InvalidOperationException("empty Heap");
             }
             T maxElement = data[1];
-            if (nbElements > 0)
+            if (nbElements - 1 > 0)
             {
                 swap(1, nbElements);
                 --nbElements;
