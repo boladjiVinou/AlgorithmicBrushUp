@@ -24,7 +24,7 @@ namespace skiena.Chapter3
             var node = getKthSmallest(k);
             if (node != null)
             {
-                node.remove();
+                root = ((MyCustomAvlNode<T>?)root)?.removeNode(node);
             }
         }
 

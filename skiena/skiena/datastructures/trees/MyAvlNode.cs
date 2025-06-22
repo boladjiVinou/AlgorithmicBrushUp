@@ -126,7 +126,7 @@ namespace skiena.datastructures.trees
             node?.setParent(this);
         }
 
-        private MyAvlNode<T> rebalanceIfNeeded()
+        protected MyAvlNode<T> rebalanceIfNeeded()
         {
             int balance = computeBalance();
             if (balance > 1)

@@ -52,31 +52,58 @@ namespace skiena.Chapter3
         {
             return nbRightChild;
         }
-
-        public void remove()
+        /*
+         * Delete the asked node in subtree, and return the rebalanced replacement node
+         */
+        public MyCustomAvlNode<T>? removeNode(MyCustomAvlNode<T> nodeToRemove)
         {
-            if (left == null && right != null)
+            if (nodeToRemove == null) 
             {
-                replaceCurrentReferenceInTreeBy(right);
+                return this;
             }
-            else if (right == null && left != null)
+            if (this == nodeToRemove)
             {
-                replaceCurrentReferenceInTreeBy(left);
-            }
-            else if (right != null && left != null)
-            {
-                MyBSTNode<T>? successor = searchSuccessorInRightSubtree();
-                if (successor != null) // it is garantee to have a successor in this case
+                var tmpParent = (MyCustomAvlNode<T>?)getParent();
+                if (left == null && right != null)
                 {
-                    T newValue = successor.Value;
-                    right = getRight()?.removeFirst(successor.Value);
-                    modifiableValue = newValue;
+                    replaceCurrentReferenceInTreeBy(right);
+                    return (MyCustomAvlNode<T>?)right;
                 }
+                else if (right == null && left != null)
+                {
+                    replaceCurrentReferenceInTreeBy(left);
+                    return (MyCustomAvlNode<T>?)left;
+                }
+                else if (right != null && left != null)
+                {
+                    MyBSTNode<T>? successor = searchSuccessorInRightSubtree();
+                    if (successor != null) // it is garantee to have a successor in this case
+                    {
+                        T newValue = successor.Value;
+                        right = getRight()?.removeFirst(successor.Value);
+                        modifiableValue = newValue;
+                    }
+                    return (MyCustomAvlNode<T>)rebalanceIfNeeded();
+                }
+                else
+                {
+                    // the current node is the node to delete and has no children
+                    replaceCurrentReferenceInTreeBy(null);
+                }
+                return null;
             }
             else
             {
-                // the current node is the node to delete and has no children
-                replaceCurrentReferenceInTreeBy(null);
+                var compRes = Value.CompareTo(nodeToRemove.Value);
+                if (compRes < 0)
+                {
+                    left = ((MyCustomAvlNode<T>?)left)?.removeNode(nodeToRemove)?.rebalanceIfNeeded();
+                }
+                else 
+                {
+                    right = ((MyCustomAvlNode<T>?)right)?.removeNode(nodeToRemove)?.rebalanceIfNeeded();
+                }
+                return (MyCustomAvlNode<T>)rebalanceIfNeeded();
             }
         }
     }
