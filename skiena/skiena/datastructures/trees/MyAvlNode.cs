@@ -40,7 +40,7 @@ namespace skiena.datastructures.trees
             return rebalanceIfNeeded();
         }
 
-        private void recomputeHeight()
+        protected virtual void recomputeData()
         {
            height = Math.Max(computeLeftHeight(),computeRightHeight());
         }
@@ -85,7 +85,7 @@ namespace skiena.datastructures.trees
             ];
             foreach (var touchedNodes in nodesToUpdate) 
             {
-                touchedNodes?.recomputeHeight();
+                touchedNodes?.recomputeData();
             }
         }
         private void rotateLeft()
@@ -108,7 +108,7 @@ namespace skiena.datastructures.trees
             ];
             foreach (var touchedNodes in nodesToUpdate)
             {
-                touchedNodes?.recomputeHeight();
+                touchedNodes?.recomputeData();
             }
         }
 
@@ -161,7 +161,7 @@ namespace skiena.datastructures.trees
                     return leftChildOfRightChild;
                 }
             }
-            recomputeHeight();
+            recomputeData();
             return this;
         }
 

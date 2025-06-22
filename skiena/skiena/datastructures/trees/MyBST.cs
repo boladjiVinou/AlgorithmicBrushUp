@@ -200,5 +200,14 @@ namespace skiena.datastructures.trees
             }
             return root.getMinimum().Value;
         }
+
+        public bool contains(T data) 
+        {
+            if (root != null) 
+            {
+                return root.contains(data);
+            }
+            return false;
+        }
     }
 }

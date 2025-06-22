@@ -1,4 +1,4 @@
-﻿using skiena;
+﻿using skiena.Chapter3;
 using skiena.datastructures;
 namespace skienaTests
 {

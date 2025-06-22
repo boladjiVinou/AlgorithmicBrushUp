@@ -226,5 +226,22 @@ namespace skiena.datastructures.trees
             parent = node;
         }
         public virtual MyBSTNode<T>? getParent() { return parent; }
+        public bool contains(T data)
+        {
+            var res = Value.CompareTo(data);
+            if (res == 0)
+            {
+                return true;
+            }
+            else if (res < 0 && right != null)
+            {
+                return right.contains(data);
+            }
+            else if(res > 0 && left != null)
+            {
+                return left.contains(data);
+            }
+            return false;
+        }
     }
 }
