@@ -7,8 +7,20 @@ using System.Threading.Tasks;
 
 namespace skiena.Chapter3
 {
+    /**
+    The goal of this data structure is to be able
+    to delete kth element
+    get kth element
+    check existence of element 
+    all in log(n) time
+    */
     public class MyCustomAvlTree<T> : MyAvlTree<T> where T : IEquatable<T>, IComparable<T>
     {
+        protected override MyAvlNode<T> createNode(T val)
+        {
+            return new MyCustomAvlNode<T>(null, val);
+        }
+
         public T? getKthSmallestData(int k) 
         {
             var node = getKthSmallest(k);
@@ -45,6 +57,7 @@ namespace skiena.Chapter3
                 }
                 else
                 {
+                    k -= (nbLeft + 1);
                     curr = (MyCustomAvlNode<T>?)curr.getRight();
                 }
             }

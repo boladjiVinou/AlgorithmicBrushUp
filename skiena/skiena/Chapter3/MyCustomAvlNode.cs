@@ -24,6 +24,11 @@ namespace skiena.Chapter3
             return nbLeftChild + nbRightChild;
         }
 
+        protected override MyCustomAvlNode<T> createChild(T val)
+        {
+            return new MyCustomAvlNode<T>(this, val);
+        }
+
         private int computeRightChildren()
         {
             var tmpRight = (MyCustomAvlNode<T>?)getRight();
@@ -95,7 +100,7 @@ namespace skiena.Chapter3
             else
             {
                 var compRes = Value.CompareTo(nodeToRemove.Value);
-                if (compRes < 0)
+                if (compRes > 0)
                 {
                     left = ((MyCustomAvlNode<T>?)left)?.removeNode(nodeToRemove)?.rebalanceIfNeeded();
                 }

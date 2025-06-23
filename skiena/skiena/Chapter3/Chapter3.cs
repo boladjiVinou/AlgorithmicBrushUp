@@ -47,6 +47,12 @@ namespace skiena.Chapter3
             list.reverse();
         }
 
-       // public static void 
+        /**
+         3.8
+         */
+        public static MyCustomAvlTree<int> buildCustomTree()
+        {
+            return new MyCustomAvlTree<int>();
+        }
     }
 }
