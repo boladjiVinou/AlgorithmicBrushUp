@@ -1,4 +1,5 @@
 ﻿using skiena.datastructures.lists;
+using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,17 @@ namespace skiena.Chapter3
         public static MyCustomAvlTree<int> buildCustomTree()
         {
             return new MyCustomAvlTree<int>();
+        }
+        /*
+         3.9
+         */
+        public static void mergeSmallerTree(MyBST<int> smaller, MyBST<int> bigger)
+        {
+           bigger.mergeSmallerTree(smaller);
+        }
+        public static MyBST<int> merge(MyBST<int> t1, MyBST<int> t2)
+        {
+            return MyBST<int>.merge(t1, t2);
         }
     }
 }

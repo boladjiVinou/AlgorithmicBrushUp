@@ -1,5 +1,6 @@
 ﻿using skiena.Chapter3;
 using skiena.datastructures;
+using skiena.datastructures.trees;
 namespace skienaTests
 {
    
@@ -58,9 +59,91 @@ namespace skienaTests
             {
                 tree.deleteKthSmallest(k);
                 Assert.IsTrue(tree.isRootBalanced());
-                Assert.IsFalse(tree.contains(k- nbDeleted));
+                Assert.IsFalse(tree.contains(k - nbDeleted));
                 ++nbDeleted;
             }
+        }
+        [TestMethod]
+        public void whenASmallerTreeIsMergedIntoAGreaterOneAllDataShouldBeThere() 
+        {
+            MyBST<int> t1 = new MyBST<int>();
+            for (int i = 0; i < 10; i++) 
+            {
+                t1.add(i);
+            }
+            MyBST<int> t2 = new MyBST<int>();
+            for (int i = 10; i < 20; i++) 
+            {
+                t2.add(i);
+            }
+
+
+            Chapter3.mergeSmallerTree(t1, t2);
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                Assert.IsTrue(t2.contains(i));
+            }
+        }
+
+        [TestMethod]
+        public void whenASmallerTreeIsMergedIntoAGreaterOneAllDataShouldBeSorted()
+        {
+            MyBST<int> t1 = new MyBST<int>();
+            for (int i = 0; i < 10; i++)
+            {
+                t1.add(i);
+            }
+            MyBST<int> t2 = new MyBST<int>();
+            for (int i = 10; i < 20; i++)
+            {
+                t2.add(i);
+            }
+
+
+
+            Chapter3.mergeSmallerTree(t1, t2);
+
+
+            int counter = 0;
+            foreach(int val in t2.inOrderIteration())
+            {
+                Assert.AreEqual(counter, val);
+                counter++;
+            }
+        }
+
+        [TestMethod]
+        public void whenTwoTreesAreMergedThenDataShouldBeSorted() 
+        {
+            List<int> allData = new List<int>();
+            MyBST<int> t1 = new MyBST<int>();
+            MyBST<int> t2 = new MyBST<int>();
+            Random random = new Random();
+            for (int i = 0; i < 10; i++) 
+            {
+                int tmp = random.Next(500);
+                allData.Add(tmp);
+                t1.add(tmp);
+
+                tmp = random.Next(500);
+                allData.Add(tmp);
+                t2.add(tmp);
+            }
+
+            MyBST<int> mergedTree = MyBST<int>.merge(t1, t2);
+
+
+            allData.Sort();
+            int c = 0;
+            var insertedData = mergedTree.inOrderIteration().ToList();
+            foreach (int v in mergedTree.inOrderIteration()) 
+            {
+                Assert.AreEqual(allData[c], v);
+                c++;
+            }
+            Assert.AreEqual(allData.Count,c);
         }
     }
 }

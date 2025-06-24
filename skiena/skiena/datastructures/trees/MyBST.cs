@@ -209,5 +209,57 @@ namespace skiena.datastructures.trees
             }
             return false;
         }
+
+        // Smaller tree is a tree such that all its values are smaller than any value in the current tree
+        // No verification is done on this assumption
+        public void mergeSmallerTree(MyBST<T> smallerTree) 
+        {
+            MyBSTNode<T>? curr = root;
+            if (curr == null)
+            {
+                curr = smallerTree.root;
+            }
+            else 
+            {
+                curr.mergeSmallerTree(smallerTree.root);
+            }
+        }
+        public static MyBST<T> merge(MyBST<T> t1, MyBST<T> t2)
+        {
+            var t1Iterator = t1.inOrderIteration().GetEnumerator();
+            var t2Iterator = t2.inOrderIteration().GetEnumerator();
+            bool t1HasNext = t1Iterator.MoveNext();
+            bool t2HasNext = t2Iterator.MoveNext();
+            List<T> mergedData = [];
+
+            while (t1HasNext && t2HasNext)
+            {
+                var compareRes = t1Iterator.Current.CompareTo(t2Iterator.Current);
+                if (compareRes >= 0)
+                {
+                    mergedData.Add(t2Iterator.Current);
+                    t2HasNext = t2Iterator.MoveNext();
+                }
+                else
+                {
+                    mergedData.Add(t1Iterator.Current);
+                    t1HasNext = t1Iterator.MoveNext();
+                }
+            }
+            while (t1HasNext)
+            {
+                mergedData.Add(t1Iterator.Current);
+                t1HasNext = t1Iterator.MoveNext();
+            }
+            while (t2HasNext)
+            {
+                mergedData.Add(t2Iterator.Current);
+                t2HasNext = t2Iterator.MoveNext();
+            }
+            var root = MyBSTNode<T>.buildFromSortedList(null, mergedData, mergedData.Count / 2, 0, mergedData.Count - 1);
+            MyBST<T> tree = new MyBST<T>();
+            tree.root = root;
+            return tree;
+        }
     }
 }

@@ -243,5 +243,42 @@ namespace skiena.datastructures.trees
             }
             return false;
         }
+
+        // Smaller tree is a tree such that all its values are smaller than any value in the current node
+        // No verification is done on this assumption
+        public void mergeSmallerTree(MyBSTNode<T>? smallerTreeRoot)
+        {
+            if (smallerTreeRoot == null) 
+            {
+                return;
+            }
+            MyBSTNode<T> curr = this;
+            while (curr != null)
+            {
+                if (!curr.hasLeftChild())
+                {
+                    break;
+                }
+                curr = curr.getLeft();
+            }
+            curr.left = smallerTreeRoot;
+        }
+
+        public static MyBSTNode<T>? buildFromSortedList(MyBSTNode<T>? ancestor, List<T> data, int i, int start, int end)
+        {
+            MyBSTNode<T> node = new MyBSTNode<T>(ancestor, data[i]);
+            int mid1 = start + (i - 1 - start) / 2;
+            if (mid1 < i && mid1 >= start)
+            {
+                node.left = buildFromSortedList(node, data, mid1, start, i - 1);
+            }
+
+            int mid2 = i + (end - i + 1) / 2;
+            if (mid2 > i && mid2 <= end)
+            {
+                node.right = buildFromSortedList(node, data, mid2, i + 1, end);
+            }
+            return node;
+        }
     }
 }
