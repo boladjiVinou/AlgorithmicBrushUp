@@ -63,5 +63,13 @@ namespace skiena.Chapter3
             }
             return default;
         }
+        public MyCustomAvlNode<T>? getRoot()
+        {
+            return (MyCustomAvlNode<T>?)root;
+        }
+        public void setRoot(MyCustomAvlNode<T>? newRoot)
+        {
+            root = newRoot;
+        }
     }
 }

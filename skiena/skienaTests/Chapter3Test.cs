@@ -1,4 +1,5 @@
 ﻿using skiena.Chapter3;
+using skiena.Chapter3.applicationOfTree;
 using skiena.datastructures;
 using skiena.datastructures.trees;
 namespace skienaTests
@@ -137,13 +138,53 @@ namespace skienaTests
 
             allData.Sort();
             int c = 0;
-            var insertedData = mergedTree.inOrderIteration().ToList();
             foreach (int v in mergedTree.inOrderIteration()) 
             {
                 Assert.AreEqual(allData[c], v);
                 c++;
             }
             Assert.AreEqual(allData.Count,c);
+        }
+        [TestMethod]
+        public void whenSolvingTheBinPackingProblemWithBestFit_ThenTheExpectedResultShouldBeOk() 
+        {
+            // 0.6  || 1
+            // 0.5  || 0.9 || 1
+            // 0.5
+
+            double[] weights = { 0.1,0.2,0.3,0.5, 0.4, 0.4,0.3,0.2,0.1};
+
+            var bins = Chapter3.binPackingProblem(weights, Chapter3.searchBestFitBin);
+
+            Assert.AreEqual(3,bins.inOrderIteration().Count());
+            double[] expectedSpace = { 0d,0d,0.5d };
+            int i = 0;
+            foreach (var bin in bins.inOrderIteration()) 
+            {
+                Assert.IsTrue(Math.Abs(expectedSpace[i] - bin.getSpace()) < Bin.TRESHOLD);
+                ++i;
+            }
+        }
+
+        [TestMethod]
+        public void whenSolvingTheBinPackingProblemWithWorstFit_ThenTheExpectedResultShouldBeOk()
+        {
+            // 0.6 || 1
+            // 0.5 || 0.9
+            // 0.6
+
+            double[] weights = { 0.1, 0.2, 0.3, 0.5, 0.4, 0.4, 0.3, 0.2, 0.1 };
+
+            var bins = Chapter3.binPackingProblem(weights, Chapter3.searchWorstFitBin);
+
+            Assert.AreEqual(3, bins.inOrderIteration().Count());
+            double[] expectedSpace = { 0d, 0.1d, 0.4d };
+            int i = 0;
+            foreach (var bin in bins.inOrderIteration())
+            {
+                Assert.IsTrue(Math.Abs(expectedSpace[i] - bin.getSpace()) < Bin.TRESHOLD);
+                ++i;
+            }
         }
     }
 }
