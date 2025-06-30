@@ -141,5 +141,45 @@ namespace skiena.Chapter3
 
             return curr;
         }
+        /*
+         3.11 find smallest with n square space
+         */
+        public static int[][] buildNSquareDataStructureToFindSmallest(int[] data) 
+        {
+            int[][] smallests = new int[data.Length][];
+            for (int i = 0; i < data.Length; i++) 
+            {
+                smallests[i] = new int[data.Length];
+                Array.Fill(smallests[i], int.MaxValue);
+                for (int j = i; j < data.Length; j++) 
+                {
+                    if (j - 1 >= i)
+                    {
+                        smallests[i][j] = Math.Min(smallests[i][j - 1], data[j]);
+                    }
+                    else 
+                    {
+                        smallests[i][j] = data[j];
+                    }
+                }
+            }
+            return smallests;
+        }
+
+        /*
+         3.11 find smallest with O(n) space
+        */
+        public static MySegmentTree<int> buildSegmentTreeToFindSmallest(int[] data)
+        {
+            return  new MySegmentTree<int>((e1, e2) =>
+            {
+                int compRes = e1.CompareTo(e2);
+                if (compRes <= 0) 
+                {
+                    return e1;
+                }
+                return e2;
+            }, data);
+        }
     }
 }

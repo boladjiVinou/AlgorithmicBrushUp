@@ -186,5 +186,47 @@ namespace skienaTests
                 ++i;
             }
         }
+
+        [TestMethod]
+        public void whenUsingMatrixToFindSmallestThenTheValueShouldBeCorrect() 
+        {
+            int[] data = { 1, 2, 5, 4, 2, 6, 4, 2 };
+            var smallestsMatrix = Chapter3.buildNSquareDataStructureToFindSmallest(data);
+
+            for (int i = 0; i < data.Length; i++) 
+            {
+                int min = data[i];
+                for (int j = i; j < data.Length; j++) 
+                {
+                    if (min > data[j]) 
+                    {
+                        min = data[j];
+                    }
+
+                    Assert.AreEqual(min, smallestsMatrix[i][j]);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void whenUsingSegmentTreeToFindSmallestThenTheValueShouldBeCorrect()
+        {
+            int[] data = { 1, 2, 5, 4, 2, 6, 4, 2 };
+            var segmentTree = Chapter3.buildSegmentTreeToFindSmallest(data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                int min = data[i];
+                for (int j = i; j < data.Length; j++)
+                {
+                    if (min > data[j])
+                    {
+                        min = data[j];
+                    }
+
+                    Assert.AreEqual(min, segmentTree.getResultBetween(i,j));
+                }
+            }
+        }
     }
 }
