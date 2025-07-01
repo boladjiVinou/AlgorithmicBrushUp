@@ -71,22 +71,30 @@ namespace skiena.datastructures.trees
             return true;
         }
 
-        public IEnumerable<T> inOrderIteration() 
+        public IEnumerable<T> inOrderIteration()
         {
-            if (root == null) 
+            if (root == null)
             {
                 yield break;
             }
+            foreach (var val in inOrderIterationFrom(root)) 
+            {
+                yield return val;
+            }
+        }
+
+        public static IEnumerable<T> inOrderIterationFrom(MyBSTNode<T>? start)
+        {
             Stack<MyBSTNode<T>> visitStack = new Stack<MyBSTNode<T>>();
             HashSet<MyBSTNode<T>?> visited = new HashSet<MyBSTNode<T>?>();
-            visitStack.Push(root);
-            while (visitStack.Count > 0) 
+            visitStack.Push(start);
+            while (visitStack.Count > 0)
             {
                 var node = visitStack.Peek();
                 while (node != null && node.getLeft() != null && !visited.Contains(node.getLeft()))
                 {
                     node = node.getLeft();
-                    if (node != null) 
+                    if (node != null)
                     {
                         visitStack.Push(node);
                     }
@@ -98,7 +106,7 @@ namespace skiena.datastructures.trees
 
 
                 var tmpRightChild = tmp.getRight();
-                if (tmpRightChild != null && !visited.Contains(tmpRightChild)) 
+                if (tmpRightChild != null && !visited.Contains(tmpRightChild))
                 {
                     visitStack.Push(tmpRightChild);
                 }

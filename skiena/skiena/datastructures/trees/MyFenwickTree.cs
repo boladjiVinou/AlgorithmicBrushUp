@@ -39,11 +39,12 @@ namespace skiena.datastructures.trees
                 }
             }
         }
-
+        /* replacing all trailing  1  bits in the binary representation of  idx  with  0 bits*/
         private int g(int idx) 
         {
             return idx & (idx + 1);
         }
+        //  flipping the last unset bit
         private int h(int idx) 
         {
             return idx | (idx + 1);

@@ -63,6 +63,38 @@ namespace skiena.Chapter3
             }
             return default;
         }
+        public IEnumerable<T> iterateOnSmallerThan(T val) 
+        {
+            var key = findKey(val);
+            if (key != null) 
+            {
+                foreach (var node in inOrderIterationFrom(key.getLeft()))
+                {
+                    yield return node;
+                }
+            }
+        }
+        private MyBSTNode<T>? findKey(T val) 
+        {
+            var curr = root;
+            while (curr != null)
+            {
+                int compResult = curr.Value.CompareTo(val);
+                if (compResult > 0)
+                {
+                    curr = curr.getLeft();
+                }
+                else if (compResult < 0)
+                {
+                    curr = curr.getRight();
+                }
+                else
+                {
+                    return curr;
+                }
+            }
+            return null;
+        }
         public MyCustomAvlNode<T>? getRoot()
         {
             return (MyCustomAvlNode<T>?)root;
@@ -71,5 +103,6 @@ namespace skiena.Chapter3
         {
             root = newRoot;
         }
+
     }
 }

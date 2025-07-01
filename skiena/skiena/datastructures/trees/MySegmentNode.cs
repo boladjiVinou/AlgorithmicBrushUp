@@ -20,12 +20,14 @@ namespace skiena.datastructures.trees
         }
         public MySegmentNode<T>? left { get; set; }
         public MySegmentNode<T>? right { get; set; }
-        public int start { get; set; }
-        public int end { get; set; }
+        public int start { get;}
+        public int end { get;}
 
-        public MySegmentNode(Func<T, T, T> joinFunction) 
+        public MySegmentNode(Func<T, T, T> joinFunction, int start, int end) 
         {
             this.joinFunction = joinFunction;
+            this.start = start;
+            this.end = end;
         }
 
         public void updateAt(T value, int idx)
@@ -133,9 +135,7 @@ namespace skiena.datastructures.trees
             {
                 return null;
             }
-            MySegmentNode<T>? curr = new MySegmentNode<T>(joinFunction);
-            curr.start = start;
-            curr.end = end;
+            MySegmentNode<T>? curr = new MySegmentNode<T>(joinFunction, start, end);
             if (start == end) 
             {
                 curr.modifiableValue = data[start];
@@ -163,6 +163,5 @@ namespace skiena.datastructures.trees
             }
             return curr;
         }
-
     }
 }
