@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.Chapter3
+namespace skiena.Chapter3.applicationOfTree
 {
     /**
     The goal of this data structure is to be able
@@ -57,7 +57,7 @@ namespace skiena.Chapter3
                 }
                 else
                 {
-                    k -= (nbLeft + 1);
+                    k -= nbLeft + 1;
                     curr = (MyCustomAvlNode<T>?)curr.getRight();
                 }
             }

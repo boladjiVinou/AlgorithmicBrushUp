@@ -228,5 +228,47 @@ namespace skienaTests
                 }
             }
         }
+        [TestMethod]
+        public void givenAPartialSumTreeWhenInsertingDataTheSumShouldBeCalculated()
+        {
+            var tree = Chapter3.buildPartialSumCustomStructure();
+            tree.insert(0,1);
+            tree.insert(1, 2);
+            tree.insert(2, 3);
+            tree.insert(3, 4);
+            tree.insert(4, 5);
+
+            Assert.AreEqual(10, tree.getPartialSum(4));
+        }
+
+        [TestMethod]
+        public void givenAPartialSumTreeWhenUpdatingAValueTheSumShouldBeRecalculated()
+        {
+            var tree = Chapter3.buildPartialSumCustomStructure();
+            tree.insert(0, 1);
+            tree.insert(1, 2);
+            tree.insert(2, 3);
+            tree.insert(3, 4);
+            tree.insert(4, 5);
+
+            tree.addTo(1,-2);
+
+            Assert.AreEqual(8, tree.getPartialSum(4));
+        }
+
+        [TestMethod]
+        public void givenAPartialSumTreeWhenRemovingAKeyTheSumShouldBeRecalculated()
+        {
+            var tree = Chapter3.buildPartialSumCustomStructure();
+            tree.insert(0, 1);
+            tree.insert(1, 2);
+            tree.insert(2, 3);
+            tree.insert(3, 4);
+            tree.insert(4, 5);
+
+            tree.remove(2);
+            Assert.IsFalse(tree.contains(new KeyValue<int, long>(2, 0)));
+            Assert.AreEqual(7, tree.getPartialSum(4));
+        }
     }
 }

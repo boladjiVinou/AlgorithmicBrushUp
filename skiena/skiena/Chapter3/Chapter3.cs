@@ -181,5 +181,13 @@ namespace skiena.Chapter3
                 return e2;
             }, data);
         }
+
+        /*
+         3.13,3.14
+         */
+        public static MyPartialSumAVL<int,long> buildPartialSumCustomStructure() 
+        {
+            return new MyPartialSumAVL<int, long>();
+        }
     }
 }

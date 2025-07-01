@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.Chapter3
+namespace skiena.Chapter3.applicationOfTree
 {
     /*
      Comparison and equality only based on the key

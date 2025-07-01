@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skiena.Chapter3
+namespace skiena.Chapter3.applicationOfTree
 {
     public class MyCustomAvlNode<T>(MyAvlNode<T>? ancestor, T val) : MyAvlNode<T>(ancestor, val) where T : IEquatable<T>, IComparable<T>
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skienaTests
+namespace skienaTests.dataStructures
 {
     [TestClass]
     public class QueueTests

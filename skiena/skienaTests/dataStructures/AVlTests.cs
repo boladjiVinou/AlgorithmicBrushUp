@@ -5,23 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace skienaTests
+namespace skienaTests.dataStructures
 {
-
     [TestClass]
-    public class RedBlackTreeTests : BSTTests
+    public sealed class AVlTests : BSTTests
     {
         protected override MyBST<int> createTree()
         {
-            return new MyRedBlackTree<int>();
+            return new MyAvlTree<int>();
         }
-
         [TestMethod]
-        public void whenInsertingDataInRedBlackTree_ThenTheTreeShouldNotContainLoop()
+        public void whenInsertingDataInAVLTree_ThenTheTreeShouldNotContainLoop()
         {
             List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
             foreach (var item in data)
             {
                 tree.add(item);
@@ -29,74 +27,81 @@ namespace skienaTests
             }
         }
         [TestMethod]
-        public void whenInsertingDataInRedBlackTree_ThenTheTreeShouldBeBalanced()
+        public void whenInsertingDataInAVLTree_ThenTheTreeShouldBeBalanced()
         {
             List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
             foreach (var item in data)
             {
                 tree.add(item);
             }
 
-            Assert.IsTrue(tree.isTreeValid());
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
         }
 
 
         [TestMethod]
-        public void whenRemovingLeafInRedBlackTree_ThenTheTreeShouldBeBalanced()
+        public void whenRemovingLeafInAVLTree_ThenTheTreeShouldBeBalanced()
         {
             List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
             foreach (var item in data)
             {
                 tree.add(item);
             }
 
-            tree.remove(5);
+            tree.remove(73);
 
-            Assert.IsTrue(tree.isTreeValid());
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
         }
 
         [TestMethod]
-        public void whenRemovingLeftBlackNodeWithRedParentAndRedChild_ThenTheTreeShouldBeBalanced()
+        public void whenRightDoubleRotationIsDoneInAVLTree_ThenTheTreeShouldBeBalanced()
         {
             List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
+            foreach (var item in data)
+            {
+                tree.add(item);
+            }
+
+            tree.remove(22);
+
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
+        }
+
+
+        [TestMethod]
+        public void whenLeftDoubleRotationIsDoneInAVLTree_ThenTheTreeShouldBeBalanced()
+        {
+            List<int> data;
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
             foreach (var item in data)
             {
                 tree.add(item);
             }
 
             tree.remove(2);
+            tree.remove(0);
+            tree.remove(3);
 
-            Assert.IsTrue(tree.isTreeValid());
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
         }
 
         [TestMethod]
-        public void whenRemovingRightBlackNodeWithRedParentAndRedChild_ThenTheTreeShouldBeBalanced()
+        public void whenRemovingRootInAVLTree_ThenTheTreeShouldBeBalanced()
         {
             List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
-            foreach (var item in data)
-            {
-                tree.add(item);
-            }
-
-            tree.remove(78);
-
-            Assert.IsTrue(tree.isTreeValid());
-        }
-
-        [TestMethod]
-        public void whenRemovingRootINTree_ThenTheTreeShouldBeBalanced()
-        {
-            List<int> data;
-            MyRedBlackTree<int> tree;
-            createFilledRedBlackTree(out data, out tree);
+            MyAvlTree<int> tree;
+            createFilledAVLTree(out data, out tree);
             foreach (var item in data)
             {
                 tree.add(item);
@@ -105,17 +110,16 @@ namespace skienaTests
             Assert.IsTrue(tree.getRootValue() == 41);
             tree.remove(41);
 
-            Assert.IsTrue(tree.isTreeValid());
+            Assert.IsTrue(tree.isRootBalanced());
+            Assert.IsTrue(tree.areAllNodesBalanced());
         }
 
-
-
-        private void createFilledRedBlackTree(out List<int> data, out MyRedBlackTree<int> tree)
+        private void createFilledAVLTree(out List<int> data, out MyAvlTree<int> tree)
         {
             data = new List<int>() { 41,
             67,
             34,
-            1,
+            0,
             69,
             24,
             78,
@@ -162,7 +166,7 @@ namespace skienaTests
             11,
             53,
             68};
-            tree = (MyRedBlackTree<int>)createTree();
+            tree = (MyAvlTree<int>)createTree();
         }
     }
 }
