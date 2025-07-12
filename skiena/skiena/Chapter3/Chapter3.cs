@@ -4,6 +4,7 @@ using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -188,6 +189,58 @@ namespace skiena.Chapter3
         public static MyPartialSumAVL<int,long> buildPartialSumCustomStructure() 
         {
             return new MyPartialSumAVL<int, long>();
+        }
+
+        /**
+         3.15
+         */
+        public static IntCustomDictionary createIntegerDictionary(int range, int maxNumber) 
+        {
+            return new IntCustomDictionary(maxNumber, range);
+        }
+        /*
+         3.20
+         */
+        public static MySingleLinkedList<int> convertToList(MyBST<int> tree) 
+        {
+            return tree.convertAsLinkedList();
+        }
+        /*
+         3.26
+         */
+        public static void reverseWords(char[] sentence) 
+        {
+            int spaceIdx = -1;
+            for (int i = 0; i < sentence.Length; i++) 
+            {
+                if (sentence[i] == ' ') 
+                {
+                    reverseWord(sentence, spaceIdx+1, i-1);
+                    spaceIdx = i;
+                }
+            }
+            if (spaceIdx < sentence.Length - 1) 
+            {
+                reverseWord(sentence, spaceIdx+1, sentence.Length-1);
+            }
+            reverseWord(sentence, 0, sentence.Length-1);
+        }
+        private static void reverseWord(char[] sentence, int start, int end)
+        {
+            for (int i = start, j = end; i<j; i++, j--) 
+            {
+                char c = sentence[i];
+                sentence[i] = sentence[j];
+                sentence[j] = c;
+            }
+        }
+
+        /*
+         3.27
+         */
+        private LinkedNode<int>? searchLoop(MySingleLinkedList<int> linkedList) 
+        {
+            return linkedList.searchLoopNode();
         }
     }
 }

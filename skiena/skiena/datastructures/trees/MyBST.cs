@@ -1,4 +1,5 @@
-﻿using System;
+﻿using skiena.datastructures.lists;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -268,6 +269,16 @@ namespace skiena.datastructures.trees
             MyBST<T> tree = new MyBST<T>();
             tree.root = root;
             return tree;
+        }
+
+        public MySingleLinkedList<T> convertAsLinkedList()
+        {
+            MySingleLinkedList<T> linkedList = new MySingleLinkedList<T>();
+            foreach (var n in inOrderIterationFrom(root)) 
+            {
+                linkedList.add(n);
+            }
+            return linkedList;
         }
     }
 }

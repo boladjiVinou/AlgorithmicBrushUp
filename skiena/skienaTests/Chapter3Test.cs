@@ -1,6 +1,7 @@
 ﻿using skiena.Chapter3;
 using skiena.Chapter3.applicationOfTree;
 using skiena.datastructures;
+using skiena.datastructures.lists;
 using skiena.datastructures.trees;
 namespace skienaTests
 {
@@ -267,8 +268,102 @@ namespace skienaTests
             tree.insert(4, 5);
 
             tree.remove(2);
-            Assert.IsFalse(tree.contains(new KeyValue<int, long>(2, 0)));
+            Assert.IsFalse(tree.contains(new KeyValue<int, long>(2, 3)));
             Assert.AreEqual(7, tree.getPartialSum(4));
+        }
+        [TestMethod]
+        public void whenANumberIsInsertedItShouldBePresent() 
+        {
+            var dict = Chapter3.createIntegerDictionary(100, 10);
+            Random rand = new Random();
+            List<uint> insertedData = new List<uint>();
+            for (int i = 0; i < 10; i++) 
+            {
+                uint tmp = (uint)rand.Next(100);
+                insertedData.Add(tmp);
+                dict.insert(tmp);
+            }
+
+            for (int i = 0; i < insertedData.Count; i++) 
+            {
+                Assert.IsTrue(dict.Contains(insertedData[i]));
+            }
+        }
+
+        [TestMethod]
+        public void whenANumberIsRemovedItShouldNotBePresent()
+        {
+            var dict = Chapter3.createIntegerDictionary(100, 10);
+            Random rand = new Random();
+            List<uint> insertedData = new List<uint>();
+            for (int i = 0; i < 10; i++)
+            {
+                uint tmp = (uint)rand.Next(100);
+                insertedData.Add(tmp);
+                dict.insert(tmp);
+                dict.Remove(tmp);
+            }
+
+            for (int i = 0; i < insertedData.Count; i++)
+            {
+                Assert.IsFalse(dict.Contains(insertedData[i]));
+            }
+        }
+
+        [TestMethod]
+        public void givenAClassicSentenceThenWordsShouldBeReversed() 
+        {
+            char[] sentence = "My Name is Chris".ToCharArray();
+            Chapter3.reverseWords(sentence);
+            Assert.AreEqual("Chris is Name My", new string(sentence));
+        }
+
+
+        [TestMethod]
+        public void givenASpacedSentenceThenWordsShouldBeReversed()
+        {
+            char[] sentence = "My       life".ToCharArray();
+            Chapter3.reverseWords(sentence);
+            Assert.AreEqual("life       My", new string(sentence));
+        }
+        [TestMethod]
+        public void givenAListWithoutLoopWhenSearchingForLoopThenWeShouldFindNothing() 
+        {
+            LinkedNode<int>[] nodes = new LinkedNode<int>[10];
+            for (int i = 0; i < nodes.Length; i++) 
+            {
+                nodes[i] = new LinkedNode<int>(i);
+                if (i > 0) 
+                {
+                    nodes[i-1].Next = nodes[i];
+                }
+            }
+            MySingleLinkedList<int> data = new MySingleLinkedList<int>(nodes[0]);
+
+            Assert.AreEqual(null, data.searchLoopNode());
+        }
+
+
+        [TestMethod]
+        public void givenAListWithLoopWhenSearchingForLoopThenWeShouldFindIt()
+        {
+            LinkedNode<int>[] nodes = new LinkedNode<int>[10];
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodes[i] = new LinkedNode<int>(i);
+                if (i > 0)
+                {
+                    nodes[i - 1].Next = nodes[i];
+                }
+            }
+            MySingleLinkedList<int> data = new MySingleLinkedList<int>(nodes[0]);
+
+
+            Random random = new Random();
+            int loopIdx = random.Next(nodes.Length);
+            nodes[9].Next = nodes[loopIdx];
+
+            Assert.AreEqual(nodes[loopIdx], data.searchLoopNode());
         }
     }
 }

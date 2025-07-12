@@ -10,6 +10,13 @@ namespace skiena.datastructures.lists
     public class MySingleLinkedList<T>  : IEnumerable<T> , IEquatable<MySingleLinkedList<T>> where T : IEquatable<T>
     {
         public LinkedNode<T>? root { get; set; }
+        public MySingleLinkedList():this(null)
+        {
+        }
+        public MySingleLinkedList(LinkedNode<T>? root) 
+        {
+            this.root = root;
+        }
 
         public int count() 
         {
@@ -165,6 +172,38 @@ namespace skiena.datastructures.lists
                 otherHasNext = otherEnumerator.MoveNext();
             }
             return !currHasNext && !otherHasNext;
+        }
+
+        public LinkedNode<T>? searchLoopNode() 
+        {
+            LinkedNode<T>? turtoise = root;
+            LinkedNode<T>? hare = root;
+            for (int i = 0; hare != null &&  i < 2; i++) 
+            {
+                if (hare != null)
+                {
+                    hare = hare.Next;
+                }
+            }
+            bool loopFound = false;
+            while (turtoise != null && hare != null) 
+            {
+                if (!loopFound  && turtoise == hare) 
+                {
+                    loopFound = true;
+                }
+                if (loopFound && turtoise == hare)
+                {
+                    break;
+                }
+                turtoise = turtoise.Next;
+                hare = hare.Next;
+                if (!loopFound && hare != null)
+                {
+                    hare = hare.Next;
+                }
+            }
+            return loopFound ? turtoise : null;
         }
     }
 }
