@@ -365,5 +365,18 @@ namespace skienaTests
 
             Assert.AreEqual(nodes[loopIdx], data.searchLoopNode());
         }
+
+        [TestMethod]
+        public void theProductArrayShouldReturnTheRightValues() 
+        {
+            int[] data = { 1,2,3,4,5,6,7,8,9,10};
+            long totalProduct = data.Aggregate((x, y) => x * y);
+            long[] products = Chapter3.createTheProductArray(data);
+
+            for (int i = 0; i < data.Length; i++) 
+            {
+                Assert.AreEqual(totalProduct / data[i], products[i]);
+            }
+        }
     }
 }

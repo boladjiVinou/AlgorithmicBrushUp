@@ -238,9 +238,47 @@ namespace skiena.Chapter3
         /*
          3.27
          */
-        private LinkedNode<int>? searchLoop(MySingleLinkedList<int> linkedList) 
+        public LinkedNode<int>? searchLoop(MySingleLinkedList<int> linkedList) 
         {
             return linkedList.searchLoopNode();
+        }
+
+        /*
+         3.28
+         */
+        public static long[] createTheProductArray(int[] data) 
+        {
+            long[] leftProduct = new long[data.Length];
+            long[] rightProduct = new long[data.Length];
+            for (int i = 0, j = data.Length -1; i < data.Length && j>=0; j--,i++) 
+            {
+                leftProduct[i] = data[i];
+                if (i > 0) 
+                {
+                    leftProduct[i] *= leftProduct[i-1];
+                }
+                rightProduct[j] = data[j];
+                if (j < data.Length - 1) 
+                {
+                    rightProduct[j] *= rightProduct[j+1];
+                }
+            }
+
+            long[] result = new long[data.Length];
+            for (int i = 0; i < data.Length; i++) 
+            {
+                bool rightAssigned = false;
+                if (i < data.Length - 1) 
+                {
+                    result[i] = rightProduct[i + 1];
+                    rightAssigned = true;
+                }
+                if (i > 0) 
+                {
+                    result[i] = rightAssigned ? result[i] * leftProduct[i - 1] : leftProduct[i-1];
+                }
+            }
+            return result;
         }
     }
 }
