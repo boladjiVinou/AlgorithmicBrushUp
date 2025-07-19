@@ -21,39 +21,33 @@ namespace skiena.algorithms.sorting
             }
             T min = data[start];
             T max = data[start];
-            for (int i = start; i <= end; i++) 
-            {
-                if (min.CompareTo(data[i]) > 0) 
-                {
-                    min = data[i];
-                }
-                if (max.CompareTo(data[i]) < 0) 
-                {
-                    max = data[i];
-                }
-            }
-            countingSortWithDictionary(data, start, end, min, max);
-        }
 
-        private static void countingSortWithDictionary(List<T> data, int start, int end, T min, T max) 
-        {
             Dictionary<T, ulong> hist = new Dictionary<T, ulong>();
-            for (int i = start; i <= end; i++) 
+            for (int i = start; i <= end; i++)
             {
-                if (!hist.ContainsKey(data[i])) 
+                if (!hist.ContainsKey(data[i]))
                 {
                     hist.Add(data[i], 0);
                 }
                 ++hist[data[i]];
+
+                if (min.CompareTo(data[i]) > 0)
+                {
+                    min = data[i];
+                }
+                if (max.CompareTo(data[i]) < 0)
+                {
+                    max = data[i];
+                }
             }
             int idx = start;
-            for (T i = min; i <= max; i++) 
+            for (T i = min; i <= max; i++)
             {
-                if (!hist.ContainsKey(i)) 
+                if (!hist.ContainsKey(i))
                 {
                     continue;
                 }
-                for (ulong j = 0; j < hist[i]; j++) 
+                for (ulong j = 0; j < hist[i]; j++)
                 {
                     data[idx] = i;
                     ++idx;
