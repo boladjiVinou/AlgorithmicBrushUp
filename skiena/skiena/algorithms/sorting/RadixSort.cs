@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace skiena.algorithms.sorting
 {
-    public class RadixSort<T>  where T : IBinaryInteger<T>, IDivisibleByInt<T>
+    public class RadixSort<T>  where T : IBinaryInteger<T>,
+       IDivisionOperators<T, T, T>
     {
         public static void sort(List<T> data)
         {
@@ -16,9 +17,21 @@ namespace skiena.algorithms.sorting
                 return;
             }
             T max = data.Max();
-            for (int exp = 1; (max/exp).CompareTo(0) != 0; exp *= 10) 
+            for (int exp = 1; (max/(T)(object)exp).CompareTo(0) != 0;) 
             {
                 sortImpl(data, 0, data.Count - 1,exp);
+                checked 
+                {
+                    try
+                    {
+                        exp *= 10;
+                        T test = (T)(object)exp;
+                    }
+                    catch (OverflowException e)
+                    {
+                        break;
+                    }
+                }
             }
         }
 
@@ -86,15 +99,12 @@ namespace skiena.algorithms.sorting
         }
         private static int computeCountIndex(T value, int exp, bool isNegative)
         {
-            return (int)(object)(isNegative ? ((-value) / exp % 10 ): (value / exp) % 10);
-        }
-        private static int computeSpan(T min, T max, bool isNegative)
-        {
-            return isNegative ? (-min).CompareTo(-max) + 1 : max.CompareTo(min) + 1;
-        }
-        private static T getValue(T value, int exp) 
-        {
-            return (value / exp) % 10;
+            checked 
+            {
+                return (int)(object)(isNegative ?
+                         ((-value) / (T)(object)exp % (T)(object)10) :
+                         (value / (T)(object)exp) % (T)(object)10);
+            }
         }
     }
 }
