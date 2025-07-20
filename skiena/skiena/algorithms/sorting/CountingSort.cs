@@ -145,7 +145,7 @@ namespace skiena.algorithms.sorting
             }
             for (int i = 0; i < data.Count; i++) 
             {
-                data[i] = result[i];
+                data[i] = isNegative ? result[data.Count -i-1] : result[i];
             }
         }
         private static int computeCountIndex(T value, T min, T max, bool isNegative) 
