@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace skiena.algorithms.sorting
 {
-    public class CountingSort<T> where T : IBinaryInteger<T>
+    public class CountingSort<T> where T : IBinaryInteger<T>, ISubtractionOperators<T,T,T>
     {
         public static void unstableSort(List<T> data) 
         {
@@ -24,6 +24,7 @@ namespace skiena.algorithms.sorting
             T max = data[start];
 
             Dictionary<T, ulong> hist = new Dictionary<T, ulong>();
+            T zero = intAsT(0);
             for (int i = start; i <= end; i++)
             {
                 if (!hist.ContainsKey(data[i]))
@@ -32,11 +33,11 @@ namespace skiena.algorithms.sorting
                 }
                 ++hist[data[i]];
 
-                if (min.CompareTo(data[i]) > 0)
+                if ((min - data[i]) > zero)
                 {
                     min = data[i];
                 }
-                if (max.CompareTo(data[i]) < 0)
+                if ((max - data[i]) < zero)
                 {
                     max = data[i];
                 }
@@ -67,9 +68,10 @@ namespace skiena.algorithms.sorting
 
             List<T> all = new List<T>();
             List<T> positives = new List<T>();
+            T zero = intAsT(0);
             for (int i = start; i <= end; i++)
             {
-                if (data[i].CompareTo(0) < 0)
+                if ((data[i] - zero) < zero)
                 {
                     all.Add(data[i]);
                 }
@@ -77,43 +79,47 @@ namespace skiena.algorithms.sorting
                 {
                     positives.Add(data[i]);
                 }
+                if (min > data[i]) 
+                {
+                    min = data[i];
+                }
+                if (data[i] > max) 
+                {
+                    max = data[i];
+                }
             }
-            bool maxNegative = max.CompareTo(0) < 0;
-            if (maxNegative || (min.CompareTo(0) >= 0 && !maxNegative))
+            bool maxNegative = max < zero;
+            bool minNegative = min < zero;
+            if (maxNegative || (!minNegative && !maxNegative))
             {
                 sameSignCountingSort(data, start, end, min, max, maxNegative);
             }
             else 
             {
                 int mid = all.Count;
-                all.AddRange(positives);
-                T negativeMin = all[0];
+                foreach (var item in positives)
+                {
+                    all.Add(item);
+                }
+                T negativeMin = min;
                 T negativeMax = all[0];
                 T positiveMin = positives[0];
-                T positiveMax = positives[0];
+                T positiveMax = max;
                 for (int i = start; i <= end; i++)
                 {
                     data[i] = all[i - start];
                     if (i < mid)
                     {
-                        if (negativeMin.CompareTo(data[i]) > 0)
-                        {
-                            negativeMin = data[i];
-                        }
-                        if (data[i].CompareTo(negativeMax) > 0)
+                        if (data[i] > negativeMax)
                         {
                             negativeMax = data[i];
                         }
                     }
                     else
                     {
-                        if (positiveMin.CompareTo(data[i]) > 0)
+                        if (data[i] < positiveMin)
                         {
                             positiveMin = data[i];
-                        }
-                        if (data[i].CompareTo(positiveMax) > 0)
-                        {
-                            positiveMax = data[i];
                         }
                     }
                 }
@@ -128,7 +134,7 @@ namespace skiena.algorithms.sorting
                 return;
             }
             int[] count = new int[computeSpan(min,max,isNegative)];
-            for (int i = 0; i < data.Count; i++) 
+            for (int i = start; i <=end; i++) 
             {
                 ++count[computeCountIndex(data[i], min,max,isNegative)];
             }
@@ -136,25 +142,33 @@ namespace skiena.algorithms.sorting
             {
                 count[i] += count[i - 1];
             }
-            T[] result = new T[data.Count];
-            for (int j = data.Count - 1; j >= 0; j--) 
+            T[] result = new T[end-start+1];
+            for (int j =end; j >= start; j--) 
             {
                 int idx = computeCountIndex(data[j], min, max, isNegative);
                 --count[idx];
                 result[count[idx]] = data[j];
             }
-            for (int i = 0; i < data.Count; i++) 
+            for (int i = start; i <= end; i++) 
             {
-                data[i] = isNegative ? result[data.Count -i-1] : result[i];
+                data[i] =  result[i-start];
             }
         }
         private static int computeCountIndex(T value, T min, T max, bool isNegative) 
         {
-            return isNegative ? (-max).CompareTo(-value):value.CompareTo(min);
+            return isNegative ? tAsInt(value - min): tAsInt(value - min);
         }
         private static int computeSpan(T min, T max, bool isNegative) 
         {
-            return isNegative ? (-min).CompareTo(-max) + 1 : max.CompareTo(min) + 1;
+            return isNegative ? tAsInt((-min) - (-max)) + 1 : tAsInt(max -min) + 1;
+        }
+        private static T intAsT(int val) 
+        {
+            return (T)(object)val;
+        }
+        private static int tAsInt(T val) 
+        {
+            return (int)(object)val;
         }
     }
 }

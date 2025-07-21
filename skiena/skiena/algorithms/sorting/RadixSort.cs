@@ -7,35 +7,22 @@ using System.Threading.Tasks;
 
 namespace skiena.algorithms.sorting
 {
-    public class RadixSort<T>  where T : IBinaryInteger<T>,
-       IDivisionOperators<T, T, T>
+    public class RadixSort<T>  where T : IBinaryInteger<T>, ISubtractionOperators<T, T, T>
     {
-        public static void sort(List<T> data)
+        public static void sort(List<T> data, int nbOfBitsPerVariable)
         {
             if (data.Count == 0) 
             {
                 return;
             }
             T max = data.Max();
-            for (int exp = 1; (max/(T)(object)exp).CompareTo(0) != 0;) 
+            for (int shift = 0; shift < nbOfBitsPerVariable; shift++)
             {
-                sortImpl(data, 0, data.Count - 1,exp);
-                checked 
-                {
-                    try
-                    {
-                        exp *= 10;
-                        T test = (T)(object)exp;
-                    }
-                    catch (OverflowException e)
-                    {
-                        break;
-                    }
-                }
+                sortImpl(data, 0, data.Count - 1, shift);
             }
         }
 
-        private static void sortImpl(List<T> data, int start, int end, int exp)
+        private static void sortImpl(List<T> data, int start, int end, int shift)
         {
             T min = data[start];
             T max = data[start];
@@ -52,11 +39,20 @@ namespace skiena.algorithms.sorting
                 {
                     positives.Add(data[i]);
                 }
+                if (data[i].CompareTo(min) < 0)
+                {
+                    min = data[i];
+                }
+                if (data[i].CompareTo(max) > 0)
+                {
+                    max = data[i];
+                }
             }
-            bool maxNegative = max.CompareTo(0) < 0;
-            if (maxNegative || (min.CompareTo(0) >= 0 && !maxNegative))
+            T zero = intAsT(0);
+            bool maxNegative = (max - zero) < zero;
+            if (maxNegative || ((min - zero) >= zero && !maxNegative))
             {
-                sameSignCountingSort(data, start, end,exp, maxNegative);
+                sameSignCountingSort(data, start, end, shift, maxNegative);
             }
             else
             {
@@ -66,20 +62,20 @@ namespace skiena.algorithms.sorting
                 {
                     data[i] = all[i - start];
                 }
-                sameSignCountingSort(data, start, start + mid - 1, exp, true);
-                sameSignCountingSort(data, mid, end, exp, false);
+                sameSignCountingSort(data, start, start + mid - 1, shift, true);
+                sameSignCountingSort(data, mid, end, shift, false);
             }
         }
-        private static void sameSignCountingSort(List<T> data, int start, int end, int exp, bool isNegative)
+        private static void sameSignCountingSort(List<T> data, int start, int end, int shift, bool isNegative)
         {
             if (start >= end)
             {
                 return;
             }
-            int[] count = new int[10];
+            int[] count = new int[2];
             for (int i = 0; i < data.Count; i++)
             {
-                ++count[computeCountIndex(data[i], exp, isNegative)];
+                ++count[computeCountIndex(data[i], shift, isNegative)];
             }
             for (int i = 1; i < count.Length; i++)
             {
@@ -88,7 +84,7 @@ namespace skiena.algorithms.sorting
             T[] result = new T[data.Count];
             for (int j = data.Count - 1; j >= 0; j--)
             {
-                int idx = computeCountIndex(data[j], exp, isNegative);
+                int idx = computeCountIndex(data[j], shift, isNegative);
                 --count[idx];
                 result[count[idx]] = data[j];
             }
@@ -97,14 +93,20 @@ namespace skiena.algorithms.sorting
                 data[i] = isNegative ? result[data.Count - i - 1] : result[i];
             }
         }
-        private static int computeCountIndex(T value, int exp, bool isNegative)
+        private static int computeCountIndex(T value, int shift, bool isNegative)
         {
             checked 
             {
-                return (int)(object)(isNegative ?
-                         ((-value) / (T)(object)exp % (T)(object)10) :
-                         (value / (T)(object)exp) % (T)(object)10);
+                var bitValue = isNegative ?
+                         (-value) & intAsT(1 << shift) :
+                         value & intAsT(1 << shift);
+                return bitValue != intAsT(0) ? 1 : 0;
             }
+        }
+
+        private static T intAsT(int val)
+        {
+            return (T)(object)val;
         }
     }
 }
