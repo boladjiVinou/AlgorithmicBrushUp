@@ -77,7 +77,7 @@ namespace skiena.algorithms.sorting
                 return;
             }
             int[] count = new int[2];
-            for (int i = 0; i < data.Count; i++)
+            for (int i = start; i <=end; i++)
             {
                 ++count[computeCountIndex(data[i], shift, isNegative)];
             }
@@ -85,26 +85,26 @@ namespace skiena.algorithms.sorting
             {
                 count[i] += count[i - 1];
             }
-            T[] result = new T[data.Count];
-            for (int j = data.Count - 1; j >= 0; j--)
+            T[] result = new T[end-start+1];
+            for (int j = end; j >= start; j--)
             {
                 int idx = computeCountIndex(data[j], shift, isNegative);
                 --count[idx];
                 result[count[idx]] = data[j];
             }
-            for (int i = 0; i < data.Count; i++)
+            for (int i = start; i <=end; i++)
             {
-                data[i] = isNegative ? result[data.Count - i - 1] : result[i];
+                data[i] = result[i - start];
             }
         }
         private static int computeCountIndex(T value, int shift, bool isNegative)
         {
             checked 
             {
-                var bitValue = isNegative ?
-                         (-value) & intAsT(1 << shift) :
-                         value & intAsT(1 << shift);
-                return bitValue != intAsT(0) ? 1 : 0;
+                var bitValue = isNegative ? (-value) & intAsT(1 << shift) : value & intAsT(1 << shift);
+                return  bitValue != intAsT(0) ? 
+                      isNegative ? 0 : 1 
+                    : isNegative ? 1 : 0;
             }
         }
 
