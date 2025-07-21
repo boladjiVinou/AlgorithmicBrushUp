@@ -64,7 +64,7 @@ namespace skiena.algorithms.sorting
                     swap(data, right, pivot);
                     if (newPivot <=end) 
                     {
-                        swap(data, pivot, newPivot);
+                        swap(data, right, newPivot);
                         pivot = newPivot;
                     }
                 }
