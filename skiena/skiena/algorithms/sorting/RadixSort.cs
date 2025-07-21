@@ -29,9 +29,10 @@ namespace skiena.algorithms.sorting
 
             List<T> all = new List<T>();
             List<T> positives = new List<T>();
+            T zero = intAsT(0);
             for (int i = start; i <= end; i++)
             {
-                if (data[i].CompareTo(0) < 0)
+                if (data[i]< zero)
                 {
                     all.Add(data[i]);
                 }
@@ -39,25 +40,28 @@ namespace skiena.algorithms.sorting
                 {
                     positives.Add(data[i]);
                 }
-                if (data[i].CompareTo(min) < 0)
+                if (data[i]< min)
                 {
                     min = data[i];
                 }
-                if (data[i].CompareTo(max) > 0)
+                if (data[i]> max)
                 {
                     max = data[i];
                 }
             }
-            T zero = intAsT(0);
-            bool maxNegative = (max - zero) < zero;
-            if (maxNegative || ((min - zero) >= zero && !maxNegative))
+            bool maxNegative = max < zero;
+            bool minNegative = min < zero;
+            if (maxNegative || (!minNegative && !maxNegative))
             {
                 sameSignCountingSort(data, start, end, shift, maxNegative);
             }
             else
             {
                 int mid = all.Count;
-                all.AddRange(positives);
+                foreach (var item in positives)
+                {
+                    all.Add(item);
+                }
                 for (int i = start; i <= end; i++)
                 {
                     data[i] = all[i - start];

@@ -27,7 +27,7 @@ namespace skiena.algorithms.sorting
 
         private static void merge(List<T> data, int start1, int end1, int start2, int end2) 
         {
-            T[] merged = new T[data.Count];
+            T[] merged = new T[end2-start1+1];
             int i = start1;
             int j = start2;
             int count = 0;
@@ -58,9 +58,9 @@ namespace skiena.algorithms.sorting
                 ++j;
                 ++count;
             }
-            for (int k = 0; k < merged.Length; k++) 
+            for (int k = start1; k <= end2; k++) 
             {
-                data[k] = merged[k];
+                data[k] = merged[k-start1];
             }
         }
     }
