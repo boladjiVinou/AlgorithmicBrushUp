@@ -178,31 +178,27 @@ namespace skiena.datastructures.lists
         {
             LinkedNode<T>? turtoise = root;
             LinkedNode<T>? hare = root;
-            for (int i = 0; hare != null &&  i < 2; i++) 
+            bool loopFound = false;
+            while (!loopFound && turtoise != null && hare != null) 
             {
+                turtoise = turtoise.Next;
+                hare = hare.Next;
                 if (hare != null)
                 {
                     hare = hare.Next;
                 }
+                loopFound = turtoise == hare;
             }
-            bool loopFound = false;
-            while (turtoise != null && hare != null) 
+            if (loopFound) 
             {
-                if (!loopFound  && turtoise == hare) 
+                turtoise = root;
+                while (turtoise !=hare) 
                 {
-                    loopFound = true;
-                }
-                if (loopFound && turtoise == hare)
-                {
-                    break;
-                }
-                turtoise = turtoise.Next;
-                hare = hare.Next;
-                if (!loopFound && hare != null)
-                {
+                    turtoise = turtoise.Next;
                     hare = hare.Next;
                 }
             }
+            
             return loopFound ? turtoise : null;
         }
     }

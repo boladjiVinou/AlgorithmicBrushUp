@@ -274,7 +274,7 @@ namespace skienaTests
         [TestMethod]
         public void whenANumberIsInsertedItShouldBePresent() 
         {
-            var dict = Chapter3.createIntegerDictionary(100, 10);
+            var dict = Chapter3.createIntegerDictionary(100, 10);//TODO recheck this
             Random rand = new Random();
             List<uint> insertedData = new List<uint>();
             for (int i = 0; i < 10; i++) 

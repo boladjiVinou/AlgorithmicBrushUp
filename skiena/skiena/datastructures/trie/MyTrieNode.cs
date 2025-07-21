@@ -69,28 +69,30 @@ namespace skiena.datastructures.trie
 
         public bool removeFirst(string word, int idx)
         {
-            if (!children.ContainsKey(word[idx])) 
+            if (c != word[idx]) 
             {
                 return false;
             }
+            bool nextPartRemoved = false;
             if (idx + 1 < word.Length)
             {
-                bool nextPartRemoved = children[word[idx]].removeFirst(word, idx + 1);
-                if (!nextPartRemoved)
-                {
-                    return false;
-                }
-                if (children[word[idx]].nbOccurence == 0)
+                nextPartRemoved = children.ContainsKey(word[idx+1]) && children[word[idx+1]].removeFirst(word, idx + 1);
+                if (nextPartRemoved && children[word[idx+1]].nbOccurence == 0)
                 {
                     children.Remove(word[idx]);
                 }
             }
-            else 
+            else if(endOfStringCount > 0)
             {
                 --endOfStringCount;
+                --nbOccurence;
+                return true;
             }
-            --nbOccurence;
-            return true;
+            if (nextPartRemoved) 
+            {
+                --nbOccurence;
+            }
+            return nextPartRemoved;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace skiena.datastructures.trie
         }
         public bool removeFirst(string word) 
         {
-            bool removed = roots.ContainsKey(word[0]) && roots[word[0]].removeFirst(word, 1);
+            bool removed = roots.ContainsKey(word[0]) && roots[word[0]].removeFirst(word, 0);
             if (removed && !roots[word[0]].hasOccurence()) 
             {
                 roots.Remove(word[0]);
