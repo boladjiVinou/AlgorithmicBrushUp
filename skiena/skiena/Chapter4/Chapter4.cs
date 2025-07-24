@@ -253,9 +253,79 @@ namespace skiena.Chapter4
             return result;
         }
         // 4.10
-        public static bool doesKNumberInSetAddUpToTarget(ISet<int> numbers, int k, int target) 
+        public static bool doesKNumberInSetAddUpToTarget(List<int> sortedNumbers, int idx,long currSum,int k, int target) 
         {
+            long sum = currSum + sortedNumbers[idx];
+            if (k == 1)
+            {
+                int numberToFind = (int)(target - sum);
+                return sortedNumbers.BinarySearch(idx+1,sortedNumbers.Count-idx-1,numberToFind,null) >= 0;
+            }
+            else if(k > 1)
+            {
+                for (int i = idx; i < sortedNumbers.Count - 1; i++)
+                {
+                    if (doesKNumberInSetAddUpToTarget(sortedNumbers, i + 1, sum, k - 1, target)) 
+                    {
+                        return true;
+                    }
+                }
+            }
             return false;
         }
+        // 4.11
+        public static List<int> findElementsThatAppearMoreThanKTime(List<int> numbers, int k) 
+        {
+            // Boyer moore algorithm
+            List<int>  result = new List<int>();
+            if (k > 0) 
+            {
+                int[] candidates = new int[k - 1];
+                int[] count = new int[k - 1];
+
+                Array.Fill(candidates, int.MinValue);
+
+                int tresholdCount = numbers.Count / k;
+
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    bool foundCandidate = false;
+                    for (int j = 0; j < candidates.Length && !foundCandidate; j++) 
+                    {
+                        if (numbers[i] == candidates[j])
+                        {
+                            ++count[j];
+                            foundCandidate = true;
+                        }
+                    }
+                    for (int j = 0; j < count.Length && !foundCandidate; j++)
+                    {
+                        if (count[j] == 0)
+                        {
+                            ++count[j];
+                            candidates[j] = numbers[i];
+                            foundCandidate = true;
+                        }
+                    }
+                    if (!foundCandidate)
+                    {
+                        for (int j = 0; j < count.Length; j++)
+                        {
+                            --count[j];
+                        }
+                    }
+                }
+
+                for (int j = 0; j < count.Length; j++) 
+                {
+                    if (count[j] > tresholdCount) 
+                    {
+                        result.Add(candidates[j]);
+                    }
+                }
+            }
+            return result;
+        }
+        
     }
 }
