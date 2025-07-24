@@ -290,6 +290,7 @@ namespace skiena.Chapter4
                 for (int i = 0; i < numbers.Count; i++)
                 {
                     bool foundCandidate = false;
+                    // increase weight of 1st matching candidate
                     for (int j = 0; j < candidates.Length && !foundCandidate; j++) 
                     {
                         if (numbers[i] == candidates[j])
@@ -298,6 +299,7 @@ namespace skiena.Chapter4
                             foundCandidate = true;
                         }
                     }
+                    // if no candidate found , search for 1st candidate with weight null and replace it by current number
                     for (int j = 0; j < count.Length && !foundCandidate; j++)
                     {
                         if (count[j] == 0)
@@ -307,6 +309,7 @@ namespace skiena.Chapter4
                             foundCandidate = true;
                         }
                     }
+                    // if no candidate replaced, decrease the weight of all the current candidates
                     if (!foundCandidate)
                     {
                         for (int j = 0; j < count.Length; j++)
@@ -315,7 +318,7 @@ namespace skiena.Chapter4
                         }
                     }
                 }
-
+                // among candidates seach for the one exceeding the treshold
                 for (int j = 0; j < count.Length; j++) 
                 {
                     if (count[j] > tresholdCount) 
