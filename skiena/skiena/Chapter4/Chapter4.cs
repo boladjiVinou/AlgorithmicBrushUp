@@ -146,7 +146,116 @@ namespace skiena.Chapter4
             return false;
         }
         // 4.7
+        public static List<PhoneData> findWhoDidntPaidBill(List<PhoneData> phoneBills, List<PhoneCheck> checks)
+        {
+            HashSet<int> checkSet = [.. checks.Select(x=>x.phoneId)];
+            return phoneBills.Where(x => !checkSet.Contains(x.id)).ToList();
+        }
+        public static Dictionary<string, int> findNumberOfBookPerCompany(List<BookMetadata> books, List<string> publishers) 
+        {
+            Dictionary<string, int> nbBookPerPublisher = [];
+            for (int i = 0; i < publishers.Count; i++) 
+            {
+                nbBookPerPublisher.Add(publishers[i], 0);
+            }
 
+            for (int i = 0; i < books.Count; i++) 
+            {
+                if (nbBookPerPublisher.ContainsKey(books[i].publisher))
+                {
+                    ++nbBookPerPublisher[books[i].publisher];
+                }
+            }
+            return nbBookPerPublisher;
+        }
 
+        public static int findNbDistinctPersonHavingCheckout(List<string> checkouts) 
+        {
+            return checkouts.Distinct().Count();
+        }
+        //4.8
+        public static bool findTwoElementsEqualSumInUnsortedSet(ISet<double> set, double target) 
+        {
+            var sortedSet = set.Order().ToList();
+            for(int i = 0; i< sortedSet.Count;i++)
+            {
+                int searchResult = -1;
+                searchResult = sortedSet.BinarySearch(0,i,target - sortedSet[i],null);
+                if (searchResult  >= 0) 
+                {
+                    return true;
+                }
+                searchResult = sortedSet.BinarySearch(i+1, sortedSet.Count - i, target - sortedSet[i], null);
+                if (searchResult >= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool findTwoElementsEqualSumInSortedSet(List<double> set, double target)
+        {
+            int p1 = 0;
+            int p2 = set.Count-1;
+            for (; p1 < p2;)
+            {
+                double sum = set[p1] + set[p2];
+                if (sum < target)
+                {
+                    ++p1;
+                }
+                else if (sum > target)
+                {
+                    --p2;
+                }
+                else 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        // 4.9
+        public static HashSet<int> findIntersectionInUnsortedSet(ISet<int> set1, ISet<int> set2) 
+        {
+            var sortedSet2 = set2.Order().ToList();
+            HashSet<int> intersection = new HashSet<int>();
+            foreach (var elem in set1) 
+            {
+                int searchResult = sortedSet2.BinarySearch(elem);
+                if (searchResult >= 0 && !intersection.Contains(sortedSet2[searchResult])) 
+                {
+                    intersection.Add(sortedSet2[searchResult]);
+                }
+            }
+            return intersection;
+        }
+        public static List<int> findIntersectionInSortedSet(List<int> set1, List<int> set2) 
+        {
+            List<int> result = new List<int>();
+            int p1 = 0;
+            int p2 = 0;
+            for (;p1 < set1.Count && p2 < set2.Count;) 
+            {
+                if (set1[p1] < set2[p2])
+                {
+                    ++p1;
+                }
+                else if (set1[p1] > set2[p2])
+                {
+                    ++p2;
+                }
+                else if (result.Count == 0 || (result.Count > 0 && result[result.Count - 1] < set1[p1]))
+                {
+                    result.Add(set1[p1]);
+                }
+            }
+            return result;
+        }
+        // 4.10
+        public static bool doesKNumberInSetAddUpToTarget(ISet<int> numbers, int k, int target) 
+        {
+            return false;
+        }
     }
 }
