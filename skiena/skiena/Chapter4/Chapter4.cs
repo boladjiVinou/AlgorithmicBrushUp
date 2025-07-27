@@ -41,7 +41,7 @@ namespace skiena.Chapter4
                     second = i;
                 }
             }
-            return new Tuple<int, int>(first, second);
+            return new Tuple<int, int>(numbers[first], numbers[second]);
         }
         // 4.3
         public static List<Tuple<int, int>> partitionList(List<int> numbers) 
