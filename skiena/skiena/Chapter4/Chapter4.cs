@@ -49,24 +49,49 @@ namespace skiena.Chapter4
             List<int> data = new List<int>(numbers);
             data.Sort();
             List<Tuple<int, int>> partition = [];
-            for (int i = 0; i < numbers.Count / 2; i++) 
+            for (int i = 0; i < data.Count / 2; i++) 
             {
-                partition.Add(new Tuple<int, int>(numbers[i], numbers[numbers.Count - i - 1]));
+                partition.Add(new Tuple<int, int>(data[i], data[data.Count - i - 1]));
             }
             return partition;
         }
         // 4.4
-        public static void sortByColorAndNumber(List<Tuple<int, Color>> data)
+        public static void sortByColorAndNumber(List<Tuple<int, Color>> sortedByNumberData)
         {
-            data.Sort((x, y) =>
+            Dictionary<Color, List<Tuple<int, Color>>> elemByColor = new Dictionary<Color, List<Tuple<int, Color>>>();
+            for (int i = 0; i < sortedByNumberData.Count; i++)
             {
-                int colorComparison = x.Item2.CompareTo(y.Item2);
-                if (colorComparison == 0)
+                if (!elemByColor.ContainsKey(sortedByNumberData[i].Item2))
                 {
-                    return x.Item1 - y.Item1;
+                    elemByColor.Add(sortedByNumberData[i].Item2, new List<Tuple<int, Color>>());
                 }
-                return colorComparison;
-            });
+                elemByColor[sortedByNumberData[i].Item2].Add(sortedByNumberData[i]);
+            }
+            int j = 0;
+            if (elemByColor.ContainsKey(Color.Red))
+            {
+                foreach (var elem in elemByColor[Color.Red])
+                {
+                    sortedByNumberData[j] = elem;
+                    ++j;
+                }
+            }
+            if (elemByColor.ContainsKey(Color.Blue))
+            { 
+                foreach (var elem in elemByColor[Color.Blue])
+                {
+                    sortedByNumberData[j] = elem;
+                    ++j;
+                }
+            }
+            if (elemByColor.ContainsKey(Color.Yellow))
+            {
+                foreach (var elem in elemByColor[Color.Yellow])
+                {
+                    sortedByNumberData[j] = elem;
+                    ++j;
+                }
+            }
         }
         //4.5
         public static int findTheMode(List<int> numbers) 
@@ -118,11 +143,11 @@ namespace skiena.Chapter4
                     int sum = list2[mid] + list1[i];
                     if (sum > target)
                     {
-                        start = mid + 1;
+                        end = mid - 1;
                     }
                     else if (sum < target)
                     {
-                        end = mid - 1;
+                        start = mid + 1;
                     }
                     else
                     {
@@ -148,8 +173,8 @@ namespace skiena.Chapter4
         // 4.7
         public static List<PhoneData> findWhoDidntPaidBill(List<PhoneData> phoneBills, List<PhoneCheck> checks)
         {
-            HashSet<int> checkSet = [.. checks.Select(x=>x.phoneId)];
-            return phoneBills.Where(x => !checkSet.Contains(x.id)).ToList();
+            var checkSet = checks.ToLookup(x => x.phoneId);
+            return phoneBills.Where(x => !checkSet.Contains(x.id) || x.price > checkSet[x.id].First().amount).ToList();
         }
         public static Dictionary<string, int> findNumberOfBookPerCompany(List<BookMetadata> books, List<string> publishers) 
         {
@@ -185,7 +210,7 @@ namespace skiena.Chapter4
                 {
                     return true;
                 }
-                searchResult = sortedSet.BinarySearch(i+1, sortedSet.Count - i, target - sortedSet[i], null);
+                searchResult = sortedSet.BinarySearch(i+1, sortedSet.Count - i-1, target - sortedSet[i], null);
                 if (searchResult >= 0)
                 {
                     return true;

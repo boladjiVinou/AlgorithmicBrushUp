@@ -8,8 +8,15 @@ namespace skiena.Chapter4
 {
     public enum Color
     {
-        Yellow,
-        Blue,
-        Red
+        Red = 0,
+        Blue=1,
+        Yellow=2
+    }
+    public class ColorComparer : IComparer<Color>
+    {
+        public int Compare(Color x, Color y)
+        {
+            return ((int)x).CompareTo((int)y);
+        }
     }
 }
