@@ -15,7 +15,6 @@ namespace skiena.algorithms.sorting
             {
                 return;
             }
-            T max = data.Max();
             for (int shift = 0; shift < nbOfBitsPerVariable; shift++)
             {
                 sortImpl(data, 0, data.Count - 1, shift);

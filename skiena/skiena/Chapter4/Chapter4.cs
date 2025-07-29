@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -137,7 +138,7 @@ namespace skiena.Chapter4
                 int start = 0;
                 int end = list2.Count - 1;
                 int mid = 0;
-                while (start < end)
+                while (start <= end)
                 {
                     mid = start + (end - start) / 2;
                     int sum = list2[mid] + list1[i];
@@ -270,9 +271,11 @@ namespace skiena.Chapter4
                 {
                     ++p2;
                 }
-                else if (result.Count == 0 || (result.Count > 0 && result[result.Count - 1] < set1[p1]))
+                else
                 {
                     result.Add(set1[p1]);
+                    ++p1;
+                    ++p2;
                 }
             }
             return result;
@@ -280,6 +283,10 @@ namespace skiena.Chapter4
         // 4.10
         public static bool doesKNumberInSetAddUpToTarget(List<int> sortedNumbers, int idx,long currSum,int k, int target) 
         {
+            if (k == 0 && target == 0) 
+            {
+                return true;
+            }
             long sum = currSum + sortedNumbers[idx];
             if (k == 1)
             {
@@ -340,6 +347,21 @@ namespace skiena.Chapter4
                         for (int j = 0; j < count.Length; j++)
                         {
                             --count[j];
+                        }
+                    }
+                }
+                for (int i = 0; i < count.Length; i++) 
+                {
+                    count[i] = 0;
+                }
+                for (int i = 0; i < numbers.Count; i++) 
+                {
+                    for (int j = 0; j < candidates.Length; j++) 
+                    {
+                        if (numbers[i] == candidates[j]) 
+                        {
+                            ++count[j];
+                            break;
                         }
                     }
                 }

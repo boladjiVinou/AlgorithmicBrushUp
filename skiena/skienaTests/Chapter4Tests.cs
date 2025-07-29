@@ -132,13 +132,18 @@ namespace skienaTests
                 data.Add(random.Next(10));
             }
 
-            var mode = data.GroupBy(x => x)
+            var orderedData = data.GroupBy(x => x)
                 .Select(x => new { key = x.Key, count = x.Count() })
-                .OrderByDescending(x => x.count)
-                .First()
-                .key;
+                .OrderByDescending(x => x.count).ToList();
+            HashSet<int> modes = new HashSet<int>();
+            modes.Add(orderedData[0].key);
+            for (int i = 1; i < orderedData.Count && orderedData[i].count == orderedData[0].count; i++) 
+            {
+                modes.Add(orderedData[i].key);
+            }
 
-            Assert.AreEqual(mode, Chapter4.findTheMode(data));
+
+            Assert.IsTrue(modes.Contains( Chapter4.findTheMode(data)));
         }
 
         [TestMethod]
@@ -246,8 +251,128 @@ namespace skienaTests
         [TestMethod]
         public void whenSearchingForIntersectionOfTwoUnsortedSetWeShouldFindIt() 
         {
+            List<int> data1 = new List<int>();
+            List<int> data2 = new List<int>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++) 
+            {
+                data1.Add(i);
+                if (random.Next(2) > 0)
+                {
+                    data2.Add(i);
+                }
+                else 
+                {
+                    data2.Add(20 + i);
+                }
+            }
 
+            var intersection = data1.Where(x => data2.Contains(x)).Distinct();
+            var result = Chapter4.findIntersectionInUnsortedSet(data1.ToFrozenSet(), data2.ToFrozenSet());
+
+            Assert.AreEqual(intersection.Count(), result.Count);
+            Assert.IsTrue(intersection.All(result.Contains));
         }
 
+
+        [TestMethod]
+        public void whenSearchingForIntersectionOfTwoSortedSetWeShouldFindIt()
+        {
+            List<int> data1 = new List<int>();
+            List<int> data2 = new List<int>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                data1.Add(i);
+                if (random.Next(2) > 0)
+                {
+                    data2.Add(i);
+                }
+                else
+                {
+                    data2.Add(20 + i);
+                }
+            }
+            data2.Sort();
+
+            var intersection = data1.Where(x => data2.Contains(x)).Distinct();
+            var result = Chapter4.findIntersectionInSortedSet(data1, data2);
+
+            Assert.AreEqual(intersection.Count(), result.Count);
+            Assert.IsTrue(intersection.All(result.Contains));
+        }
+        [TestMethod]
+        public void whenKNumberAddUpToTargetWeShouldDetectIt() 
+        {
+            var data1 = new List<int>();
+            int k = 0;
+            int target = 0;
+            Random random = new Random();
+            for (int i = 0; i < 20; i++) 
+            {
+                data1.Add(random.Next(100));
+                if (random.Next(2) > 0) 
+                {
+                    target += data1.Last();
+                    ++k;
+                }
+            }
+            data1.Sort();
+
+            Assert.IsTrue( Chapter4.doesKNumberInSetAddUpToTarget(data1, 0, 0, k, target));
+        }
+
+        [TestMethod]
+        public void whenKNumberDontAddpToTargetWeShouldDetectIt()
+        {
+            var data1 = new List<int>();
+            int k = 0;
+            int target = 0;
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                data1.Add(random.Next(100));
+            }
+            target = 1000;
+            k = 10;
+            data1.Sort();
+
+            Assert.IsFalse(Chapter4.doesKNumberInSetAddUpToTarget(data1, 0, 0, k, target));
+        }
+
+        [TestMethod]
+        public void whenElementsAppearMoreThanHalfWeShouldDetectIt() 
+        {
+            var data1 = new List<int>() { 1, 2, 0, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2 ,3};
+            HashSet<int> expectedResult = [2];
+
+            var result = Chapter4.findElementsThatAppearMoreThanKTime(data1, 2);
+
+            Assert.AreEqual(expectedResult.Count, result.Count);
+            Assert.IsTrue(result.All(expectedResult.Contains));
+        }
+
+        [TestMethod]
+        public void whenElementsAppearMoreThanOneThirdWeShouldDetectIt()
+        {
+            var data1 = new List<int>() { 1, 2, 0, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 1 };
+            HashSet<int> expectedResult = [2,1];
+
+            var result = Chapter4.findElementsThatAppearMoreThanKTime(data1, 3);
+
+            Assert.AreEqual(expectedResult.Count, result.Count);
+            Assert.IsTrue(result.All(expectedResult.Contains));
+        }
+        [TestMethod]
+        public void whenElementsAppearMoreThanOneFourthWeShouldDetectIt()
+        {
+            var data1 = new List<int>() { 1, 2, 0, 2, 1, 2, 2, 1, 3, 1, 3, 2, 0, 3 };
+            HashSet<int> expectedResult = [2, 1];
+
+            var result = Chapter4.findElementsThatAppearMoreThanKTime(data1, 4);
+
+            Assert.AreEqual(expectedResult.Count, result.Count);
+            Assert.IsTrue(result.All(expectedResult.Contains));
+        }
     }
 }

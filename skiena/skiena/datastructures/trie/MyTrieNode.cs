@@ -79,7 +79,7 @@ namespace skiena.datastructures.trie
                 nextPartRemoved = children.ContainsKey(word[idx+1]) && children[word[idx+1]].removeFirst(word, idx + 1);
                 if (nextPartRemoved && children[word[idx+1]].nbOccurence == 0)
                 {
-                    children.Remove(word[idx]);
+                    children.Remove(word[idx+1]);
                 }
             }
             else if(endOfStringCount > 0)
