@@ -1,6 +1,8 @@
-﻿using System;
+﻿using skiena.datastructures.trees;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -376,6 +378,65 @@ namespace skiena.Chapter4
             }
             return result;
         }
-        
+        // 4.12
+        //Constraint: Should be in O(n + klogn)
+        public static List<int> findKSmallestFromUnsortedSet(IEnumerable<int> data, int k) 
+        {
+            MyHeap<int> heap = new MyHeap<int>();
+            foreach (var elem in data) 
+            {
+                heap.insert(-elem);
+            }
+
+            List<int> result = new List<int>();
+            for (int i = 0; i < k; i++) 
+            {
+                result.Add(-heap.removeTop());
+            }
+
+            return result;
+        }
+
+        /*
+         4.13
+        a) Doesnt matter, with both structure we can get the maximum in constant time, but with heap if max we cant 
+        get the minimum in constant time
+        b) The sorted array is better, the heap doesnt allow the removal of a random element , we can only remove the top 
+        element
+        c) The heap can be built in O(n), the sorted array in O(nlogn) in general or O(n) if using specialized algorithms
+        depending on the kind of number set
+        d) Doesnt matter, with both structure we can get the minimum in constant time, but with heap if min we cant
+        get the maximum in constant time
+
+         */
+        // 4.14
+        public static List<int> mergeKSortedLists(List<List<int>> sortedLists) 
+        {
+            List<int> result = new List<int>();
+            int[] indexes = new int[sortedLists.Count];
+            MyHeap<SortedElement> heap = new MyHeap<SortedElement>();
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                if (indexes[i] == sortedLists[i].Count)
+                {
+                    continue;
+                }
+                heap.insert(new SortedElement(-sortedLists[i][indexes[i]], i));
+            }
+            while (heap.getSize() > 0) 
+            {
+                var elem = heap.removeTop();
+                result.Add(-elem.val);
+                ++indexes[elem.listIdx];
+                if (indexes[elem.listIdx] < sortedLists[elem.listIdx].Count)
+                {
+                    heap.insert(new SortedElement(-sortedLists[elem.listIdx][indexes[elem.listIdx]], elem.listIdx));
+                }
+            }
+            return result;
+
+        }
+
+        // 4.15
     }
 }

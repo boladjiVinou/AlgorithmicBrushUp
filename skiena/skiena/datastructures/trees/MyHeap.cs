@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures.trees
 {
+    //max heap
     public class MyHeap<T> where T : IEquatable<T>, IComparable<T>
     {
         private List<T> data = [];
@@ -16,6 +17,15 @@ namespace skiena.datastructures.trees
         public MyHeap() 
         {
             data.Add(default);
+        }
+        public MyHeap(IEnumerable<T> input):this()
+        {
+            data.AddRange(input);
+            nbElements = data.Count-1;//dummy at idx 0
+            for (int i = (nbElements / 2); i > 0; i--) 
+            {
+                ensureHeapPropertyTopDown(i);
+            }
         }
         public MyHeap(Comparer<T> comparer):this()
         {
@@ -154,6 +164,23 @@ namespace skiena.datastructures.trees
                 return comparer.Compare(t1, t2);
             }
             return t1.CompareTo(t2);
+        }
+        public bool isAHeap() 
+        {
+            for (int i = 1; i <= nbElements/2; i++) 
+            {
+                int leftChildIdx = 2 * i;
+                int rightChildIdx = leftChildIdx + 1;
+                if (leftChildIdx <= nbElements && data[i].CompareTo(data[leftChildIdx]) < 0) 
+                {
+                    return false;
+                }
+                if (rightChildIdx <= nbElements && data[i].CompareTo(data[rightChildIdx]) < 0) 
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

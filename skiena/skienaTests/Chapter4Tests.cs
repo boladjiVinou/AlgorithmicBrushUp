@@ -3,6 +3,7 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -373,6 +374,54 @@ namespace skienaTests
 
             Assert.AreEqual(expectedResult.Count, result.Count);
             Assert.IsTrue(result.All(expectedResult.Contains));
+        }
+        [TestMethod]
+        public void whenLookingForKSmallestNumberWeShouldFindThemInKLogN() 
+        {
+            Random random = new Random();
+            List<int> data = new List<int>();
+            for (int i = 0; i < 100; i++)
+            {
+                data.Add(random.Next(1000));
+            }
+            List<int> sortedData = new List<int>(data);
+            sortedData.Sort();
+            int k = random.Next(data.Count-1);
+
+            var result = Chapter4.findKSmallestFromUnsortedSet(data, k);
+
+            Assert.AreEqual(k, result.Count);
+            for (int i = 0; i < k; i++)
+            {
+                Assert.AreEqual(sortedData[i], result[i]);
+            }
+        }
+
+        [TestMethod]
+        public void whenTryingToMergeKSortedListWeShouldHaveTheRightOrder() 
+        {
+            var sortedLists = new List<List<int>>();
+            var random = new Random();
+            for (int i = 0; i < 10; i++) 
+            {
+                List<int> tmpList = new List<int>();
+                for (int j = 0; j < 20; j++) 
+                {
+                    tmpList.Add(random.Next(100));
+                }
+                tmpList.Sort();
+                sortedLists.Add(tmpList);
+            }
+
+            var expectedResult = sortedLists.SelectMany(x => x).OrderBy(x=>x).ToList();
+
+            var result = Chapter4.mergeKSortedLists(sortedLists);
+
+            Assert.AreEqual(expectedResult.Count, result.Count);
+            for (int i = 0; i < expectedResult.Count; i++) 
+            {
+                Assert.AreEqual(expectedResult[i], result[i]);
+            }
         }
     }
 }

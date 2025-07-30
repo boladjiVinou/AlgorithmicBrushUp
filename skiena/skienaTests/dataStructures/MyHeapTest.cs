@@ -79,5 +79,19 @@ namespace skienaTests.dataStructures
                 prevMax = heap.removeTop();
             }
         }
+        [TestMethod]
+        public void whenCreatingHeapFromCollectionThenTheHeapShouldKeepItsProperties() 
+        {
+            Random random = new Random();
+            List<int> data = new List<int>();
+            for (int i = 0; i < 100; i++) 
+            {
+                data.Add(random.Next(1000));
+            }
+
+            MyHeap<int> heap = new MyHeap<int>(data);
+
+            Assert.IsTrue(heap.isAHeap());
+        }
     }
 }
