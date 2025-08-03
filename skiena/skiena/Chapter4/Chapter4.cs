@@ -1,4 +1,6 @@
-﻿using skiena.datastructures.trees;
+﻿using Microsoft.VisualBasic;
+using skiena.algorithms.sorting;
+using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -438,5 +440,135 @@ namespace skiena.Chapter4
         }
 
         // 4.15
+        /*
+         Creating a heap from data at initialisation is better,
+        because we iterate from n/2 to 0 and 2 comparisons
+        this lead to n comparison in total,
+        then poping k biggest key, after a key removal
+        2*log(n-1) comparison are done
+        which give us n + 2klog(n-k) comparisons in total,
+        yes the algorithm determine the largest then second largest etc
+         */
+        public static List<int> getKBiggest(IEnumerable<int> data, int k)
+        {
+            MyHeap<int> myHeap = new MyHeap<int>(data);
+            List<int> result = new List<int>();
+            for (int i = 0; i < k && myHeap.getSize() > 0; i++)
+            {
+                result.Add(myHeap.removeTop());
+            }
+            return result;
+        }
+        // 4.16
+        public static int findMedian(List<int> data) 
+        {
+            return Quicksort<int>.quickSelect(data, data.Count / 2);
+        }
+        //4.17
+        /*
+         a)
+        T(n) = n + 2T(n/2) -> O(nlogn) in worst case from master theorem
+         
+         b) 
+        T(n) = n + T(n/3) + T(2n/3)
+        cant be solved with master theorem
+        we know that at each level we have to do n comparison,
+        let s find the height
+        the largest subset is 2n/3
+        the largest subset of this subset will be 4n/9
+        we can deduce that at the bottom level (2/3) ^ h * n
+        (2/3)^h =1/n
+        log((2/3) ^ h) = log(1/n)
+        h log(2/3) = log(1/n)
+        h = -log(n) / log(2/3)
+        h = log(n)/log(3/2)
+        h = log3/2(n)
+        The worst case complexity is nlog3/2(n)
+         */
+
+        // 4.18
+        // 0: red, 1: white, 2: blue
+        public static void threeColorSorting(List<int> data) 
+        {
+            if (data.Any(x => x < 0 || x > 2)) 
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            int firstPivot = Quicksort<int>.partition(data, 0, data.Count - 1);
+            if (data[firstPivot] == 2 && firstPivot-1 > 0) 
+            {
+                Quicksort<int>.partition(data, 0, firstPivot - 1);
+            }
+            else if (data[firstPivot] == 1 && data.Count-1 > firstPivot+1)
+            {
+                Quicksort<int>.partition(data, firstPivot + 1, data.Count - 1);
+            }
+        }
+        //4.19
+
+        //4.20
+        // O(n)
+        public static void sortPositiveAndNegative(List<int> data) 
+        {
+            int pivot = Quicksort<int>.partition(data, 0, data.Count - 1, new SignComparer());
+            if (data[pivot] > 0)
+            {
+                Quicksort<int>.partition(data, 0, pivot - 1);
+            }
+            else if (data[pivot] == 0 && data.Count - 1 > pivot + 1)
+            {
+                Quicksort<int>.partition(data, pivot + 1, data.Count - 1);
+            }
+        }
+        //4.21
+        /*
+         when merging always take the number from left side on equality
+         */
+        /*
+         4.22
+        By using radix sort we can achieve the complexity of  nlogk
+        we know that the number of bits of  k = ceil(log2(k))
+        we can thus do ceil(log2(k)) passes of radix sort, for each bit of k
+        leading to a complexity of nlogk
+
+         */
+        // 4.23
+        // the worst complexity is o(n) which is still below the worst complexity requested
+        public static void sortDataContainingDuplicates(List<int> data) 
+        {
+            var hist = data
+                .GroupBy(x => x)
+                .Select(x => new { value = x.First(), count = x.Count()})
+                .ToDictionary(x => x.value, y => y.count);
+            var distincts = hist.Keys.ToList();//n
+
+            Quicksort<int>.sort(distincts);// logn*loglogn if logn distincts
+
+            for (int i = 1; i < distincts.Count; i++) 
+            {
+                hist[distincts[i]] += hist[distincts[i - 1]];
+            }
+            int[] result = new int[data.Count];
+            for (int i = data.Count-1; i >=0; i--) 
+            {
+                --hist[data[i]];
+                result[hist[data[i]]] = data[i];
+            }
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i] = result[i];
+            }
+        }
+        /*
+        4.24
+         n-sqrt(n) first elements are sorted, we just need to sort the sqrt(n) remaining numbers
+        they can be sorted in sqrt(n)Log(sqrt(n)) -> sqrt(n)Log(n)
+        they can also be sorted in sqrt(n) complexity with counting sort,
+        we then need to merge this subpart with the rest, which give us an overall complexity of o(n)
+         
+        4.25
+        The algorithm of 4.23 can be reused here
+         
+         */
     }
 }
