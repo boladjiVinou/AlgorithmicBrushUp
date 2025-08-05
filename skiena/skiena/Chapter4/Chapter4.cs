@@ -568,7 +568,127 @@ namespace skiena.Chapter4
          
         4.25
         The algorithm of 4.23 can be reused here
-         
+         a) a quicksort's partition from middle by putting element x<y to left and the rest to right
+        if the value at the returnt pivot is 0, rerun the partition on interval[pivot+1, n-1]
+        b)
+
+
+        4.28
+
+        We can achieve it by sorting sqrt(n) elements sqrt(n) times
+        and then merge each subset of size sqrt(n) by using algorithm done in  4.14 k being sqrt(n)
+
+        4.29
+        If this algorithm exists it means that heap sort will have a worst case complexity of o(n)
+        which is impossible
+
+        4.30
+        40% connect 60% of time
+        Option1:
+        all names sorted -> n names sorted -> binary search log(n) -> 14 calls
+        Option2:
+        4n/10 names sorted | 6n/10 names sorted -> 60% of time binary search log(4n/10), 40% time binary search log(4n/10) + log(6n/10)
+        60% of time 12 calls required and for 40% others  13 +12 calls -> 25 calls in total
+
+        The gain is not significant with option2 on this example size, option1 is still the best
+
+        if the list is not sorted at all the option2 is the best, because in worst case with option1 we will do n calls
+        but with option2 in 60% of cases we will only do 4000 calls and in 40% of cases we will do 10000 calls which is the worst case of option 1
+
+
+        4.31
+        * if k is known the greatest number is at index k-1
+        * 
          */
+        public static int findMaxInCircularlyShiftedList(List<int>data) 
+        {
+            int start = 0;
+            int end = data.Count - 1;
+            int mid = 0;
+            while (start < end) 
+            {
+                mid = start + (end - start) / 2;
+                if (data[mid] < data[end])
+                {
+                    /*         *
+                             *
+                           *
+                     */
+                    if (data[mid] > data[start])
+                    {
+                        start = mid + 1;
+                    }
+                    /*          *
+                            * *
+                     */
+                    else if (data[mid] == data[start])
+                    {
+                        start = mid + 1;
+                    }
+                    /*   
+                          *    *
+                             *
+                     */
+                    else
+                    {
+
+                    }
+                }
+                else if (data[mid] == data[end]) 
+                {
+                    /*
+                             *    
+                                * *
+                    */
+                    if (data[mid] < data[start])
+                    {
+                        end = mid - 1;
+                    }
+                    /*     
+                                * * *
+                    */
+                    else if (data[mid] == data[start])
+                    {
+
+                    }
+                    /*  
+                               * *
+                              * 
+                    */
+                    else
+                    {
+                        start = mid + 1;
+                    }
+                }
+                else
+                {
+                    /*
+                             *    
+                                *
+                                   * 
+                    */
+                    if (data[mid] < data[start])
+                    {
+                    }
+                    /*  
+                                   
+                               * *
+                                   * 
+                    */
+                    else if (data[mid] < data[start])
+                    {
+                    }
+                    /*  
+                                *
+                             *     *
+                    */
+                    else
+                    {
+
+                    }
+                }
+
+            }
+        }
     }
 }
