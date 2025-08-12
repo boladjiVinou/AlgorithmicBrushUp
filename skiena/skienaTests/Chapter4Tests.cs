@@ -423,5 +423,101 @@ namespace skienaTests
                 Assert.AreEqual(expectedResult[i], result[i]);
             }
         }
+
+        [TestMethod]
+        public void whenSearchingForMaxValueInARotatedRightSortedArrayOfDistincts_ThenWeFindIt() 
+        {
+            List<int> data = new List<int>();
+            for (int i = 0; i < 20; i++) 
+            {
+                data.Add(i);
+            }
+
+            for (int i = 0; i < 20; i++) 
+            {
+                int prev = data[data.Count - 1];
+                for (int j = 0; j < data.Count; j++) 
+                {
+                    int tmp = data[j];
+                    data[j] = prev;
+                    prev = tmp;
+                }
+
+                int result = Chapter4.findMaxInCircularlyShiftedList(data);
+                Assert.AreEqual(19, result);
+            }
+        }
+
+        [TestMethod]
+        public void whenSearchingForMaxValueInARotatedRightSortedArrayOfDuplicated_ThenWeFindIt()
+        {
+            List<int> data = new List<int>();
+            for (int i = 0; i < 20; i++)
+            {
+                data.Add(1);
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                int prev = data[data.Count - 1];
+                for (int j = 0; j < data.Count; j++)
+                {
+                    int tmp = data[j];
+                    data[j] = prev;
+                    prev = tmp;
+                }
+
+                int result = Chapter4.findMaxInCircularlyShiftedList(data);
+                Assert.AreEqual(1, result);
+            }
+        }
+
+        [TestMethod]
+        public void whenSearchingForMaxValueInARotatedRightSortedArrayOfRandom_ThenWeFindIt()
+        {
+            List<int> data = new List<int>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                data.Add(random.Next(20));
+            }
+            data.Sort();
+
+            for (int i = 0; i < 20; i++)
+            {
+                int prev = data[data.Count - 1];
+                for (int j = 0; j < data.Count; j++)
+                {
+                    int tmp = data[j];
+                    data[j] = prev;
+                    prev = tmp;
+                }
+
+                int result = Chapter4.findMaxInCircularlyShiftedList(data);
+                Assert.AreEqual(data.Max(), result);
+            }
+        }
+
+        [TestMethod]
+        public void whenAnIndexIsEqualToItsValueInSortedArray_thenWeShouldFindIt() 
+        {
+            List<int> data = new List<int>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                data.Add(i*random.Next(1000));
+            }
+            data.Sort();
+            int randIdx = random.Next(data.Count);
+            data[randIdx] = randIdx;
+            for (int i = randIdx - 1; i >= 0; i--) 
+            {
+                data[i] = data[i+1] -10;
+            }
+
+            int result = Chapter4.findIdxBeingEqualToAssignedValueInSortedArray(data);
+            Assert.AreEqual(randIdx, result);
+        }
+
     }
 }

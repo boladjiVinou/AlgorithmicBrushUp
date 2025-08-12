@@ -605,90 +605,62 @@ namespace skiena.Chapter4
             int start = 0;
             int end = data.Count - 1;
             int mid = 0;
-            while (start < end) 
+            int max = int.MinValue;
+            while (start <= end) 
             {
                 mid = start + (end - start) / 2;
-                if (data[mid] < data[end])
+                max = Math.Max(max, data[mid]);
+                if (data[mid] >= data[start])
                 {
-                    /*         *
-                             *
-                           *
-                     */
-                    if (data[mid] > data[start])
-                    {
-                        start = mid + 1;
-                    }
-                    /*          *
-                            * *
-                     */
-                    else if (data[mid] == data[start])
-                    {
-                        start = mid + 1;
-                    }
-                    /*   
-                          *    *
-                             *
-                     */
-                    else
-                    {
-
-                    }
+                    start = mid + 1;
                 }
-                else if (data[mid] == data[end]) 
+                else if (data[start] >= data[end])
                 {
-                    /*
-                             *    
-                                * *
-                    */
-                    if (data[mid] < data[start])
-                    {
-                        end = mid - 1;
-                    }
-                    /*     
-                                * * *
-                    */
-                    else if (data[mid] == data[start])
-                    {
+                    end = mid - 1;
+                }
+                else 
+                {
+                    throw new Exception("Unplanned scenario");
+                }
+            }
+            return max;
+        }
 
-                    }
-                    /*  
-                               * *
-                              * 
-                    */
-                    else
-                    {
-                        start = mid + 1;
-                    }
+        /*
+         4.32 a) If n is known the best strategy is to do a binary search of the value between 1 and n
+        b)if n is not known the best strategy is to make  a guess and ask if it is greater than the chosen value
+        if yes, upperBound = value, nextValue = Math.Max(lowerBound+1, value*2)
+        if smaller, lowerBound = value,nextValue = Math.Min(upperBound-1, value*2), 
+        if equal we found it
+         */
+        //4.33
+        public static int findIdxBeingEqualToAssignedValueInSortedArray(List<int>data) 
+        {
+            int start = 0;
+            int end = data.Count - 1;
+            int mid = 0;
+            while (start <= end) 
+            {
+                mid = start + ((end - start) / 2);
+                if (data[mid] < 0) 
+                {
+                    start = mid + 1;
+                    continue;
+                }
+                if (mid - 1 >= 0 && data[mid] <= mid - 1)
+                {
+                    start = mid + 1;
+                }
+                else if (mid + 1 <= data.Count-1 && data[mid] >= mid + 1)
+                {
+                    end = mid - 1;
                 }
                 else
                 {
-                    /*
-                             *    
-                                *
-                                   * 
-                    */
-                    if (data[mid] < data[start])
-                    {
-                    }
-                    /*  
-                                   
-                               * *
-                                   * 
-                    */
-                    else if (data[mid] < data[start])
-                    {
-                    }
-                    /*  
-                                *
-                             *     *
-                    */
-                    else
-                    {
-
-                    }
+                    return mid; // means mid-1 <data[mid]<mid+1
                 }
-
             }
+            return -1;
         }
     }
 }
