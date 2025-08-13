@@ -519,5 +519,26 @@ namespace skienaTests
             Assert.AreEqual(randIdx, result);
         }
 
+        [TestMethod]
+        public void whenThereIsAMissingNumberInSortedArrayWeShouldFindIt() 
+        {
+            Random random = new Random();
+            int m = 100;
+            int n = random.Next(m);
+            List<int> data = new List<int>();
+            List<int> values = Enumerable.Range(1, m).OrderBy(x => Guid.NewGuid().ToString()).ToList();
+            for (int i = 0; i < n; i++) 
+            {
+                data.Add(values[i]);
+            }
+            data.Sort();
+
+            int result = Chapter4.findSmallestAbsentNumberFromSortedList(data, m);
+            int expectedMissing = values.Where(x => !data.Contains(x)).Min();
+
+            Assert.AreEqual(expectedMissing, result);
+
+        }
+
     }
 }

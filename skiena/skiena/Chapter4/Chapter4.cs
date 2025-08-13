@@ -662,5 +662,69 @@ namespace skiena.Chapter4
             }
             return -1;
         }
+        // 4.34
+        public static int findSmallestAbsentNumberFromSortedList(List<int> data, int m) 
+        {
+            if (data.Count == 0) 
+            {
+                return -1;
+            }
+            if (data[0] > 1) 
+            {
+                return 1;
+            }
+            int start = 0;
+            int end = data.Count - 1;
+            int mid = 0;
+            while (start < end)
+            {
+                mid = start + ((end - start) / 2);
+                if ( data[mid] > mid + 1)
+                {
+                    end = mid - 1;
+                }
+                else if (data[mid] <= mid + 1)
+                {
+                    start = mid + 1;
+                }
+            }
+            if (start > 0 && (data[start] - data[start - 1]) > 1)
+            {
+                return data[start - 1] + 1;
+            }
+            return data[start] + 1;
+        }
+        //4.35
+        public static Tuple<int,int> findPositionOfValue(int[][] matrix, int value) 
+        {
+            int rowStart = 0;
+            int rowEnd = matrix.Length - 1;
+            int columnStart = 0;
+            int columnEnd = matrix[0].Length - 1;
+            int rowMid = 0;
+            int colMid = 0;
+
+            bool valueFound = false;
+            while (!valueFound && rowStart < rowEnd) 
+            {
+                rowMid = rowStart + (rowEnd - rowStart) / 2;
+                bool bigger = false;
+                while (columnStart < columnEnd) 
+                {
+                    colMid = columnStart + (columnEnd - columnStart) / 2;
+                    if (matrix[rowMid][colMid] > value)
+                    {
+                    }
+                    else if (matrix[rowMid][colMid] < value)
+                    {
+                    }
+                    else 
+                    {
+                        return new Tuple<int, int>(rowMid, colMid);
+                    }
+                }
+            }
+            return new Tuple<int, int>(-1,-1);
+        }
     }
 }
