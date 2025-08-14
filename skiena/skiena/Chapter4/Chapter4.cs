@@ -210,12 +210,12 @@ namespace skiena.Chapter4
             for(int i = 0; i< sortedSet.Count;i++)
             {
                 int searchResult = -1;
-                searchResult = sortedSet.BinarySearch(0,i,target - sortedSet[i],null);
+                searchResult = sortedSet.BinarySearch(0,i,target - sortedSet[i], new EpsilonComparer(0.000001) );
                 if (searchResult  >= 0) 
                 {
                     return true;
                 }
-                searchResult = sortedSet.BinarySearch(i+1, sortedSet.Count - i-1, target - sortedSet[i], null);
+                searchResult = sortedSet.BinarySearch(i+1, sortedSet.Count - i-1, target - sortedSet[i], new EpsilonComparer(0.000001));
                 if (searchResult >= 0)
                 {
                     return true;
@@ -694,37 +694,69 @@ namespace skiena.Chapter4
             }
             return data[start] + 1;
         }
-        //4.35
+        //4.35 complexity [log(m*n)]^2
         public static Tuple<int,int> findPositionOfValue(int[][] matrix, int value) 
         {
-            int rowStart = 0;
-            int rowEnd = matrix.Length - 1;
-            int columnStart = 0;
-            int columnEnd = matrix[0].Length - 1;
+            if (matrix.Length == 0 || matrix[0].Length == 0) 
+            {
+                return new Tuple<int, int>(-1, -1);
+            }
+            return findPositionOfValue(matrix, value, 0, matrix.Length - 1, 0, matrix[0].Length - 1);
+        }
+        private static Tuple<int, int> findPositionOfValue(int[][] matrix, int value, int rStart, int rEnd, int colStart, int colEnd)
+        {
+            int rowStart = rStart;
+            int rowEnd = rEnd;
+            int columnStart = colStart;
+            int columnEnd = colEnd;
             int rowMid = 0;
             int colMid = 0;
-
-            bool valueFound = false;
-            while (!valueFound && rowStart < rowEnd) 
+            while ((rowStart < rowEnd && colStart <= colEnd) || (rowStart <= rowEnd && colStart < colEnd))
             {
                 rowMid = rowStart + (rowEnd - rowStart) / 2;
-                bool bigger = false;
-                while (columnStart < columnEnd) 
+                colMid = columnStart + (columnEnd - columnStart) / 2;
+                if (matrix[rowMid][colMid] > value)
                 {
-                    colMid = columnStart + (columnEnd - columnStart) / 2;
-                    if (matrix[rowMid][colMid] > value)
+                    var tmpCol = Array.BinarySearch(matrix[rowMid], colStart, colMid, value);
+                    if (tmpCol >= 0)
                     {
+                        return Tuple.Create(rowMid, tmpCol);//same row left result
                     }
-                    else if (matrix[rowMid][colMid] < value)
+                    var bottomLeftCornerResult = findPositionOfValue(matrix, value, rowMid+1, rowEnd, colStart, colMid);
+                    if (bottomLeftCornerResult.Item1 > 0 &&  bottomLeftCornerResult.Item2  > 0)
                     {
+                        return bottomLeftCornerResult;
+                     
                     }
-                    else 
+                    rowEnd = rowMid - 1;
+                }
+                else if (matrix[rowMid][colMid] < value)
+                {
+                    if (colEnd > colMid) 
                     {
-                        return new Tuple<int, int>(rowMid, colMid);
+                        var tmpCol = Array.BinarySearch(matrix[rowMid], colMid, colEnd - colMid + 1, value);
+                        if (tmpCol >= 0)
+                        {
+                            return Tuple.Create(rowMid, tmpCol);// same row right result
+                        }
                     }
+                    var topRightCornerResult = findPositionOfValue(matrix, value, rowStart, rowMid-1, colMid, colEnd);
+                    if (topRightCornerResult.Item1 >= 0 || topRightCornerResult.Item2>= 0)
+                    {
+                        return topRightCornerResult;
+                    }
+                    rowStart = rowMid + 1;
+                }
+                else
+                {
+                    return new Tuple<int, int>(rowMid, colMid);
                 }
             }
-            return new Tuple<int, int>(-1,-1);
+            if (rowStart == rowEnd && colStart == colEnd && matrix[rowStart][colStart] == value)
+            {
+                return Tuple.Create(rowStart, colStart);
+            }
+            return new Tuple<int, int>(-1, -1);
         }
     }
 }

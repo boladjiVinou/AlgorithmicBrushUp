@@ -540,5 +540,70 @@ namespace skienaTests
 
         }
 
+        [TestMethod]
+        public void givenAMatrixWithDistinctSortedValue_WhenSearchingForValueIndexWeShouldFindIt() 
+        {
+            Random random = new Random();
+            int[][] matrix = new int[1+random.Next(100)][];
+            int colSize = 1 +random.Next(100);
+            for (int i = 0; i < matrix.Length; i++) 
+            {
+                matrix[i] = new int[colSize];
+                for (int j = 0; j < matrix[i].Length; j++) 
+                {
+                    matrix[i][j] = i*colSize+j;
+                }
+            }
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    Tuple<int, int> expectedResult = new Tuple<int, int>(i, j);
+                    Tuple<int, int> computedResult = Chapter4.findPositionOfValue(matrix, matrix[expectedResult.Item1][expectedResult.Item2]);
+                    Assert.AreEqual(expectedResult, computedResult);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void givenAMatrixWithSortedValue_WhenSearchingForValueIndexWeShouldFindIt()
+        {
+            Random random = new Random();
+            int[][] matrix = new int[1 + random.Next(100)][];
+            int colSize = 1 + random.Next(100);
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                matrix[i] = new int[colSize];
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                     if (i == 0 && j == 0)
+                     {
+                         matrix[i][j] = random.Next(100);
+                     }
+                     else if (i == 0)
+                     {
+                         matrix[i][j] = matrix[i][j - 1] + 1;
+                     }
+                     else 
+                     {
+                         matrix[i][j] = matrix[i - 1][j]+1;
+                     }
+                }
+            }
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    Tuple<int, int> expectedResult = new Tuple<int, int>(i, j);
+                    Tuple<int, int> computedResult = Chapter4.findPositionOfValue(matrix, matrix[expectedResult.Item1][expectedResult.Item2]);
+                    Assert.IsTrue(computedResult.Item1 >= 0);
+                    Assert.IsTrue(computedResult.Item2 >= 0);
+                    Assert.AreEqual(matrix[expectedResult.Item1][expectedResult.Item2], matrix[computedResult.Item1][computedResult.Item2]);
+                }
+            }
+        }
+
     }
 }
