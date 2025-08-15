@@ -604,6 +604,37 @@ namespace skienaTests
                 }
             }
         }
+        [TestMethod]
+        public void whenCountingTheNumberOfZeroInSortedMatrix_WeShouldGetTheRightResult() 
+        {
+            Random random = new Random();
+            int[][] matrix = new int[1 + random.Next(50)][];
+            int colSize = 1 + random.Next(50);
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                matrix[i] = new int[colSize];
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    if (i == 0 && j == 0)
+                    {
+                        matrix[i][j] = matrix.Length > 1 ? random.Next(matrix.Length) : 1;
+                    }
+                    else if (i == 0)
+                    {
+                        matrix[i][j] = matrix[i][j - 1] + 1;
+                    }
+                    else
+                    {
+                        matrix[i][j] = matrix[i - 1][j] - 1;
+                    }
+                }
+            }
+
+            int expectedCountOfZero = matrix.Select(x => x.Where(y => y ==0).Count()).Aggregate((c1,c2) => c1+c2);
+
+            int computedCount = Chapter4.countNumberOfZeroInsSortedMatrice(matrix);
+            Assert.AreEqual(expectedCountOfZero, computedCount);
+        }
 
     }
 }

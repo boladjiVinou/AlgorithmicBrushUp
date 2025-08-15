@@ -3,6 +3,7 @@ using skiena.algorithms.sorting;
 using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -757,6 +758,69 @@ namespace skiena.Chapter4
                 return Tuple.Create(rowStart, colStart);
             }
             return new Tuple<int, int>(-1, -1);
+        }
+        // 4.36
+        // we call the same fct recusively 2 times -> [log(m*n)]^2 
+        public static int countNumberOfZeroInsSortedMatrice(int[][] matrix) 
+        {
+            if (matrix.Length == 0 || matrix[0].Length == 0)
+            {
+                return 0;
+            }
+            return countNumberOfZeroInsSortedMatrice(matrix, 0, matrix.Length - 1, 0, matrix[0].Length - 1);
+        }
+
+        private static int countNumberOfZeroInsSortedMatrice(int[][] matrix, int rStart, int rEnd, int colStart, int colEnd)
+        {
+            int rowStart = rStart;
+            int rowEnd = rEnd;
+            int columnStart = colStart;
+            int columnEnd = colEnd;
+            int rowMid = 0;
+            int colMid = 0;
+            const int target = 0;
+            int count = 0;
+            while ((rowEnd < matrix.Length && rowStart >=0 && colEnd < matrix[0].Length && colStart >=0) 
+                &&((rowStart < rowEnd && colStart <= colEnd) || (rowStart <= rowEnd && colStart < colEnd)))
+            {
+                rowMid = rowStart + (rowEnd - rowStart) / 2;
+                colMid = columnStart + (columnEnd - columnStart) / 2;
+                if (matrix[rowMid][colMid] > target)
+                {
+                    int sameRowResult = Array.BinarySearch(matrix[rowMid], colStart, colMid-colStart, target);
+                    if (sameRowResult >= 0) 
+                    {
+                        ++count;
+                    }
+                    count += countNumberOfZeroInsSortedMatrice(matrix, rowStart, rowMid - 1, colStart, colMid-1);
+                    rowStart = rowMid+1;
+                }
+                else if (matrix[rowMid][colMid] < target)
+                {
+                    int sameRowResult = Array.BinarySearch(matrix[rowMid], colMid+1, colEnd-colMid, target);
+                    if (sameRowResult >= 0)
+                    {
+                        ++count;
+                    }
+                    count += countNumberOfZeroInsSortedMatrice(matrix, rowMid+1, rowEnd, colMid+1, colEnd);
+                    rowEnd = rowMid - 1;
+                }
+                else
+                {
+                    ++count;
+                    // everything in bottom left is smaller than target,
+                    // everything in top right is greater than target
+                    count += countNumberOfZeroInsSortedMatrice(matrix, rowStart, rowMid - 1, colStart, colMid - 1);
+                    count += countNumberOfZeroInsSortedMatrice(matrix, rowMid + 1, rowEnd, colMid + 1, colEnd);
+                    break;
+                }
+            }
+            if ((rowEnd < matrix.Length && rowStart >= 0 && colEnd < matrix[0].Length && colStart >= 0) &&
+                (rowStart == rowEnd && colStart == colEnd && matrix[rowStart][colStart] == target))
+            {
+                ++count;
+            }
+            return count;
         }
     }
 }
