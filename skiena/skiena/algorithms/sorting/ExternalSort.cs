@@ -13,7 +13,7 @@ namespace skiena.algorithms.sorting
         {
             var dataEnumerable = enumerateData(dataPath);
             int nbBatch = 0;
-            // create smaller batch
+            // create smaller sorted batch
             while (dataEnumerable.Any()) 
             {
                var batchData = dataEnumerable.Take(batchSize).OrderBy(x => x);
@@ -22,10 +22,14 @@ namespace skiena.algorithms.sorting
             }
             // merge batch and write it in another file
             writeData(resultPath, enumerateBatchMergeResult(nbBatch, workingDirPath));
-            // delete smaller batches
+            // delete  batches
             for (int i = 0; i < nbBatch; i++) 
             {
-                File.Delete(getBatchFilePath(workingDirPath, i));
+                var batch = getBatchFilePath(workingDirPath, i);
+                if (File.Exists(batch)) 
+                {
+                    File.Delete(batch);
+                }
             }
         }
         private static IEnumerable<T> enumerateBatchMergeResult(int nbBatch, string workingDirPath) 
@@ -47,7 +51,7 @@ namespace skiena.algorithms.sorting
             {
                 IEnumerator<T> lowest = queue.Dequeue();
                 yield return lowest.Current;
-                if (lowest.MoveNext()) 
+                if (lowest.MoveNext())
                 {
                     queue.Enqueue(lowest, lowest.Current);
                 }
@@ -93,6 +97,10 @@ namespace skiena.algorithms.sorting
         }
         public static IEnumerable<T> enumerateData(string path) 
         {
+            if (!File.Exists(path)) 
+            {
+                yield break;
+            }
             using (FileStream stream = File.OpenRead(path)) 
             {
                 using (var reader = new BinaryReader(stream))
