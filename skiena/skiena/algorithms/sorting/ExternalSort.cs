@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -14,10 +15,9 @@ namespace skiena.algorithms.sorting
             var dataEnumerable = enumerateData(dataPath);
             int nbBatch = 0;
             // create smaller sorted batch
-            while (dataEnumerable.Any()) 
+            foreach (var batch in dataEnumerable.Chunk(batchSize)) 
             {
-               var batchData = dataEnumerable.Take(batchSize).OrderBy(x => x);
-               writeData($"{workingDirPath}/batch_{nbBatch}.txt", batchData);
+                writeData($"{workingDirPath}/batch_{nbBatch}.txt", batch.OrderBy(x=>x));
                 ++nbBatch;
             }
             // merge batch and write it in another file
@@ -67,26 +67,26 @@ namespace skiena.algorithms.sorting
         {
             using (var batchStream = File.Create(batchFile)) 
             {
-                using (var writer = new BinaryWriter(batchStream)) 
+                using (var writer = new StreamWriter(batchStream)) 
                 {
                     foreach (T elem in batch) 
                     {
                         switch (Type.GetTypeCode(typeof(T)))
                         {
                             case TypeCode.Int32:
-                                writer.Write(Convert.ToInt32(elem));
+                                writer.WriteLine(Convert.ToInt32(elem));
                                 break;
                             case TypeCode.Int64:
-                                writer.Write(Convert.ToInt64(elem));
+                                writer.WriteLine(Convert.ToInt64(elem));
                                 break;
                             case TypeCode.Double:
-                                writer.Write(Convert.ToDouble(elem));
+                                writer.WriteLine(Convert.ToDouble(elem));
                                 break;
                             case TypeCode.Single:
-                                writer.Write(Convert.ToSingle(elem));
+                                writer.WriteLine(Convert.ToSingle(elem));
                                 break;
                             case TypeCode.Decimal:
-                                writer.Write(Convert.ToDecimal(elem));
+                                writer.WriteLine(Convert.ToDecimal(elem));
                                 break;
                             default:
                                 throw new NotSupportedException($"Type {typeof(T).Name} is not supported.");
@@ -103,29 +103,51 @@ namespace skiena.algorithms.sorting
             }
             using (FileStream stream = File.OpenRead(path)) 
             {
-                using (var reader = new BinaryReader(stream))
+                using (StreamReader sr = new StreamReader(stream))
                 {
-                    switch (Type.GetTypeCode(typeof(T)))
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        case TypeCode.Int32:
-                            yield return (T)(object)reader.ReadInt32();
-                            break;
-                        case TypeCode.Int64:
-                            yield return (T)(object)reader.ReadInt64();
-                            break;
-                        case TypeCode.Decimal:
-                            yield return (T)(object)reader.ReadDecimal();
-                            break;
-                        case TypeCode.Double:
-                            yield return (T)(object)reader.ReadDouble();
-                            break;
-                        case TypeCode.Single:
-                            yield return (T)(object)reader.ReadSingle();
-                            break;
-                        default:
-                            throw new NotSupportedException($"Type {typeof(T).Name} is not supported.");
+                        line = line.Trim();
+
+                        switch (Type.GetTypeCode(typeof(T)))
+                        {
+                            case TypeCode.Int32:
+                                if (int.TryParse(line, out int result)) 
+                                {
+                                    yield return (T)(object)result;
+                                }
+                                break;
+                            case TypeCode.Int64:
+                                if (long.TryParse(line, out long resultLong))
+                                {
+                                    yield return (T)(object)resultLong;
+                                }
+                                break;
+                            case TypeCode.Decimal:
+                                if (decimal.TryParse(line, out decimal resultDec))
+                                {
+                                    yield return (T)(object)resultDec;
+                                }
+                                break;
+                            case TypeCode.Double:
+                                if (double.TryParse(line, out double resultDouble))
+                                {
+                                    yield return (T)(object)resultDouble;
+                                }
+                                break;
+                            case TypeCode.Single:
+                                if (float.TryParse(line, out float resultFloat))
+                                {
+                                    yield return (T)(object)resultFloat;
+                                }
+                                break;
+                            default:
+                                throw new NotSupportedException($"Type {typeof(T).Name} is not supported.");
+                        }
                     }
                 }
+
             }
         }
     }
