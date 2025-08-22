@@ -45,8 +45,10 @@ namespace skienaTests.algorithms.sorting
             File.WriteAllLines($@"{folder}\data.txt", data.Select(x => x.ToString()));
 
             ExternalSort<int>.sort($@"{folder}\data.txt", $@"{folder}\", $@"{folder}\result.txt", Math.Min(5, size));
+
             Assert.IsTrue(File.Exists($@"{folder}\result.txt"));
             var result = ExternalSort<int>.enumerateData($@"{folder}\result.txt");
+            
             data.Clear();
             data.AddRange(result);
 
