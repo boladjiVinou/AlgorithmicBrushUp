@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using MoreLinq;
 using skiena.algorithms.sorting;
 using skiena.datastructures.trees;
 using System;
@@ -821,6 +822,45 @@ namespace skiena.Chapter4
                 ++count;
             }
             return count;
+        }
+        //4.45
+        public static int[] findSmallestSnippet(List<List<int>> wordsSortedStartIndexes) 
+        {
+            int[] bestSnippet = new int[0];
+            int bestSize = int.MaxValue;
+            List<int> indexes = wordsSortedStartIndexes.Select(x => 0).ToList();
+            bool needToExplore = true;
+            while (needToExplore) 
+            {
+                Tuple<int,int>[] wordsCurrIndexes = new Tuple<int,int>[indexes.Count];
+                for (int i = 0; i < indexes.Count; i++) 
+                {
+                    wordsCurrIndexes[i] = new Tuple<int,int>( wordsSortedStartIndexes[i][indexes[i]], i);
+                }
+                Array.Sort(wordsCurrIndexes, (i1, i2) => 
+                {
+                    return i1.Item1.CompareTo(i2.Item1);
+                });
+                int size = wordsCurrIndexes.Last().Item1 - wordsCurrIndexes.First().Item1 + 1;
+                if (size < bestSize) 
+                {
+                    bestSize = size;
+                    bestSnippet[0] = wordsCurrIndexes.First().Item1;
+                    bestSnippet[1] = wordsCurrIndexes.Last().Item1;
+                }
+                needToExplore = false;
+                for (int j = 0; j < wordsCurrIndexes.Length; j++) 
+                {
+                    if (wordsCurrIndexes[j].Item2 + 1 < wordsSortedStartIndexes[wordsCurrIndexes[j].Item2].Count) 
+                    {
+                        ++indexes[wordsCurrIndexes[j].Item2];
+                        needToExplore = true;
+                        break;
+                    }
+                }
+            }
+
+            return bestSnippet;
         }
     }
 }
