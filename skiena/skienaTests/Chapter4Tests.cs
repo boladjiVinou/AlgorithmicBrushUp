@@ -1,5 +1,6 @@
 ﻿using skiena.Chapter4;
 using System;
+using System.Collections;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
@@ -636,5 +637,54 @@ namespace skienaTests
             Assert.AreEqual(expectedCountOfZero, computedCount);
         }
 
+        [TestMethod]
+        public void whenSearchingForSmallestSnippetContainingAllWords_WeShouldFindIt()
+        {
+            List<List<int>> wordsStartIndexes = new List<List<int>>();
+            for (int k = 0; k < 3; k++)
+            {
+                wordsStartIndexes.Add([]);
+            }
+
+            Random random = new Random();
+            for (int i = 0; i < 20; i++) 
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    wordsStartIndexes[k].Add(random.Next(i*(k+1)));
+                }
+            }
+            for (int k = 0; k < 3; k++)
+            {
+                wordsStartIndexes[k] = wordsStartIndexes[k].Distinct().OrderBy(x => x).ToList();
+            }
+
+            int[] bestSnippet = new int[2];
+            int size = int.MaxValue;
+            for (int i = 0; i < wordsStartIndexes[0].Count; i++) 
+            {
+                for (int j = 0; j < wordsStartIndexes[1].Count; j++)
+                {
+                    for (int k = 0; k < wordsStartIndexes[2].Count; k++)
+                    {
+                        int[] range = [wordsStartIndexes[0][i], wordsStartIndexes[1][j], wordsStartIndexes[2][k]];
+                        Array.Sort(range);
+                        int tmpSize = range.Last() - range.First() + 1;
+                        if (tmpSize < size) 
+                        {
+                            size = tmpSize;
+                            bestSnippet[0] = range[0];
+                            bestSnippet[1] = range[1];
+                        }
+                    }
+                }
+            }
+
+
+            var result = Chapter4.findSmallestSnippet(wordsStartIndexes);
+
+            Assert.AreEqual(bestSnippet[0], result[0]);
+            Assert.AreEqual(bestSnippet[1], result[1]);
+        }
     }
 }

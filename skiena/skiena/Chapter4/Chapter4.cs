@@ -826,7 +826,7 @@ namespace skiena.Chapter4
         //4.45
         public static int[] findSmallestSnippet(List<List<int>> wordsSortedStartIndexes) 
         {
-            int[] bestSnippet = new int[0];
+            int[] bestSnippet = new int[2];
             int bestSize = int.MaxValue;
             List<int> indexes = wordsSortedStartIndexes.Select(x => 0).ToList();
             bool needToExplore = true;
@@ -851,7 +851,7 @@ namespace skiena.Chapter4
                 needToExplore = false;
                 for (int j = 0; j < wordsCurrIndexes.Length; j++) 
                 {
-                    if (wordsCurrIndexes[j].Item2 + 1 < wordsSortedStartIndexes[wordsCurrIndexes[j].Item2].Count) 
+                    if (indexes[wordsCurrIndexes[j].Item2] + 1 < wordsSortedStartIndexes[wordsCurrIndexes[j].Item2].Count) 
                     {
                         ++indexes[wordsCurrIndexes[j].Item2];
                         needToExplore = true;
@@ -862,5 +862,6 @@ namespace skiena.Chapter4
 
             return bestSnippet;
         }
+        //4.46
     }
 }
