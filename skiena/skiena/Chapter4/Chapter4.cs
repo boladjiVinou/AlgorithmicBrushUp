@@ -832,6 +832,7 @@ namespace skiena.Chapter4
             bool needToExplore = true;
             while (needToExplore) 
             {
+                // wordStartIdx|wordIdx
                 Tuple<int,int>[] wordsCurrIndexes = new Tuple<int,int>[indexes.Count];
                 for (int i = 0; i < indexes.Count; i++) 
                 {
@@ -862,6 +863,63 @@ namespace skiena.Chapter4
 
             return bestSnippet;
         }
-        //4.46
+        //4.46, doesnt seem possible in just 3 weighting
+        public static int findDifferentCoinIdx(List<int> coins)
+        {
+            /*
+             if all coins has same weight: 1
+             and we have 12 coins
+             
+             */
+            if (coins.Count != 12) 
+            {
+                return -1;
+            }
+            List<int[]> firstGroups = [[0,1,2, 3], [4,5,6, 7], [8, 9,10,11]];
+
+            if (hasSameWeight(coins, firstGroups[0], firstGroups[1]))
+            {
+                return findDifferentCoinIdxInRange(coins, firstGroups[2], firstGroups[0]);
+            }
+            //3rd group is fine
+            else if(hasSameWeight(coins, firstGroups[0], firstGroups[2]))
+            {
+                return findDifferentCoinIdxInRange(coins, firstGroups[1], firstGroups[2]);
+            }
+            else
+            {
+                return findDifferentCoinIdxInRange(coins, firstGroups[0], firstGroups[1]);
+            }
+        }
+
+        private static int findDifferentCoinIdxInRange(List<int> coins, int[] range, int[] goodCoinRange)
+        {
+            if (hasSameWeight(coins, [range[0], range[2]], [goodCoinRange[0], goodCoinRange[2]]))
+            {
+                return range[3];
+            }
+            else if (hasSameWeight(coins, [range[0], range[1]], [goodCoinRange[0], goodCoinRange[1]]))
+            {
+                return range[2];
+            }
+            else if (hasSameWeight(coins, [range[0], range[0]], [goodCoinRange[0], goodCoinRange[0]]))
+            {
+                return range[1];
+            }
+            else
+            {
+                return range[0];
+            }
+        }
+
+        private static bool hasSameWeight(List<int> coins, int[] range1, int[] range2) 
+        {
+            return weight(coins, range1[0], range1.Last()) == weight(coins, range2[0], range2.Last());
+        }
+
+        private static int weight(List<int> coins, int start, int end) 
+        {
+            return coins.GetRange(start, end - start + 1).Sum();
+        }
     }
 }

@@ -686,5 +686,32 @@ namespace skienaTests
             Assert.AreEqual(bestSnippet[0], result[0]);
             Assert.AreEqual(bestSnippet[1], result[1]);
         }
+        [TestMethod]
+        public void whenThereIsACoinWeightingLess_WeShouldFindIt() 
+        {
+            Random random = new Random();
+            var weight = 1 + random.Next(100);
+            var coins = Enumerable.Range(0, 12).Select(x => weight).ToList();
+
+            int expectedCoin = random.Next(coins.Count);
+            coins[expectedCoin] = 0;
+
+            int result = Chapter4.findDifferentCoinIdx(coins);
+            Assert.AreEqual(expectedCoin, result);
+        }
+
+        [TestMethod]
+        public void whenThereIsACoinWeightingMore_WeShouldFindIt()
+        {
+            Random random = new Random();
+            var weight = 1 + random.Next(100);
+            var coins = Enumerable.Range(0, 12).Select(x => weight).ToList();
+
+            int expectedCoin = random.Next(coins.Count);
+            coins[expectedCoin] = weight + 100;
+
+            int result = Chapter4.findDifferentCoinIdx(coins);
+            Assert.AreEqual(expectedCoin, result);
+        }
     }
 }
