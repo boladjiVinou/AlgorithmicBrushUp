@@ -866,11 +866,6 @@ namespace skiena.Chapter4
         //4.46, doesnt seem possible in just 3 weighting
         public static int findDifferentCoinIdx(List<int> coins)
         {
-            /*
-             if all coins has same weight: 1
-             and we have 12 coins
-             
-             */
             if (coins.Count != 12) 
             {
                 return -1;
