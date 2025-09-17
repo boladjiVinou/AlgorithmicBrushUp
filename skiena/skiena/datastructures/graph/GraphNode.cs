@@ -42,15 +42,15 @@ namespace skiena.datastructures.graph
         }
         public void beforeVisit() 
         {
-            beforeVisitAction.Invoke(Value);
+            beforeVisitAction(Value);
         }
         public void onVisit() 
         {
-            visitAction.Invoke(Value);
+            visitAction(Value);
         }
         public void afterVisit() 
         {
-            afterVisitAction.Invoke(Value);
+            afterVisitAction(Value);
         }
     }
 }

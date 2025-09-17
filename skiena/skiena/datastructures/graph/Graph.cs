@@ -9,20 +9,23 @@ namespace skiena.datastructures.graph
 {
     public class Graph<T> where T : IEquatable<T>
     {
-        Dictionary<T,GraphNode<T>> nodePerValue = new Dictionary<T, GraphNode<T>>();
-        Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> neighborsPerNode = new Dictionary<GraphNode<T>, HashSet<GraphNode<T>>>();
+        Dictionary<T,GraphNode<T>> nodePerValue = [];
+        Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> neighborsPerNode = [];
+        private Action<T> beforeVisitAction = (v) => { };
+        private Action<T> afterVisitAction = (v) => { };
+        private Action<T> visitAction = (v) => { };
 
         public void connect(T n1, T n2) 
         {
-            if (!nodePerValue.ContainsKey(n1)) 
+            if (!nodePerValue.ContainsKey(n1))
             {
-                nodePerValue.Add(n1, new GraphNode<T>(n1));
-                neighborsPerNode.Add(nodePerValue[n1], new HashSet<GraphNode<T>>());
+                nodePerValue.Add(n1, createNode(n1));
+                neighborsPerNode.Add(nodePerValue[n1], []);
             }
             if (!nodePerValue.ContainsKey(n2)) 
             {
-                nodePerValue.Add(n2, new GraphNode<T>(n2));
-                neighborsPerNode.Add(nodePerValue[n2], new HashSet<GraphNode<T>>());
+                nodePerValue.Add(n2, createNode(n2));
+                neighborsPerNode.Add(nodePerValue[n2], []);
             }
             neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
             neighborsPerNode[nodePerValue[n2]].Add(nodePerValue[n1]);
@@ -30,7 +33,7 @@ namespace skiena.datastructures.graph
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 
         {
-            Dictionary<T, Dictionary<T, bool>> adjencyMap = new Dictionary<T, Dictionary<T, bool>>();
+            Dictionary<T, Dictionary<T, bool>> adjencyMap = [];
             foreach(var v in nodePerValue.Keys)
             {
                 adjencyMap.Add(v, new Dictionary<T, bool>());
@@ -44,7 +47,7 @@ namespace skiena.datastructures.graph
 
         public Dictionary<T, HashSet<T>> getAdjencyList() 
         {
-            Dictionary<T, HashSet<T>> adjencyList = new Dictionary<T, HashSet<T>>();
+            Dictionary<T, HashSet<T>> adjencyList = [];
             foreach (var v in nodePerValue.Keys) 
             {
                 adjencyList.Add(v, neighborsPerNode[nodePerValue[v]].Select(x=>x.Value).ToHashSet());
@@ -63,6 +66,59 @@ namespace skiena.datastructures.graph
                 }
             }
             return edges;
+        }
+
+        private GraphNode<T> createNode(T n1)
+        {
+            var node = new GraphNode<T>(n1);
+            node.setAfterVisitAction(afterVisitAction);
+            node.setVisitAction(visitAction);
+            node.setBeforeVisitAction(beforeVisitAction);
+            return node;
+        }
+
+        public Graph<T> withBeforeVisitAction(Action<T> beforeVisitAction)
+        {
+            this.beforeVisitAction = beforeVisitAction;
+            return this;
+        }
+        public Graph<T> withVisitAction(Action<T> action)
+        {
+            this.visitAction = action;
+            return this;
+        }
+        public Graph<T> withAfterVisitAction(Action<T> afterVisitAction)
+        {
+            this.afterVisitAction = afterVisitAction;
+            return this;
+        }
+        
+        public int computeChromaticNumberGreedy() 
+        {
+            Dictionary<GraphNode<T>, int> colorByNode = [];
+            HashSet<int> generatedColors = [];
+            foreach (var node in nodePerValue.Values) 
+            {
+                HashSet<int> neighborsColors = new HashSet<int>();
+                foreach (var neighbor in neighborsPerNode[node]) 
+                {
+                    if (colorByNode.ContainsKey(neighbor)) 
+                    {
+                        neighborsColors.Add(colorByNode[neighbor]);
+                    }
+                }
+                var availableColors = generatedColors.Where(x => !neighborsColors.Contains(x));
+                if (availableColors.Any())
+                {
+                    colorByNode.Add(node, availableColors.Min());
+                }
+                else 
+                {
+                    colorByNode.Add(node, generatedColors.Count+1);
+                }
+                generatedColors.Add(colorByNode[node]);
+            }
+            return generatedColors.Count;
         }
 
     }
