@@ -15,6 +15,10 @@ namespace skiena.datastructures.graph
         private Action<T> afterVisitAction = (v) => { };
         private Action<T> visitAction = (v) => { };
 
+        public Graph() 
+        {
+        }
+
         public void connect(T n1, T n2) 
         {
             if (!nodePerValue.ContainsKey(n1))
@@ -53,6 +57,71 @@ namespace skiena.datastructures.graph
                 adjencyList.Add(v, neighborsPerNode[nodePerValue[v]].Select(x=>x.Value).ToHashSet());
             }
             return adjencyList;
+        }
+
+        /*
+         n^2 complexity
+         */
+        public static Dictionary<T, HashSet<T>> convertToAdjacencyList(Dictionary<T, Dictionary<T, bool>> adjacencyMatrix) 
+        {
+            Dictionary<T, HashSet<T>> adjacencyList = new Dictionary<T, HashSet<T>>();
+            foreach (var node in adjacencyMatrix.Keys) 
+            {
+                if (!adjacencyList.ContainsKey(node)) 
+                {
+                    adjacencyList.Add(node, new HashSet<T>());
+                }
+                foreach (var neighbor in adjacencyMatrix.Keys) 
+                {
+                    if (adjacencyMatrix[node][neighbor]) 
+                    {
+                        adjacencyList[node].Add(neighbor);
+                    }
+                }
+            }
+            return adjacencyList;
+        }
+        /*
+         n*m complexity, n vertex, m edges
+         */
+        public static Dictionary<T, Dictionary<T, int>> convertToIncidenceMatrix(Dictionary<T, HashSet<T>> adjacencyList) 
+        {
+            Dictionary<T, Dictionary<T, int>> incidenceMatrix = new Dictionary<T, Dictionary<T, int>>();
+            var edges = adjacencyList.SelectMany(x => x.Value).ToHashSet();
+            foreach (var node in adjacencyList.Keys) 
+            {
+                if (!incidenceMatrix.ContainsKey(node)) 
+                {
+                    incidenceMatrix.Add(node, []);
+                }
+                foreach (var edge in edges) 
+                {
+                    incidenceMatrix[node].Add(edge, adjacencyList[node].Contains(edge) ? 1: 0);
+                }
+            }
+            return incidenceMatrix;
+        }
+        /*
+         n*m, n nb of vertice, m nb of edges
+         */
+        public static Dictionary<T, HashSet<T>> convertToAdjacencyList(Dictionary<T, Dictionary<T, int>> incidenceMatrix)
+        {
+            Dictionary<T, HashSet<T>> adjacencyList = [];
+            foreach (var node in incidenceMatrix.Keys) 
+            {
+                if (!adjacencyList.ContainsKey(node))
+                {
+                    adjacencyList.Add(node, []);
+                }
+                foreach (var edge in incidenceMatrix[node].Keys) 
+                {
+                    if (incidenceMatrix[node][edge] != 0) 
+                    {
+                        adjacencyList[node].Add(edge);
+                    }
+                }
+            }
+            return adjacencyList;
         }
 
         public List<Tuple<T, T>> getEdges() 
@@ -120,6 +189,5 @@ namespace skiena.datastructures.graph
             }
             return generatedColors.Count;
         }
-
     }
 }

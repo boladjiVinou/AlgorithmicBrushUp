@@ -280,5 +280,45 @@ namespace skiena.datastructures.trees
             }
             return linkedList;
         }
+
+        public static MyBST<T> buildFromPreOrderVisitAndInOrderVisit(List<T> preOrderVisit, List<T> inOrderVisit)
+        {
+            if (preOrderVisit.Distinct().Count() != preOrderVisit.Count
+                || inOrderVisit.Distinct().Count() != inOrderVisit.Count)
+            {
+                throw new ArgumentException("Only distinct values supported");
+            }
+            MyBST<T> result = new MyBST<T>();
+            for (int i = 0; i < inOrderVisit.Count; i++)
+            {
+                if (inOrderVisit[i].Equals(preOrderVisit[0]))
+                {
+                    result.root = MyBSTNode<T>.buildFromSortedList(null, inOrderVisit, i, 0, inOrderVisit.Count - 1);
+                    break;
+                }
+            }
+            return result;
+        }
+
+
+        public static MyBST<T> buildFromPostOrderVisitAndInOrderVisit(List<T> postOrderVisit, List<T> inOrderVisit)
+        {
+            if (postOrderVisit.Distinct().Count() != postOrderVisit.Count
+                || inOrderVisit.Distinct().Count() != inOrderVisit.Count)
+            {
+                throw new ArgumentException("Only distinct values supported");
+            }
+            MyBST<T> result = new MyBST<T>();
+            var root = postOrderVisit.Last();
+            for (int i = 0; i < inOrderVisit.Count; i++)
+            {
+                if (inOrderVisit[i].Equals(root))
+                {
+                    result.root = MyBSTNode<T>.buildFromSortedList(null, inOrderVisit, i, 0, inOrderVisit.Count - 1);
+                    break;
+                }
+            }
+            return result;
+        }
     }
 }
