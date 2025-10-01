@@ -11,6 +11,7 @@ namespace skiena.datastructures.graph
     {
         Dictionary<T,GraphNode<T>> nodePerValue = [];
         Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> neighborsPerNode = [];
+        HashSet<GraphNode<T>> roots = new HashSet<GraphNode<T>>();
         private Action<T> beforeVisitAction = (v) => { };
         private Action<T> afterVisitAction = (v) => { };
         private Action<T> visitAction = (v) => { };
@@ -19,20 +20,46 @@ namespace skiena.datastructures.graph
         {
         }
 
-        public void connect(T n1, T n2) 
+        public void biDirectionalConnect(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
             {
                 nodePerValue.Add(n1, createNode(n1));
                 neighborsPerNode.Add(nodePerValue[n1], []);
             }
-            if (!nodePerValue.ContainsKey(n2)) 
+            if (!nodePerValue.ContainsKey(n2))
             {
                 nodePerValue.Add(n2, createNode(n2));
                 neighborsPerNode.Add(nodePerValue[n2], []);
             }
             neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
             neighborsPerNode[nodePerValue[n2]].Add(nodePerValue[n1]);
+            removeFromRoots(n1);
+            removeFromRoots(n2);
+        }
+
+        private void removeFromRoots(T n1)
+        {
+            if (roots.Contains(nodePerValue[n1]))
+            {
+                roots.Remove(nodePerValue[n1]);
+            }
+        }
+
+        public void uniDirectionalConnect(T n1, T n2)
+        {
+            if (!nodePerValue.ContainsKey(n1))
+            {
+                nodePerValue.Add(n1, createNode(n1));
+                neighborsPerNode.Add(nodePerValue[n1], []);
+            }
+            if (!nodePerValue.ContainsKey(n2))
+            {
+                nodePerValue.Add(n2, createNode(n2));
+                neighborsPerNode.Add(nodePerValue[n2], []);
+            }
+            neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
+            removeFromRoots(n2);
         }
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 
@@ -143,6 +170,7 @@ namespace skiena.datastructures.graph
             node.setAfterVisitAction(afterVisitAction);
             node.setVisitAction(visitAction);
             node.setBeforeVisitAction(beforeVisitAction);
+            roots.Add(node);
             return node;
         }
 
@@ -188,6 +216,27 @@ namespace skiena.datastructures.graph
                 generatedColors.Add(colorByNode[node]);
             }
             return generatedColors.Count;
+        }
+        public IEnumerable<T> postOrderIteration() 
+        {
+            foreach (var root in roots) 
+            {
+                yield break;
+            }
+        }
+        public IEnumerable<T> inOrderIteration()
+        {
+            foreach (var root in roots)
+            {
+                yield break;
+            }
+        }
+        public IEnumerable<T> preOrderIteration()
+        {
+            foreach (var root in roots)
+            {
+                yield break;
+            }
         }
     }
 }

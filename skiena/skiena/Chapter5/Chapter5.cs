@@ -3,6 +3,7 @@ using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,6 +50,58 @@ namespace skiena.Chapter5
         public static MyBST<int> reconstructTreeWithPostOrderAndInOrder(List<int> postOrderVisit, List<int> inOrderVisit)
         {
             return MyBST<int>.buildFromPostOrderVisitAndInOrderVisit(postOrderVisit, inOrderVisit);
+        }
+        /*
+         * 5.9
+         */
+        public static long evaluateExpression(MyBT<string> tree) 
+        {
+            Stack<long> resStack = new Stack<long>();
+            Dictionary<string, Action<long>> functionByCode = new Dictionary<string, Action<long>>
+            {
+                { "+", (v) =>  resStack.Push(resStack.Pop() +v)},
+                { "-", (v) => resStack.Push(resStack.Pop() - v)},
+                { "*", (v) => resStack.Push(resStack.Pop() * v) },
+                { "/", (v) => resStack.Push(resStack.Pop() / v) }
+            }; 
+            foreach (string data in tree.postOrderIteration()) 
+            {
+                if (long.TryParse(data, out long parameter))
+                {
+                    resStack.Push(parameter);
+                }
+                else 
+                {
+                    functionByCode[data](resStack.Pop());
+                }
+            }
+            return resStack.Any() ? resStack.Single():0;
+        }
+        /*
+         5.10
+         */
+        public static long evaluateExpression(Graph<string> graph) 
+        {
+            Stack<long> resStack = new Stack<long>();
+            Dictionary<string, Action<long>> functionByCode = new Dictionary<string, Action<long>>
+            {
+                { "+", (v) =>  resStack.Push(resStack.Pop() +v)},
+                { "-", (v) => resStack.Push(resStack.Pop() - v)},
+                { "*", (v) => resStack.Push(resStack.Pop() * v) },
+                { "/", (v) => resStack.Push(resStack.Pop() / v) }
+            };
+            foreach (string data in graph.postOrderIteration())
+            {
+                if (long.TryParse(data, out long parameter))
+                {
+                    resStack.Push(parameter);
+                }
+                else
+                {
+                    functionByCode[data](resStack.Pop());
+                }
+            }
+            return resStack.Any() ? resStack.Single() : 0;
         }
     }
 }
