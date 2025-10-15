@@ -1,4 +1,6 @@
-﻿using System;
+﻿using skiena.datastructures.trees;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -216,27 +218,6 @@ namespace skiena.datastructures.graph
                 generatedColors.Add(colorByNode[node]);
             }
             return generatedColors.Count;
-        }
-        public IEnumerable<T> postOrderIteration() 
-        {
-            foreach (var root in roots) 
-            {
-                yield break;
-            }
-        }
-        public IEnumerable<T> inOrderIteration()
-        {
-            foreach (var root in roots)
-            {
-                yield break;
-            }
-        }
-        public IEnumerable<T> preOrderIteration()
-        {
-            foreach (var root in roots)
-            {
-                yield break;
-            }
         }
     }
 }

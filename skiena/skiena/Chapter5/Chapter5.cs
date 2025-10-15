@@ -52,7 +52,7 @@ namespace skiena.Chapter5
             return MyBST<int>.buildFromPostOrderVisitAndInOrderVisit(postOrderVisit, inOrderVisit);
         }
         /*
-         * 5.9
+         * 5.9, 5.10
          */
         public static long evaluateExpression(MyBT<string> tree) 
         {
@@ -78,30 +78,51 @@ namespace skiena.Chapter5
             return resStack.Any() ? resStack.Single():0;
         }
         /*
-         5.10
+         5.11
+        return a graph of connected triangle indexes
+        Complexity O(n * 6) n being nb of triangles
          */
-        public static long evaluateExpression(Graph<string> graph) 
+        public static Graph<int> createDualGraph(List<int[]> triangles) 
         {
-            Stack<long> resStack = new Stack<long>();
-            Dictionary<string, Action<long>> functionByCode = new Dictionary<string, Action<long>>
+            Graph<int> graph = new Graph<int>();
+            Dictionary<CustomTuple<int>,int> prevTriangleLinkedToEdge = [];
+            for (int idx = 0; idx<triangles.Count; idx++) 
             {
-                { "+", (v) =>  resStack.Push(resStack.Pop() +v)},
-                { "-", (v) => resStack.Push(resStack.Pop() - v)},
-                { "*", (v) => resStack.Push(resStack.Pop() * v) },
-                { "/", (v) => resStack.Push(resStack.Pop() / v) }
-            };
-            foreach (string data in graph.postOrderIteration())
-            {
-                if (long.TryParse(data, out long parameter))
+                int[] triangle = triangles[idx];
+                for (int i = 0; i < triangle.Length; i++)
                 {
-                    resStack.Push(parameter);
-                }
-                else
-                {
-                    functionByCode[data](resStack.Pop());
+                    var otherEdges = enumarateNeighbors(triangle, i).Select(x =>new CustomTuple<int>(triangle[i],x)).ToList();
+
+                    foreach(var edge in otherEdges) 
+                    {
+                        if (prevTriangleLinkedToEdge.ContainsKey(edge) && prevTriangleLinkedToEdge[edge] != idx)
+                        {
+                            graph.biDirectionalConnect(prevTriangleLinkedToEdge[edge], idx);
+                        }
+                        if (!prevTriangleLinkedToEdge.ContainsKey(edge))
+                        {
+                            prevTriangleLinkedToEdge.Add(edge, idx);
+                        }
+                        else 
+                        {
+                            prevTriangleLinkedToEdge[edge] = idx;
+                        }
+                    }
                 }
             }
-            return resStack.Any() ? resStack.Single() : 0;
+            return graph;
+        }
+
+        static IEnumerable<int> enumarateNeighbors(int[] triangle, int curr) 
+        {
+            for (int i = 0; i < triangle.Length; ++i) 
+            {
+                if (i == curr) 
+                {
+                    continue;
+                }
+                yield return triangle[i];
+            }
         }
     }
 }
