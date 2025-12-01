@@ -23,12 +23,8 @@ namespace skiena.aoc2025.day1
                 this.currPos = start;
                 range = max - min + 1;
             }
-            public int rotateLeft(int nb) 
+            public void rotateLeft(int nb) 
             {
-                if (nb == 0)
-                {
-                    return 0;
-                }
                 int initialPos = currPos;
                 if (nb < range)
                 {
@@ -40,12 +36,10 @@ namespace skiena.aoc2025.day1
                 }
                 else 
                 {
-                    return rotateLeft(nb % range);
+                     rotateLeft(nb % range);
                 }
-               
-                return 0;
             }
-            public int rotateRight(int nb)
+            public void rotateRight(int nb)
             {
                 int initialPos = currPos;
                 if (nb < range)
@@ -58,9 +52,8 @@ namespace skiena.aoc2025.day1
                 }
                 else
                 {
-                    return rotateRight(nb % range);
+                     rotateRight(nb % range);
                 }
-                return 0;
             }
 
             private int getNbIgnoredZeroAfterRighttRotation(int originalNb, int initialPos) 
@@ -127,11 +120,13 @@ namespace skiena.aoc2025.day1
                     int initialPos = currPos;
                     if (line[0] == 'R')
                     {
-                        nbPointingAtZero += rotateRight(nb)  + getNbIgnoredZeroAfterRighttRotation(nb, initialPos);
+                        rotateRight(nb);
+                        nbPointingAtZero +=   getNbIgnoredZeroAfterRighttRotation(nb, initialPos);
                     }
                     else if (line[0] == 'L')
                     {
-                        nbPointingAtZero += rotateLeft(nb) + getNbIgnoredZeroAfterLeftRotation(nb, initialPos);
+                        rotateLeft(nb);
+                        nbPointingAtZero +=  getNbIgnoredZeroAfterLeftRotation(nb, initialPos);
                     }
                 }
                 return nbPointingAtZero;
