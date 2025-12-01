@@ -19,6 +19,10 @@ namespace skiena.datastructures
             }
         }
 
+        public bool contains(T node) 
+        {
+            return roots.ContainsKey(node);
+        }
         public void insert(T node) 
         {
             roots.Add(node, node);

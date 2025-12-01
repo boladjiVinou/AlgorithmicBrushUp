@@ -1,4 +1,5 @@
-﻿using skiena.datastructures.graph;
+﻿using skiena.datastructures;
+using skiena.datastructures.graph;
 using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
@@ -123,6 +124,57 @@ namespace skiena.Chapter5
                 }
                 yield return triangle[i];
             }
+        }
+        /*
+         Complexity: (E*E/V) + E, => E^2
+         */
+        static Dictionary<int, HashSet<int>> generateSquaredGraph(Dictionary<int, HashSet<int>> graph) 
+        {
+            Dictionary<int, HashSet<int>> squaredGraph = new Dictionary<int, HashSet<int>>(graph);
+            Dictionary<int, HashSet<int>> parentByNode = new Dictionary<int, HashSet<int>>(graph);
+
+            foreach (var n in graph.Keys) 
+            {
+                foreach (var v in graph[n]) 
+                {
+                    if (!parentByNode.ContainsKey(v))
+                    {
+                        parentByNode.Add(v, new HashSet<int>());
+                    }
+                    parentByNode[v].Add(n);
+                }
+            }
+            foreach (var v in graph.Keys)
+            {
+                foreach (var w in graph[v])
+                {
+                    foreach (var u in parentByNode[v]) 
+                    {
+                        squaredGraph[u].Add(w);
+                    }
+                }
+            }
+
+            return squaredGraph;
+        }
+
+        static Dictionary<int, Dictionary<int, bool>> generateSquaredGraph(Dictionary<int, Dictionary<int,bool>> graph)
+        {
+            Dictionary<int, Dictionary<int, bool>> squaredGraph = new Dictionary<int, Dictionary<int, bool>>(graph);
+            foreach (var u in graph.Keys)
+            {
+                foreach (var v in graph[u].Keys) 
+                {
+                    if (graph[u][v]) 
+                    {
+                        foreach (var w in graph[v].Keys) 
+                        {
+                            squaredGraph[u][w] = true;
+                        }
+                    }
+                }
+            }
+            return squaredGraph;
         }
     }
 }
