@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,12 @@ namespace skiena.datastructures.graph
         public Graph() 
         {
         }
+        public Graph(Graph<T> graph) 
+        {
+            nodePerValue = new Dictionary<T,GraphNode<T>>(graph.nodePerValue);
+            neighborsPerNode = new Dictionary<GraphNode<T>, HashSet<GraphNode<T>>>(graph.neighborsPerNode);
+            roots = [.. graph.roots];
+        }
 
         public void biDirectionalConnect(T n1, T n2)
         {
@@ -38,6 +45,28 @@ namespace skiena.datastructures.graph
             neighborsPerNode[nodePerValue[n2]].Add(nodePerValue[n1]);
             removeFromRoots(n1);
             removeFromRoots(n2);
+        }
+
+        public void biDirectionalDisconnect(T n1, T n2)
+        {
+            if (!nodePerValue.ContainsKey(n1) || !nodePerValue.ContainsKey(n2))
+            {
+                return;
+            }
+            var node1 = nodePerValue[n1];
+            var node2 = nodePerValue[n2];
+            neighborsPerNode[node1].Remove(node2);
+            neighborsPerNode[node2].Remove(node1);
+            addToRoots(node1);
+            addToRoots(node2);
+        }
+
+        private void addToRoots(GraphNode<T> node2)
+        {
+            if (neighborsPerNode[node2].Count == 0)
+            {
+                roots.Add(node2);
+            }
         }
 
         private void removeFromRoots(T n1)
@@ -62,6 +91,17 @@ namespace skiena.datastructures.graph
             }
             neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
             removeFromRoots(n2);
+        }
+        public void uniDirectionalDisconnect(T n1, T n2) 
+        {
+            if (!nodePerValue.ContainsKey(n1) || !nodePerValue.ContainsKey(n2))
+            {
+                return;
+            }
+            var node1 = nodePerValue[n1];
+            var node2 = nodePerValue[n2];
+            neighborsPerNode[node1].Remove(node2);
+            addToRoots(node1);
         }
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 
@@ -166,6 +206,23 @@ namespace skiena.datastructures.graph
             return edges;
         }
 
+        public List<T> getVertices() 
+        {
+            List<T> vertices = new List<T>();
+            foreach(var key in nodePerValue.Keys)
+            {
+                if (nodePerValue[key] != null) 
+                {
+                    vertices.Add(key);
+                }
+            }
+            return vertices;
+        }
+
+       public HashSet<T> getNeighbors(T n) 
+        {
+            return neighborsPerNode[nodePerValue[n]].Select(x => x.Value).ToHashSet();
+        }
         private GraphNode<T> createNode(T n1)
         {
             var node = new GraphNode<T>(n1);
@@ -218,6 +275,19 @@ namespace skiena.datastructures.graph
                 generatedColors.Add(colorByNode[node]);
             }
             return generatedColors.Count;
+        }
+        public int getDegree(T n) 
+        {
+            if (!nodePerValue.ContainsKey(n)) 
+            {
+                return 0;
+            }
+            var node = nodePerValue[n];
+            if (!neighborsPerNode.ContainsKey(node)) 
+            {
+                return 0;
+            }
+            return neighborsPerNode[node].Count;
         }
     }
 }

@@ -1,4 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using skiena.aoc2025.day1;
+using skiena.aoc2025.day2;
 
-Day1.part2();
+Day2.part2();

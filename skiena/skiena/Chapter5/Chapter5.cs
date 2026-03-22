@@ -126,6 +126,7 @@ namespace skiena.Chapter5
             }
         }
         /*
+         5-12
          Complexity: (E*E/V) + E, => E^2
          */
         static Dictionary<int, HashSet<int>> generateSquaredGraph(Dictionary<int, HashSet<int>> graph) 
@@ -175,6 +176,59 @@ namespace skiena.Chapter5
                 }
             }
             return squaredGraph;
+        }
+        /*
+         5.13.a
+         */
+        HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
+        {
+            return [.. tree.getVertices().Where(x => tree.getDegree(x) > 1)];
+        }
+        /*
+         5.13.b
+         */
+        HashSet<int> minimumSizeVertexVersionB(Graph<int> graph) 
+        {
+            HashSet<int> minimumVerticeSet = [];
+            Graph<int> tmpGraph = new(graph);
+            var orderedVertices =  tmpGraph.getVertices().OrderByDescending(x => tmpGraph.getDegree(x)).ToList();
+            foreach (var v in orderedVertices)
+            {
+                HashSet<int> neighbors = tmpGraph.getNeighbors(v);
+                if (neighbors.Count != 0) 
+                {
+                    minimumVerticeSet.Add(v);
+                    foreach (var neighbor in neighbors)
+                    {
+                        tmpGraph.biDirectionalDisconnect(v, neighbor);
+                    }
+                }
+            }
+            return minimumVerticeSet;
+        }
+        /*
+         5.13.c
+         */
+        HashSet<int> minimumWeightCover(Graph<int> graph, Dictionary<int,int> weightByNode) 
+        {
+            HashSet<int> minimumVerticeSet = [];
+            Graph<int> tmpGraph = new(graph);
+            var orderedVertices = tmpGraph.getVertices()
+                .OrderByDescending(x => tmpGraph.getDegree(x) - weightByNode[x])
+                .ToList();
+            foreach (var v in orderedVertices)
+            {
+                HashSet<int> neighbors = tmpGraph.getNeighbors(v);
+                if (neighbors.Count != 0)
+                {
+                    minimumVerticeSet.Add(v);
+                    foreach (var neighbor in neighbors)
+                    {
+                        tmpGraph.biDirectionalDisconnect(v, neighbor);
+                    }
+                }
+            }
+            return minimumVerticeSet;
         }
     }
 }
