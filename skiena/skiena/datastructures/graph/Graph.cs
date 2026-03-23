@@ -7,6 +7,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace skiena.datastructures.graph
 {
@@ -223,6 +224,16 @@ namespace skiena.datastructures.graph
         {
             return neighborsPerNode[nodePerValue[n]].Select(x => x.Value).ToHashSet();
         }
+
+        public bool areNodeConnected(T n1, T n2) 
+        {
+            if (nodePerValue.ContainsKey(n1) && nodePerValue.ContainsKey(n2)) 
+            {
+                return neighborsPerNode[nodePerValue[n1]].Contains(nodePerValue[n2]) 
+                    || neighborsPerNode[nodePerValue[n2]].Contains(nodePerValue[n1]);
+            }
+            return false;
+        }
         private GraphNode<T> createNode(T n1)
         {
             var node = new GraphNode<T>(n1);
@@ -288,6 +299,37 @@ namespace skiena.datastructures.graph
                 return 0;
             }
             return neighborsPerNode[node].Count;
+        }
+
+        public bool isBipartite() 
+        {
+            // 0 red, 1 blue
+            Dictionary<T, int> colorByNode = [];
+            Queue<T> q = [];
+            foreach (var root in roots)
+            {
+                q.Enqueue(root.Value);
+                colorByNode.Add(root.Value, 0);
+            }
+            while (q.Count > 0) 
+            {
+                var node = q.Dequeue();
+                var childColor = colorByNode[node] == 0 ? 1 : 0;
+                foreach (var item in getNeighbors(node))
+                {
+                    bool childSeen = colorByNode.ContainsKey(item);
+                    if (childSeen && colorByNode[item] != childColor) 
+                    {
+                        return false;
+                    }
+                    if (!childSeen) 
+                    {
+                        colorByNode.Add(item, childColor);
+                        q.Enqueue(item);
+                    }
+                }
+            }
+            return true;
         }
     }
 }

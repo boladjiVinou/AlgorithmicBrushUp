@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -179,15 +180,18 @@ namespace skiena.Chapter5
         }
         /*
          5.13.a
+        We have a tree -> there is no cycle in it
+        there is no cycle -> each edge lead to an uncovered node
+        an edge is composed by 2 nodes -> by removing the leaves the cover is the remaining nodes, we cant have less than that
          */
-        HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
+        static HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
         {
             return [.. tree.getVertices().Where(x => tree.getDegree(x) > 1)];
         }
         /*
          5.13.b
          */
-        HashSet<int> minimumSizeVertexVersionB(Graph<int> graph) 
+        static HashSet<int> minimumSizeVertexVersionB(Graph<int> graph) 
         {
             HashSet<int> minimumVerticeSet = [];
             Graph<int> tmpGraph = new(graph);
@@ -209,7 +213,7 @@ namespace skiena.Chapter5
         /*
          5.13.c
          */
-        HashSet<int> minimumWeightCover(Graph<int> graph, Dictionary<int,int> weightByNode) 
+        static HashSet<int> minimumWeightCover(Graph<int> graph, Dictionary<int,int> weightByNode) 
         {
             HashSet<int> minimumVerticeSet = [];
             Graph<int> tmpGraph = new(graph);
@@ -230,5 +234,58 @@ namespace skiena.Chapter5
             }
             return minimumVerticeSet;
         }
+
+        /*
+         5.14
+        Not necesarly
+
+          n1  -- n2
+          |   \
+          n3   n4
+
+        We can generate a dfs tree
+        n1 -> n2
+        n1 -> n3
+        n1 -> n4
+        deleting the leaves gives us n1 as cover
+
+        but we can also have as tree by starting randomly by n2
+
+        n2 -> n1
+        n1 -> n3
+        n1 -> n4
+
+        deleting the leaves gives us as cover, n2,n1 which is not minimal cover of the graph
+         */
+
+        /*
+         5.15
+        It means the graph is bipartite
+         */
+        static bool containsIndependantSet(Graph<int> graph)
+        {
+            /*var cover = minimumSizeVertexVersionB(graph);
+            var edges = graph.getEdges();
+            if (edges.Count > Math.Pow(cover.Count, 2)) 
+            {
+                foreach (var v in cover) 
+                {
+                    foreach (var u in cover) 
+                    {
+                        if (v != u && graph.areNodeConnected(u,v))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            return !graph.getEdges()
+                .Where(x => cover.Contains(x.Item1) && cover.Contains(x.Item2))
+                .Any();*/
+            return graph.isBipartite();
+
+        }
+        
     }
 }
