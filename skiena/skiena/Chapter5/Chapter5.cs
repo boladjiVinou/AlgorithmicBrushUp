@@ -2,6 +2,7 @@
 using skiena.datastructures.graph;
 using skiena.datastructures.trees;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -286,6 +287,42 @@ namespace skiena.Chapter5
             return graph.isBipartite();
 
         }
-        
+        /**
+         5.16.a
+         */
+        static ISet<int> computeMaxIndependentSet(Graph<int> directedTree, int root) 
+        {
+            HashSet<int> independentSet = [];
+            int maxSize= computeMaxIndependentSetSize(directedTree, root, [],false,independentSet);
+            if (maxSize != independentSet.Count) 
+            {
+                throw new ApplicationException("computed set size mismatch");
+            }
+            return independentSet;
+        }
+
+        static int computeMaxIndependentSetSize(Graph<int> directedTree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet) 
+        {
+            if (memo.TryGetValue(node, out int value)) 
+            {
+                return value;
+            }
+            int sizeWithNodeIncluded = parentIncluded ? 0 : directedTree.getNeighbors(node)
+                .Sum(x => computeMaxIndependentSetSize(directedTree, x, memo, true, independentSet)) + 1;
+            int sizeWithNodeExcluded = directedTree.getNeighbors(node)
+                .Sum(x => computeMaxIndependentSetSize(directedTree, x, memo, false, independentSet));
+            int finalResult = 0;
+            if (sizeWithNodeIncluded > sizeWithNodeExcluded)
+            {
+                independentSet.Add(value);
+                finalResult = sizeWithNodeIncluded;
+            }
+            else 
+            {
+                finalResult = sizeWithNodeExcluded;
+            }
+            memo.Add(node, finalResult);
+            return finalResult;
+        }
     }
 }
