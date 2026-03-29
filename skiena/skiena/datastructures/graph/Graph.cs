@@ -62,6 +62,11 @@ namespace skiena.datastructures.graph
             addToRoots(node2);
         }
 
+
+        public IEnumerable<T> getRoots() 
+        {
+            return roots.Select(x => x.Value);
+        }
         private void addToRoots(GraphNode<T> node2)
         {
             if (neighborsPerNode[node2].Count == 0)
@@ -124,7 +129,7 @@ namespace skiena.datastructures.graph
             Dictionary<T, HashSet<T>> adjencyList = [];
             foreach (var v in nodePerValue.Keys) 
             {
-                adjencyList.Add(v, neighborsPerNode[nodePerValue[v]].Select(x=>x.Value).ToHashSet());
+                adjencyList.Add(v, [.. neighborsPerNode[nodePerValue[v]].Select(x=>x.Value)]);
             }
             return adjencyList;
         }
@@ -301,10 +306,10 @@ namespace skiena.datastructures.graph
             return neighborsPerNode[node].Count;
         }
 
-        public bool isBipartite() 
+        public bool isBipartite(out Dictionary<T, int> colorByNode) 
         {
             // 0 red, 1 blue
-            Dictionary<T, int> colorByNode = [];
+            colorByNode = [];
             Queue<T> q = [];
             foreach (var root in roots)
             {

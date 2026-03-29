@@ -284,33 +284,69 @@ namespace skiena.Chapter5
             return !graph.getEdges()
                 .Where(x => cover.Contains(x.Item1) && cover.Contains(x.Item2))
                 .Any();*/
-            return graph.isBipartite();
+            Dictionary<int, int> colorByNode = new Dictionary<int, int>();
+            return graph.isBipartite(out colorByNode);
 
         }
         /**
          5.16.a
          */
-        static ISet<int> computeMaxIndependentSet(Graph<int> directedTree, int root) 
+        static ISet<int> computeMaxIndependentSetA(Graph<int> tree, int root) 
         {
             HashSet<int> independentSet = [];
-            int maxSize= computeMaxIndependentSetSize(directedTree, root, [],false,independentSet);
+            int maxSize= computeMaxIndependentSetSize(tree, root, [],false,independentSet, (n)=> 1);
             if (maxSize != independentSet.Count) 
             {
                 throw new ApplicationException("computed set size mismatch");
             }
             return independentSet;
         }
+        /*
+         5.16.b
+        */
+        static ISet<int> computeMaxIndependentSetB(Graph<int> tree, int root)
+        {
+            HashSet<int> independentSet = [];
+            computeMaxIndependentSetSize(tree, root, [], false, independentSet, (n) => tree.getDegree(n));
+            return independentSet;
+        }
 
-        static int computeMaxIndependentSetSize(Graph<int> directedTree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet) 
+        /*
+         5.16.c
+        */
+        static ISet<int> computeMaxIndependentSetC(Graph<int> tree,Dictionary<int,int> vertexWeights, int root)
+        {
+            HashSet<int> independentSet = [];
+            computeMaxIndependentSetSize(tree, root, [], false,
+                independentSet, (n) => vertexWeights.TryGetValue(n, out int weight) ? weight : 1);
+            return independentSet;
+        }
+
+        static int computeMaxIndependentSetSize(Graph<int> tree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet, Func<int,int> weightProvider) 
         {
             if (memo.TryGetValue(node, out int value)) 
             {
                 return value;
             }
-            int sizeWithNodeIncluded = parentIncluded ? 0 : directedTree.getNeighbors(node)
-                .Sum(x => computeMaxIndependentSetSize(directedTree, x, memo, true, independentSet)) + 1;
-            int sizeWithNodeExcluded = directedTree.getNeighbors(node)
-                .Sum(x => computeMaxIndependentSetSize(directedTree, x, memo, false, independentSet));
+
+            if (!parentIncluded) 
+            {
+                independentSet.Add(node);
+            }
+
+            int sizeWithNodeIncluded = parentIncluded ? 0 : tree.getNeighbors(node)
+                .Where(x => !independentSet.Contains(x))
+                .Sum(x => computeMaxIndependentSetSize(tree, x, memo, true, independentSet,weightProvider)) + weightProvider(node);
+
+            if (!parentIncluded)
+            {
+                independentSet.Remove(node);
+            }
+
+            int sizeWithNodeExcluded = tree.getNeighbors(node)
+                .Where(x => !independentSet.Contains(x))
+                .Sum(x => computeMaxIndependentSetSize(tree, x, memo, false, independentSet,weightProvider));
+
             int finalResult = 0;
             if (sizeWithNodeIncluded > sizeWithNodeExcluded)
             {
@@ -324,5 +360,73 @@ namespace skiena.Chapter5
             memo.Add(node, finalResult);
             return finalResult;
         }
+
+        /*
+         5.17
+         */
+        static bool findTriangleVersionA(Graph<int> graph) 
+        {
+            foreach (var n1 in graph.getVertices()) 
+            {
+                foreach (var n2 in graph.getNeighbors(n1)) 
+                {
+                    foreach (var n3 in graph.getNeighbors(n2)) 
+                    {
+                        if (n3 != n1 && graph.areNodeConnected(n3,n1)) 
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        static bool findTriangleVersionB(Graph<int> graph) 
+        {
+            foreach (var root in graph.getRoots())
+            {
+                if (checkTriangleWithDfs(graph, root, new HashSet<int>())) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        static bool checkTriangleWithDfs(Graph<int> graph, int node, ISet<int> encountered) 
+        {
+            encountered.Add(node);
+            foreach (var item in graph.getNeighbors(node))
+            {
+                if (item != node && encountered.Contains(item)) 
+                {
+                    return true;
+                }
+                if (checkTriangleWithDfs(graph, item, encountered)) 
+                {
+                    return true;
+                }
+            }
+            encountered.Remove(node);
+            return false;
+        }
+
+        /*
+         5.18
+         */
+        Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
+        {
+            Graph<int> graph = new Graph<int>();
+            foreach (var item in desiredMoviesPerClient)
+            {
+                graph.uniDirectionalConnect(item.Item1, item.Item2);
+            }
+            Dictionary<int, int> colorByNode;
+            if (graph.isBipartite(out colorByNode))
+            {
+                return colorByNode;
+            }
+            return [];
+        }
+
     }
 }
