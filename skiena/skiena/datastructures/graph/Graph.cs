@@ -15,7 +15,6 @@ namespace skiena.datastructures.graph
     {
         Dictionary<T,GraphNode<T>> nodePerValue = [];
         Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> neighborsPerNode = [];
-        HashSet<GraphNode<T>> roots = new HashSet<GraphNode<T>>();
         private Action<T> beforeVisitAction = (v) => { };
         private Action<T> afterVisitAction = (v) => { };
         private Action<T> visitAction = (v) => { };
@@ -27,7 +26,6 @@ namespace skiena.datastructures.graph
         {
             nodePerValue = new Dictionary<T,GraphNode<T>>(graph.nodePerValue);
             neighborsPerNode = new Dictionary<GraphNode<T>, HashSet<GraphNode<T>>>(graph.neighborsPerNode);
-            roots = [.. graph.roots];
         }
 
         public void biDirectionalConnect(T n1, T n2)
@@ -44,9 +42,8 @@ namespace skiena.datastructures.graph
             }
             neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
             neighborsPerNode[nodePerValue[n2]].Add(nodePerValue[n1]);
-            removeFromRoots(n1);
-            removeFromRoots(n2);
         }
+
 
         public void biDirectionalDisconnect(T n1, T n2)
         {
@@ -58,31 +55,7 @@ namespace skiena.datastructures.graph
             var node2 = nodePerValue[n2];
             neighborsPerNode[node1].Remove(node2);
             neighborsPerNode[node2].Remove(node1);
-            addToRoots(node1);
-            addToRoots(node2);
         }
-
-
-        public IEnumerable<T> getRoots() 
-        {
-            return roots.Select(x => x.Value);
-        }
-        private void addToRoots(GraphNode<T> node2)
-        {
-            if (neighborsPerNode[node2].Count == 0)
-            {
-                roots.Add(node2);
-            }
-        }
-
-        private void removeFromRoots(T n1)
-        {
-            if (roots.Contains(nodePerValue[n1]))
-            {
-                roots.Remove(nodePerValue[n1]);
-            }
-        }
-
         public void uniDirectionalConnect(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
@@ -96,7 +69,6 @@ namespace skiena.datastructures.graph
                 neighborsPerNode.Add(nodePerValue[n2], []);
             }
             neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
-            removeFromRoots(n2);
         }
         public void uniDirectionalDisconnect(T n1, T n2) 
         {
@@ -107,7 +79,6 @@ namespace skiena.datastructures.graph
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
             neighborsPerNode[node1].Remove(node2);
-            addToRoots(node1);
         }
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 
@@ -245,7 +216,6 @@ namespace skiena.datastructures.graph
             node.setAfterVisitAction(afterVisitAction);
             node.setVisitAction(visitAction);
             node.setBeforeVisitAction(beforeVisitAction);
-            roots.Add(node);
             return node;
         }
 
@@ -311,10 +281,10 @@ namespace skiena.datastructures.graph
             // 0 red, 1 blue
             colorByNode = [];
             Queue<T> q = [];
-            foreach (var root in roots)
+            foreach (var root in getRoots())
             {
-                q.Enqueue(root.Value);
-                colorByNode.Add(root.Value, 0);
+                q.Enqueue(root);
+                colorByNode.Add(root, 0);
             }
             while (q.Count > 0) 
             {
@@ -335,6 +305,43 @@ namespace skiena.datastructures.graph
                 }
             }
             return true;
+        }
+
+        public IEnumerable<T> getRoots() 
+        {
+            int maxDegree = getVertices().Select(x => getDegree(x)).Max();
+            return getVertices().Where(x => getDegree(x) == maxDegree || getDegree(x) == 0);
+        }
+        public Graph<T> computeMaximumInducedSubgraph(int minDegree) 
+        {
+            var graph = new Graph<T>(this);
+            bool inspectGraph = true;
+            while (inspectGraph) 
+            {
+                inspectGraph = false;
+                foreach (var item in graph.getRoots())
+                {
+                    Queue<T> q = [];
+                    q.Enqueue(item);
+                    while (q.Count > 0)
+                    {
+                        var node = q.Dequeue();
+                        var nodeNeighbors = graph.getNeighbors(node);
+                        bool breakLink = graph.getDegree(node) < minDegree;
+                        foreach (var item1 in nodeNeighbors)
+                        {
+                            q.Enqueue(item1);
+                            if (breakLink)
+                            {
+                                graph.biDirectionalDisconnect(node, item1);
+                                inspectGraph = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return graph;
+
         }
     }
 }

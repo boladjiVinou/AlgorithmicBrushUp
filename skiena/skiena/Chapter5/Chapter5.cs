@@ -413,12 +413,12 @@ namespace skiena.Chapter5
         /*
          5.18
          */
-        Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
+        static Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
         {
             Graph<int> graph = new Graph<int>();
             foreach (var item in desiredMoviesPerClient)
             {
-                graph.uniDirectionalConnect(item.Item1, item.Item2);
+                graph.biDirectionalConnect(item.Item1, item.Item2);
             }
             Dictionary<int, int> colorByNode;
             if (graph.isBipartite(out colorByNode))
@@ -427,6 +427,43 @@ namespace skiena.Chapter5
             }
             return [];
         }
+        /*
+         5.19
+         */
+        static int computeDiameter(Graph<int> tree) 
+        {
+            int diameter = 0;
+            int maxDegree = tree.getVertices().MaxBy(x => tree.getDegree(x));
+            foreach (var item in tree.getRoots())
+            {
+                Stack<Tuple<int,int>> stack = [];
+                stack.Push(new Tuple<int,int>(item,0));
+                while (stack.Count > 0) 
+                {
+                    var currData = stack.Pop();
+                    var neighbors = tree.getNeighbors(currData.Item1).Where(x => x != currData.Item1);
+                    foreach (var item1 in neighbors)
+                    {
+                        stack.Push(new Tuple<int, int>(item1, currData.Item2 + 1));
+                    }
+                    if (!neighbors.Any()) 
+                    {
+                        diameter = Math.Max(diameter, currData.Item2);
+                    }
+                }
+                
+            }
+            return diameter;
+        }
+
+        /*
+         5.20
+         */
+        static Graph<int> computeMaximumInducedSubgraph(Graph<int> graph, int k) 
+        {
+            return graph.computeMaximumInducedSubgraph(k);
+        }
+
 
     }
 }
