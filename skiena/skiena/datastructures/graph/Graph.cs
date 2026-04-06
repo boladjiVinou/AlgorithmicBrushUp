@@ -55,6 +55,16 @@ namespace skiena.datastructures.graph
             var node2 = nodePerValue[n2];
             neighborsPerNode[node1].Remove(node2);
             neighborsPerNode[node2].Remove(node1);
+            if (neighborsPerNode[node1].Count == 0) 
+            {
+                neighborsPerNode.Remove(node1);
+                nodePerValue.Remove(n1);
+            }
+            if (neighborsPerNode[node2].Count == 0)
+            {
+                neighborsPerNode.Remove(node2);
+                nodePerValue.Remove(n2);
+            }
         }
         public void uniDirectionalConnect(T n1, T n2)
         {
@@ -79,6 +89,11 @@ namespace skiena.datastructures.graph
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
             neighborsPerNode[node1].Remove(node2);
+            if (neighborsPerNode[node1].Count == 0)
+            {
+                neighborsPerNode.Remove(node1);
+                nodePerValue.Remove(n1);
+            }
         }
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 

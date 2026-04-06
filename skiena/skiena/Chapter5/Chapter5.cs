@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -462,6 +463,68 @@ namespace skiena.Chapter5
         static Graph<int> computeMaximumInducedSubgraph(Graph<int> graph, int k) 
         {
             return graph.computeMaximumInducedSubgraph(k);
+        }
+
+        /*
+         5.21
+         */
+        record NodeData(int value, int pathLength) 
+        {
+        }
+        static int findNumberOfShortestPath(Graph<int> directedGraph, int v, int w) 
+        {
+            int pathLength = -1;
+            int nbPath = 0;
+            Queue<NodeData> q = [];
+            q.Enqueue(new NodeData(v,0));
+            while (q.Count > 0) 
+            {
+                var tmp = q.Dequeue();
+                if (tmp.value == w) 
+                {
+                    if (pathLength > 0 && pathLength != tmp.pathLength) 
+                    {
+                        break; // in bread first search if it is different it means it is greater , since the edges has no weight
+                    }
+                    ++nbPath;
+                    pathLength = tmp.pathLength;
+                }
+                foreach(int neighbor in directedGraph.getNeighbors(tmp.value)) 
+                {
+                    q.Enqueue(new NodeData(neighbor, tmp.pathLength + 1));
+                }
+            }
+            return nbPath;
+        }
+
+        /*
+         5.22
+         */
+        static void reduceEdges(Graph<int> graph) 
+        {
+            Queue<int> q = [];
+            foreach (int v in graph.getVertices().Where(x => graph.getDegree(x) == 2)) 
+            {
+                q.Enqueue(v);
+            }
+            while (q.Count > 0)
+            {
+                int v = q.Dequeue();
+                var neighbors = graph.getNeighbors(v).ToList();
+                foreach (var n in neighbors)
+                {
+                    graph.biDirectionalDisconnect(v, n);
+                }
+                graph.biDirectionalConnect(neighbors[0], neighbors[1]);
+                if (graph.getDegree(neighbors[0]) == 2) 
+                {
+                    q.Enqueue(neighbors[0]);
+                }
+                if (graph.getDegree(neighbors[1]) == 2) 
+                {
+                    q.Enqueue(neighbors[1]);
+                }
+            }
         }
 
 
