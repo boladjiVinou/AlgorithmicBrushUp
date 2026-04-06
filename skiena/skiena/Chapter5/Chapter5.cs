@@ -88,7 +88,7 @@ namespace skiena.Chapter5
          */
         public static Graph<int> createDualGraph(List<int[]> triangles) 
         {
-            Graph<int> graph = new Graph<int>();
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
             Dictionary<CustomTuple<int>,int> prevTriangleLinkedToEdge = [];
             for (int idx = 0; idx<triangles.Count; idx++) 
             {
@@ -101,7 +101,7 @@ namespace skiena.Chapter5
                     {
                         if (prevTriangleLinkedToEdge.ContainsKey(edge) && prevTriangleLinkedToEdge[edge] != idx)
                         {
-                            graph.biDirectionalConnect(prevTriangleLinkedToEdge[edge], idx);
+                            graph.connect(prevTriangleLinkedToEdge[edge], idx);
                         }
                         if (!prevTriangleLinkedToEdge.ContainsKey(edge))
                         {
@@ -193,10 +193,10 @@ namespace skiena.Chapter5
         /*
          5.13.b
          */
-        static HashSet<int> minimumSizeVertexVersionB(Graph<int> graph) 
+        static HashSet<int> minimumSizeVertexVersionB(UndirectedGraph<int> graph) 
         {
             HashSet<int> minimumVerticeSet = [];
-            Graph<int> tmpGraph = new(graph);
+            UndirectedGraph<int> tmpGraph = new(graph);
             var orderedVertices =  tmpGraph.getVertices().OrderByDescending(x => tmpGraph.getDegree(x)).ToList();
             foreach (var v in orderedVertices)
             {
@@ -206,7 +206,7 @@ namespace skiena.Chapter5
                     minimumVerticeSet.Add(v);
                     foreach (var neighbor in neighbors)
                     {
-                        tmpGraph.biDirectionalDisconnect(v, neighbor);
+                        tmpGraph.disconnect(v, neighbor);
                     }
                 }
             }
@@ -215,10 +215,10 @@ namespace skiena.Chapter5
         /*
          5.13.c
          */
-        static HashSet<int> minimumWeightCover(Graph<int> graph, Dictionary<int,int> weightByNode) 
+        static HashSet<int> minimumWeightCover(UndirectedGraph<int> graph, Dictionary<int,int> weightByNode) 
         {
             HashSet<int> minimumVerticeSet = [];
-            Graph<int> tmpGraph = new(graph);
+            UndirectedGraph<int> tmpGraph = new UndirectedGraph<int>(graph);
             var orderedVertices = tmpGraph.getVertices()
                 .OrderByDescending(x => tmpGraph.getDegree(x) - weightByNode[x])
                 .ToList();
@@ -230,7 +230,7 @@ namespace skiena.Chapter5
                     minimumVerticeSet.Add(v);
                     foreach (var neighbor in neighbors)
                     {
-                        tmpGraph.biDirectionalDisconnect(v, neighbor);
+                        tmpGraph.disconnect(v, neighbor);
                     }
                 }
             }
@@ -416,10 +416,10 @@ namespace skiena.Chapter5
          */
         static Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
         {
-            Graph<int> graph = new Graph<int>();
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
             foreach (var item in desiredMoviesPerClient)
             {
-                graph.biDirectionalConnect(item.Item1, item.Item2);
+                graph.connect(item.Item1, item.Item2);
             }
             Dictionary<int, int> colorByNode;
             if (graph.isBipartite(out colorByNode))
@@ -431,7 +431,7 @@ namespace skiena.Chapter5
         /*
          5.19
          */
-        static int computeDiameter(Graph<int> tree) 
+        static int computeDiameter(DirectedGraph<int> tree) 
         {
             int diameter = 0;
             int maxDegree = tree.getVertices().MaxBy(x => tree.getDegree(x));
@@ -460,7 +460,7 @@ namespace skiena.Chapter5
         /*
          5.20
          */
-        static Graph<int> computeMaximumInducedSubgraph(Graph<int> graph, int k) 
+        static UndirectedGraph<int> computeMaximumInducedSubgraph(UndirectedGraph<int> graph, int k) 
         {
             return graph.computeMaximumInducedSubgraph(k);
         }
@@ -500,7 +500,7 @@ namespace skiena.Chapter5
         /*
          5.22
          */
-        static void reduceEdges(Graph<int> graph) 
+        static void reduceEdges(UndirectedGraph<int> graph) 
         {
             Queue<int> q = [];
             foreach (int v in graph.getVertices().Where(x => graph.getDegree(x) == 2)) 
@@ -513,9 +513,9 @@ namespace skiena.Chapter5
                 var neighbors = graph.getNeighbors(v).ToList();
                 foreach (var n in neighbors)
                 {
-                    graph.biDirectionalDisconnect(v, n);
+                    graph.disconnect(v, n);
                 }
-                graph.biDirectionalConnect(neighbors[0], neighbors[1]);
+                graph.connect(neighbors[0], neighbors[1]);
                 if (graph.getDegree(neighbors[0]) == 2) 
                 {
                     q.Enqueue(neighbors[0]);
@@ -527,6 +527,16 @@ namespace skiena.Chapter5
             }
         }
 
-
+        /*
+         5.23
+        a) directed edge when 1 -> 2,  1 hates 2
+         */
+        static List<int> getLineOrder(DirectedGraph<int> relations) 
+        {
+            return [];
+        }
+        /*
+         5.23 b)
+         */
     }
 }
