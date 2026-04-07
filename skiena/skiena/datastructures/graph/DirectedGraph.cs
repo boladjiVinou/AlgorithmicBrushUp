@@ -9,6 +9,13 @@ namespace skiena.datastructures.graph
     public class DirectedGraph<T> : Graph<T> where T : IEquatable<T>
     {
         protected Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> reversedLinks = [];
+
+        public DirectedGraph() : base()
+        {
+        }
+        public DirectedGraph(Graph<T> graph) : base(graph)
+        {
+        }
         public override void connect(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
@@ -44,6 +51,20 @@ namespace skiena.datastructures.graph
             var neighbors = neighborsPerNode.Values.SelectMany(x =>x).Select(x=>x.Value).ToHashSet();
             return getVertices().Where(x => !neighbors.Contains(x));
         }
+
+        public override int getDegree(T n)
+        {
+            if (!nodePerValue.ContainsKey(n))
+            {
+                return 0;
+            }
+            var node = nodePerValue[n];
+
+            return neighborsPerNode.Values
+                .Where(x => x.Contains(node))
+                .Count();
+        }
+
 
     }
 }

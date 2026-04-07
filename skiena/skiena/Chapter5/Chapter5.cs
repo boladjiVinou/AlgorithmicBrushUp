@@ -4,6 +4,7 @@ using skiena.datastructures.trees;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
@@ -531,12 +532,56 @@ namespace skiena.Chapter5
          5.23
         a) directed edge when 1 -> 2,  1 hates 2
          */
-        static List<int> getLineOrder(DirectedGraph<int> relations) 
+        static List<int> getLineOrderA(DirectedGraph<int> relations) 
         {
-            return [];
+            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getDegree(y));
+            Queue<int> q = [];
+            foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0)) 
+            {
+                q.Enqueue(e);
+            }
+            List<int> result = [];
+            while (q.Count > 0) 
+            {
+                int v = q.Dequeue();
+                result.Add(v);
+                foreach (var e in relations.getNeighbors(v)) 
+                {
+                    --degreesByNode[e];
+                    if(degreesByNode[e] == 0) 
+                    {
+                        q.Enqueue(e);
+                    }
+                }
+            }
+            return degreesByNode.Values.Any(x =>x > 0) ? []:result;
         }
         /*
          5.23 b)
          */
+        static int getLineOrderB(DirectedGraph<int> relations) 
+        {
+            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getDegree(y));
+            Queue<Tuple<int,int>> q = [];
+            foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0))
+            {
+                q.Enqueue(new Tuple<int, int>(e,0));
+            }
+            int minRow = 0;
+            while (q.Count > 0)
+            {
+                var tmp = q.Dequeue();
+                minRow = Math.Max(minRow, tmp.Item2);
+                foreach (var e in relations.getNeighbors(tmp.Item1))
+                {
+                    --degreesByNode[e];
+                    if (degreesByNode[e] == 0)
+                    {
+                        q.Enqueue(new Tuple<int, int>(e, tmp.Item2+1));
+                    }
+                }
+            }
+            return degreesByNode.Values.Any(x => x > 0) ? -1:  minRow;
+        }
     }
 }

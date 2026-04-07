@@ -213,20 +213,7 @@ namespace skiena.datastructures.graph
             }
             return generatedColors.Count;
         }
-        public int getDegree(T n) 
-        {
-            if (!nodePerValue.ContainsKey(n)) 
-            {
-                return 0;
-            }
-            var node = nodePerValue[n];
-            if (!neighborsPerNode.ContainsKey(node)) 
-            {
-                return 0;
-            }
-            return neighborsPerNode[node].Count;
-        }
-
+        public abstract int getDegree(T n);
         public bool isBipartite(out Dictionary<T, int> colorByNode) 
         {
             // 0 red, 1 blue

@@ -90,5 +90,20 @@ namespace skiena.datastructures.graph
             int maxDegree = getVertices().Select(x => getDegree(x)).Max();
             return getVertices().Where(x => getDegree(x) == maxDegree || getDegree(x) == 0);
         }
+
+        public override int getDegree(T n)
+        {
+            if (!nodePerValue.ContainsKey(n))
+            {
+                return 0;
+            }
+            var node = nodePerValue[n];
+            if (neighborsPerNode.ContainsKey(node))
+            {
+                return 0;
+            }
+            return neighborsPerNode[node].Count;
+        }
+
     }
 }
