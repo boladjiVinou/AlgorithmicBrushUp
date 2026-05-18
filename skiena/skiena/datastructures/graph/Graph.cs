@@ -14,10 +14,6 @@ namespace skiena.datastructures.graph
     public abstract class Graph<T> where T : IEquatable<T>
     {
         protected Dictionary<T,GraphNode<T>> nodePerValue = [];
-        protected Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> neighborsPerNode = [];
-        private Action<T> beforeVisitAction = (v) => { };
-        private Action<T> afterVisitAction = (v) => { };
-        private Action<T> visitAction = (v) => { };
 
         public Graph() 
         {
@@ -25,7 +21,6 @@ namespace skiena.datastructures.graph
         public Graph(Graph<T> graph) 
         {
             nodePerValue = new Dictionary<T,GraphNode<T>>(graph.nodePerValue);
-            neighborsPerNode = new Dictionary<GraphNode<T>, HashSet<GraphNode<T>>>(graph.neighborsPerNode);
         }
 
         public abstract void connect(T n1, T n2);
@@ -38,9 +33,10 @@ namespace skiena.datastructures.graph
             foreach(var v in nodePerValue.Keys)
             {
                 adjencyMap.Add(v, new Dictionary<T, bool>());
+                var nodeNeighbors = nodePerValue[v].getNeighbors();
                 foreach (var node in nodePerValue.Keys)
                 {
-                    adjencyMap[v].Add(node, neighborsPerNode[nodePerValue[v]].Contains(nodePerValue[node]));
+                    adjencyMap[v].Add(node, nodeNeighbors.Contains(nodePerValue[node]));
                 }
             }
             return adjencyMap;
@@ -51,7 +47,7 @@ namespace skiena.datastructures.graph
             Dictionary<T, HashSet<T>> adjencyList = [];
             foreach (var v in nodePerValue.Keys) 
             {
-                adjencyList.Add(v, [.. neighborsPerNode[nodePerValue[v]].Select(x=>x.Value)]);
+                adjencyList.Add(v, [.. nodePerValue[v].getNeighbors().Select(x=>x.Value)]);
             }
             return adjencyList;
         }
@@ -124,11 +120,11 @@ namespace skiena.datastructures.graph
         public List<Tuple<T, T>> getEdges() 
         {
             List<Tuple<T, T>> edges = new List<Tuple<T, T>>();
-            foreach (var v in neighborsPerNode.Keys)
+            foreach (var v in nodePerValue.Keys)
             {
-                foreach (var n in neighborsPerNode[v]) 
+                foreach (var n in nodePerValue[v].getNeighbors()) 
                 {
-                    edges.Add(new Tuple<T, T>(v.Value, n.Value));
+                    edges.Add(new Tuple<T, T>(v, n.Value));
                 }
             }
             return edges;
@@ -149,41 +145,22 @@ namespace skiena.datastructures.graph
 
        public HashSet<T> getNeighbors(T n) 
         {
-            return neighborsPerNode[nodePerValue[n]].Select(x => x.Value).ToHashSet();
+            return nodePerValue[n].getNeighbors().Select(x => x.Value).ToHashSet();
         }
 
         public bool areNodeConnected(T n1, T n2) 
         {
             if (nodePerValue.ContainsKey(n1) && nodePerValue.ContainsKey(n2)) 
             {
-                return neighborsPerNode[nodePerValue[n1]].Contains(nodePerValue[n2]) 
-                    || neighborsPerNode[nodePerValue[n2]].Contains(nodePerValue[n1]);
+                return nodePerValue[n1].isConnectedTo(nodePerValue[n2]) 
+                    || nodePerValue[n2].isConnectedTo(nodePerValue[n1]);
             }
             return false;
         }
         protected GraphNode<T> createNode(T n1)
         {
             var node = new GraphNode<T>(n1);
-            node.setAfterVisitAction(afterVisitAction);
-            node.setVisitAction(visitAction);
-            node.setBeforeVisitAction(beforeVisitAction);
             return node;
-        }
-
-        public Graph<T> withBeforeVisitAction(Action<T> beforeVisitAction)
-        {
-            this.beforeVisitAction = beforeVisitAction;
-            return this;
-        }
-        public Graph<T> withVisitAction(Action<T> action)
-        {
-            this.visitAction = action;
-            return this;
-        }
-        public Graph<T> withAfterVisitAction(Action<T> afterVisitAction)
-        {
-            this.afterVisitAction = afterVisitAction;
-            return this;
         }
         
         public int computeChromaticNumberGreedy() 
@@ -193,7 +170,7 @@ namespace skiena.datastructures.graph
             foreach (var node in nodePerValue.Values) 
             {
                 HashSet<int> neighborsColors = new HashSet<int>();
-                foreach (var neighbor in neighborsPerNode[node]) 
+                foreach (var neighbor in node.getNeighbors()) 
                 {
                     if (colorByNode.ContainsKey(neighbor)) 
                     {
@@ -213,13 +190,21 @@ namespace skiena.datastructures.graph
             }
             return generatedColors.Count;
         }
-        public abstract int getDegree(T n);
+        public virtual int getDegree(T n)
+        {
+            if (!nodePerValue.ContainsKey(n))
+            {
+                return 0;
+            }
+            var node = nodePerValue[n];
+            return node.getInDegree();
+        }
         public bool isBipartite(out Dictionary<T, int> colorByNode) 
         {
             // 0 red, 1 blue
             colorByNode = [];
             Queue<T> q = [];
-            foreach (var root in getRoots())
+            foreach (var root in getPossibleRoots())
             {
                 q.Enqueue(root);
                 colorByNode.Add(root, 0);
@@ -245,6 +230,19 @@ namespace skiena.datastructures.graph
             return true;
         }
 
-        public abstract IEnumerable<T> getRoots();
+        public abstract IEnumerable<T> getPossibleRoots();
+        public IEnumerable<T> dfs() 
+        {
+            Stack<T> visitStack = [];
+            if (nodePerValue.Count > 0) 
+            { }
+            return Enumerable.Empty<T>();
+        }
+
+        public bool containsArborescence()
+        {
+
+            return false;
+        }
     }
 }

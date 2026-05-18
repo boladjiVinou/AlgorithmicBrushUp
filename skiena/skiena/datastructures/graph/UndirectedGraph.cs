@@ -19,15 +19,14 @@ namespace skiena.datastructures.graph
             if (!nodePerValue.ContainsKey(n1))
             {
                 nodePerValue.Add(n1, createNode(n1));
-                neighborsPerNode.Add(nodePerValue[n1], []);
             }
             if (!nodePerValue.ContainsKey(n2))
             {
                 nodePerValue.Add(n2, createNode(n2));
-                neighborsPerNode.Add(nodePerValue[n2], []);
             }
-            neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
-            neighborsPerNode[nodePerValue[n2]].Add(nodePerValue[n1]);
+
+            nodePerValue[n1].connectTo(nodePerValue[n2]);
+            nodePerValue[n2].connectTo(nodePerValue[n1]);
         }
 
 
@@ -39,16 +38,15 @@ namespace skiena.datastructures.graph
             }
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
-            neighborsPerNode[node1].Remove(node2);
-            neighborsPerNode[node2].Remove(node1);
-            if (neighborsPerNode[node1].Count == 0)
+            node1.disconnectFrom(node2);
+            node2.disconnectFrom(node1);
+
+            if (node1.getOutDegree() == 0 && node1.getInDegree() == 0)
             {
-                neighborsPerNode.Remove(node1);
                 nodePerValue.Remove(n1);
             }
-            if (neighborsPerNode[node2].Count == 0)
+            if (node2.getOutDegree() == 0 && node2.getInDegree() == 0)
             {
-                neighborsPerNode.Remove(node2);
                 nodePerValue.Remove(n2);
             }
         }
@@ -60,7 +58,7 @@ namespace skiena.datastructures.graph
             while (inspectGraph)
             {
                 inspectGraph = false;
-                foreach (var item in graph.getRoots())
+                foreach (var item in graph.getPossibleRoots())
                 {
                     Queue<T> q = [];
                     q.Enqueue(item);
@@ -85,24 +83,10 @@ namespace skiena.datastructures.graph
 
         }
 
-        public override IEnumerable<T> getRoots()
+        public override IEnumerable<T> getPossibleRoots()
         {
             int maxDegree = getVertices().Select(x => getDegree(x)).Max();
             return getVertices().Where(x => getDegree(x) == maxDegree || getDegree(x) == 0);
-        }
-
-        public override int getDegree(T n)
-        {
-            if (!nodePerValue.ContainsKey(n))
-            {
-                return 0;
-            }
-            var node = nodePerValue[n];
-            if (neighborsPerNode.ContainsKey(node))
-            {
-                return 0;
-            }
-            return neighborsPerNode[node].Count;
         }
 
     }

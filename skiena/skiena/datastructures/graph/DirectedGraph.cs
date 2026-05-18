@@ -21,14 +21,12 @@ namespace skiena.datastructures.graph
             if (!nodePerValue.ContainsKey(n1))
             {
                 nodePerValue.Add(n1, createNode(n1));
-                neighborsPerNode.Add(nodePerValue[n1], []);
             }
             if (!nodePerValue.ContainsKey(n2))
             {
                 nodePerValue.Add(n2, createNode(n2));
-                neighborsPerNode.Add(nodePerValue[n2], []);
             }
-            neighborsPerNode[nodePerValue[n1]].Add(nodePerValue[n2]);
+            nodePerValue[n1].connectTo(nodePerValue[n2]);
         }
         public override void disconnect(T n1, T n2)
         {
@@ -38,33 +36,21 @@ namespace skiena.datastructures.graph
             }
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
-            neighborsPerNode[node1].Remove(node2);
-            if (neighborsPerNode[node1].Count == 0)
+            node1.disconnectFrom(node2);
+            if(node1.getInDegree() == 0 && node1.getOutDegree() == 0)
             {
-                neighborsPerNode.Remove(node1);
                 nodePerValue.Remove(n1);
             }
-        }
-
-        public override IEnumerable<T> getRoots()
-        {
-            var neighbors = neighborsPerNode.Values.SelectMany(x =>x).Select(x=>x.Value).ToHashSet();
-            return getVertices().Where(x => !neighbors.Contains(x));
-        }
-
-        public override int getDegree(T n)
-        {
-            if (!nodePerValue.ContainsKey(n))
+            if (node2.getInDegree() == 0 && node2.getOutDegree() == 0)
             {
-                return 0;
+                nodePerValue.Remove(n2);
             }
-            var node = nodePerValue[n];
-
-            return neighborsPerNode.Values
-                .Where(x => x.Contains(node))
-                .Count();
         }
 
+        public override IEnumerable<T> getPossibleRoots()
+        {
+            return nodePerValue.Values.Where(x => x.getInDegree() == 0).Select(x => x.Value);
+        }
 
     }
 }

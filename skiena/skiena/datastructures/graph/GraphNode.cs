@@ -10,13 +10,12 @@ namespace skiena.datastructures.graph
     public class GraphNode<T> : IEquatable<GraphNode<T>> where T : IEquatable<T>
     {
         public T Value { get; set; }
-        private Action<T> beforeVisitAction = (v)=> { };
-        private Action<T> afterVisitAction = (v) => { };
-        private Action<T> visitAction = (v) => { };
+        private int inDegree = 0;
+        private HashSet<GraphNode<T>> neighbors = [];
 
         public GraphNode(T value) 
         {
-            this.Value = value;
+            Value = value;
         }
 
         public bool Equals(GraphNode<T>? other) 
@@ -25,32 +24,34 @@ namespace skiena.datastructures.graph
             {
                 return false;
             }
-            return this.Value.Equals(other.Value);
+            return Value.Equals(other.Value);
         }
 
-        public void setBeforeVisitAction(Action<T> beforeVisitAction) 
+        public void connectTo(GraphNode<T> node) 
         {
-            this.beforeVisitAction = beforeVisitAction;
+            if (node == null || neighbors.Contains(node)) 
+            {
+                return;
+            }
+            ++node.inDegree;
+            neighbors.Add(node);
         }
-        public void setVisitAction(Action<T> action)
+        public void disconnectFrom(GraphNode<T> node)
         {
-            this.visitAction = action;
+            if(node == null || !neighbors.Contains(node))
+            {
+                return;
+            }
+            --node.inDegree;
+            neighbors.Remove(node);
         }
-        public void setAfterVisitAction(Action<T> afterVisitAction)
+
+        public bool isConnectedTo(GraphNode<T> node) 
         {
-            this.afterVisitAction = afterVisitAction;
+            return node != null && neighbors.Contains(node);
         }
-        public void beforeVisit() 
-        {
-            beforeVisitAction(Value);
-        }
-        public void onVisit() 
-        {
-            visitAction(Value);
-        }
-        public void afterVisit() 
-        {
-            afterVisitAction(Value);
-        }
+        public int getInDegree() {  return inDegree; }
+        public int getOutDegree() { return neighbors.Count; }
+        public HashSet<GraphNode<T>>getNeighbors() { return [..neighbors]; }
     }
 }

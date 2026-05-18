@@ -385,7 +385,7 @@ namespace skiena.Chapter5
         }
         static bool findTriangleVersionB(Graph<int> graph) 
         {
-            foreach (var root in graph.getRoots())
+            foreach (var root in graph.getPossibleRoots())
             {
                 if (checkTriangleWithDfs(graph, root, new HashSet<int>())) 
                 {
@@ -436,7 +436,7 @@ namespace skiena.Chapter5
         {
             int diameter = 0;
             int maxDegree = tree.getVertices().MaxBy(x => tree.getDegree(x));
-            foreach (var item in tree.getRoots())
+            foreach (var item in tree.getPossibleRoots())
             {
                 Stack<Tuple<int,int>> stack = [];
                 stack.Push(new Tuple<int,int>(item,0));
@@ -583,5 +583,11 @@ namespace skiena.Chapter5
             }
             return degreesByNode.Values.Any(x => x > 0) ? -1:  minRow;
         }
+        /*
+         5.24
+
+
+         */
+
     }
 }
