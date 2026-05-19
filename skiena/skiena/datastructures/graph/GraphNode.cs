@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures.graph
 {
-    public class GraphNode<T> : IEquatable<GraphNode<T>> where T : IEquatable<T>
+    public class GraphNode<T> : IEquatable<GraphNode<T>>, IVisitable<T> where T : IEquatable<T>
     {
         public T Value { get; set; }
         private int inDegree = 0;
@@ -16,6 +16,14 @@ namespace skiena.datastructures.graph
         public GraphNode(T value) 
         {
             Value = value;
+        }
+        public void accept(INodeVisitor<T> visitor) 
+        {
+            if(visitor == null) {  return; }
+
+            visitor.preVisitNode(this);
+            visitor.visitNode(this);
+            visitor.postVisitNode(this);
         }
 
         public bool Equals(GraphNode<T>? other) 
