@@ -231,18 +231,5 @@ namespace skiena.datastructures.graph
         }
 
         public abstract IEnumerable<T> getPossibleRoots();
-        public IEnumerable<T> dfs() 
-        {
-            Stack<T> visitStack = [];
-            if (nodePerValue.Count > 0) 
-            { }
-            return Enumerable.Empty<T>();
-        }
-
-        public bool containsArborescence()
-        {
-
-            return false;
-        }
     }
 }

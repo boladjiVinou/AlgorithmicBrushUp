@@ -51,6 +51,47 @@ namespace skiena.datastructures.graph
         {
             return nodePerValue.Values.Where(x => x.getInDegree() == 0).Select(x => x.Value);
         }
+        public bool containsAnArborescence()
+        {
+            var possibleRoots = getPossibleRoots().ToList();
+            if (possibleRoots.Count == 1) 
+            {
+                var classifier = new EdgeClassifier<T>();
+                nodePerValue[possibleRoots[0]].accept(classifier);
+                return areAllNodesReachableFrom(possibleRoots[0]) && 
+                    !classifier.containsEdge(enEdge.Back);// no back edge means no cycle
+            }
+            return false;
+        }
+        public bool isAMotherVertex(T val) 
+        {
+            if (nodePerValue.ContainsKey(val) && nodePerValue[val] != null)
+            {
+                return areAllNodesReachableFrom(val);
+            }
+            return false;
+        }
+
+        private bool areAllNodesReachableFrom(T val)
+        {
+            var dfsVisitor = new DepthFirstSearchVisitor<T>();
+            nodePerValue[val].accept(dfsVisitor);
+            return dfsVisitor.getVisitedNodes().Count == nodePerValue.Values.Where(x => x != null).Count();
+        }
+
+        public bool containsAMotherVertex() 
+        {
+            var dfsVisitor = new DepthFirstSearchVisitor<T>();
+            nodePerValue.Values.First().accept(dfsVisitor);
+
+            var lastNode = dfsVisitor.getLastNodeVisited();
+            if (lastNode == null) 
+            {
+                return false;
+            }
+            return isAMotherVertex(lastNode.Value);
+
+        }
 
     }
 }

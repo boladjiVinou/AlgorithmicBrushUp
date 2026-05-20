@@ -584,10 +584,15 @@ namespace skiena.Chapter5
             return degreesByNode.Values.Any(x => x > 0) ? -1:  minRow;
         }
         /*
-         5.24
+         5.25
 
 
          */
+
+        public static bool graphContainsAnArborescence(DirectedGraph<int> graph) 
+        {
+            return graph.containsAnArborescence();
+        }
 
     }
 }

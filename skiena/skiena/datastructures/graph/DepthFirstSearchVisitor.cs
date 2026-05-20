@@ -10,6 +10,7 @@ namespace skiena.datastructures.graph
     {
         protected HashSet<GraphNode<T>> visited = [];
         protected HashSet<GraphNode<T>> visitInProgress = [];
+        private GraphNode<T> latestVisitedNode;
         public virtual void preVisitNode(GraphNode<T> node)
         {
             visitInProgress.Add(node);
@@ -32,6 +33,17 @@ namespace skiena.datastructures.graph
         {
             visitInProgress.Remove(node);
             visited.Add(node);
+            latestVisitedNode = node;
+        }
+
+        public HashSet<GraphNode<T>> getVisitedNodes() 
+        {
+            return [..visited];
+        }
+
+        public GraphNode<T>? getLastNodeVisited() 
+        {
+            return latestVisitedNode;
         }
     }
 }

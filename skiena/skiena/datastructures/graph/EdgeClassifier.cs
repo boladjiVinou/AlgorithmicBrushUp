@@ -7,7 +7,7 @@ using System.Transactions;
 
 namespace skiena.datastructures.graph
 {
-    public partial class EdgeClassifier<T> :DepthFirstSearchVisitor<T> where T:IEquatable<T>
+    public class EdgeClassifier<T> :DepthFirstSearchVisitor<T> where T:IEquatable<T>
     {
         private Dictionary<GraphNode<T>, Dictionary<GraphNode<T>, enEdge>> edgeTypeByEdge = [];
         private Dictionary<GraphNode<T>, int> entryTimePerNode = [];
@@ -65,6 +65,11 @@ namespace skiena.datastructures.graph
             {
                 setEdgeType(node, neighbor, enEdge.Tree);
             }
+        }
+
+        public bool containsEdge(enEdge edge) 
+        {
+            return edgeTypeByEdge.Values.Any(x => x.Values.Contains(edge));
         }
 
         public enEdge getEdgeType(GraphNode<T> n1, GraphNode<T> n2) 
