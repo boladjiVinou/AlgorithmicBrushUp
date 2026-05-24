@@ -62,7 +62,7 @@ namespace skiena.datastructures.graph
 
         }
 
-        public List<HashSet<GraphNode<T>>> search(DirectedGraph<T> graph, Dictionary<T, GraphNode<T>> nodePerValue) 
+        public DirectedGraph<SCCNode<T>> search(DirectedGraph<T> graph, Dictionary<T, GraphNode<T>> nodePerValue) 
         {
             lowLinkByNode = [];
             idByNode = [];
@@ -80,7 +80,37 @@ namespace skiena.datastructures.graph
                 }
                 node.accept(this);
             }
-            return [.. lowLinkByNode.GroupBy(x => x.Value, y =>y.Key).Select(x => x.ToHashSet())];
+            return buildCompressedSCCGraph([.. lowLinkByNode.GroupBy(x => x.Value, y =>y.Key).Select(x => x.ToHashSet())]);
+        }
+
+        private DirectedGraph<SCCNode<T>> buildCompressedSCCGraph(List<HashSet<GraphNode<T>>> connectedComponents) 
+        {
+            DirectedGraph<SCCNode<T>> compressedGraph = new DirectedGraph<SCCNode<T>>();
+            Dictionary<GraphNode<T>, SCCNode<T>> nodeByCompressedScc = [];
+            foreach (var connectedComponent in connectedComponents) 
+            {
+                var sccNode = new SCCNode<T>(connectedComponent);
+                foreach (var node in connectedComponent) 
+                {
+                    nodeByCompressedScc.Add(node, sccNode);
+                }
+            }
+            foreach (var connectedComponent in connectedComponents)
+            {
+                foreach (var node in connectedComponent)
+                {
+                    foreach (var neighbor in node.getNeighbors()) 
+                    {
+                        if (nodeByCompressedScc[neighbor] != nodeByCompressedScc[node])
+                        {
+                            compressedGraph.connect(nodeByCompressedScc[node], nodeByCompressedScc[neighbor]);
+                        }
+                    }
+                    
+                }
+            }
+            return compressedGraph;
+
         }
     }
 }

@@ -81,15 +81,13 @@ namespace skiena.datastructures.graph
 
         public bool containsAMotherVertex() 
         {
-            var dfsVisitor = new DepthFirstSearchVisitor<T>();
-            nodePerValue.Values.First().accept(dfsVisitor);
+            var sccFinder = new DirectedGraphSCCFinder<T>();
+            
+            var sccGraph = sccFinder.search(this, nodePerValue);
 
-            var lastNode = dfsVisitor.getLastNodeVisited();
-            if (lastNode == null) 
-            {
-                return false;
-            }
-            return isAMotherVertex(lastNode.Value);
+            var inNode = sccGraph.nodePerValue.Values.Where(x => sccGraph.getDegree(x.Value) == 0).ToList();
+
+            return inNode.Count == 1 && isAMotherVertex(inNode[0].Value.getNodes().First().Value);
 
         }
 
