@@ -89,5 +89,20 @@ namespace skiena.datastructures.graph
             return getVertices().Where(x => getDegree(x) == maxDegree || getDegree(x) == 0);
         }
 
+        public List<T> getHamiltonianPath() 
+        {
+            var nodes = nodePerValue.Values.Where(x => x !=null).ToList();
+            foreach (var start in nodes) 
+            {
+                var pathFinder = new HamiltonianPathFinder<T>(nodes.Count);
+                start.accept(pathFinder);
+                if (pathFinder.hasFoundAPath()) 
+                {
+                    return [.. pathFinder.getPath().Select(x => x.Value)];
+                }
+            }
+            return [];
+        }
+
     }
 }

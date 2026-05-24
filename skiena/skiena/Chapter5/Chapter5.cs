@@ -594,5 +594,24 @@ namespace skiena.Chapter5
             return graph.containsAnArborescence();
         }
 
+        /*
+         5.26
+         */
+        public static bool isAMotherVertex(DirectedGraph<int> graph, int node) 
+        {
+            return graph.isAMotherVertex(node);
+        }
+        public static bool containsAMotherVertex(DirectedGraph<int> graph) 
+        {
+            return graph.containsAMotherVertex();
+        }
+
+        /*
+         5.27
+         */
+        public static List<int> getHamiltonianPath(UndirectedGraph<int> graph) 
+        {
+            return graph.getHamiltonianPath();
+        }
     }
 }
