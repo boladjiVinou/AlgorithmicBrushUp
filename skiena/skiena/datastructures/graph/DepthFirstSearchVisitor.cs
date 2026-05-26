@@ -40,6 +40,14 @@ namespace skiena.datastructures.graph
         {
             return [..visited];
         }
+        public bool hasVisited(GraphNode<T> node) 
+        {
+            return visited.Contains(node);
+        }
+        public int getNbOfVisitedNode() 
+        {
+            return visited.Count;
+        }
 
         public GraphNode<T>? getLastNodeVisited() 
         {

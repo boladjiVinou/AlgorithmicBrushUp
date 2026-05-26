@@ -231,5 +231,13 @@ namespace skiena.datastructures.graph
         }
 
         public abstract IEnumerable<T> getPossibleRoots();
+        public List<GraphNode<T>> getArticulationNodes() 
+        {
+            return [];
+        }
+        public List<GraphNode<T>> getDeletionOrder()
+        {
+            return [];
+        }
     }
 }

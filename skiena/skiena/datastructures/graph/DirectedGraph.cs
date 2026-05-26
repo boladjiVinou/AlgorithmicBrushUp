@@ -46,11 +46,6 @@ namespace skiena.datastructures.graph
                 nodePerValue.Remove(n2);
             }
         }
-
-        public override IEnumerable<T> getPossibleRoots()
-        {
-            return nodePerValue.Values.Where(x => x.getInDegree() == 0).Select(x => x.Value);
-        }
         public bool containsAnArborescence()
         {
             var possibleRoots = getPossibleRoots().ToList();
@@ -89,6 +84,30 @@ namespace skiena.datastructures.graph
 
             return inNode.Count == 1 && isAMotherVertex(inNode[0].Value.getNodes().First().Value);
 
+        }
+
+        public override IEnumerable<T> getPossibleRoots()
+        {
+            var dfsVisitor = new DepthFirstSearchVisitor<T>();
+            foreach (var node in nodePerValue.Values)
+            {
+                if (dfsVisitor.hasVisited(node))
+                {
+                    continue;
+                }
+                node.accept(dfsVisitor);
+            }
+            var lastVisitedNode = dfsVisitor.getLastNodeVisited();
+            if (lastVisitedNode != null)
+            {
+                var secondPassDfs = new DepthFirstSearchVisitor<T>();
+                lastVisitedNode.accept(secondPassDfs);
+                if (secondPassDfs.getNbOfVisitedNode() == nodePerValue.Values.Where(x => x != null).Count())
+                {
+                    yield return lastVisitedNode.Value;
+                }
+            }
+            yield break;
         }
 
     }

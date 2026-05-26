@@ -83,12 +83,6 @@ namespace skiena.datastructures.graph
 
         }
 
-        public override IEnumerable<T> getPossibleRoots()
-        {
-            int maxDegree = getVertices().Select(x => getDegree(x)).Max();
-            return getVertices().Where(x => getDegree(x) == maxDegree || getDegree(x) == 0);
-        }
-
         public List<T> getHamiltonianPath() 
         {
             var nodes = nodePerValue.Values.Where(x => x !=null).ToList();
@@ -102,6 +96,25 @@ namespace skiena.datastructures.graph
                 }
             }
             return [];
+        }
+
+        public override IEnumerable<T> getPossibleRoots()
+        {
+            var dfsVisitor = new DepthFirstSearchVisitor<T>();
+            var nodes = nodePerValue.Values.Where(x => x != null);
+            GraphNode<T>? startNode = null;
+            if (nodes.Any()) 
+            {
+                startNode = nodes.First();
+                startNode.accept(dfsVisitor);
+            }
+            
+            var lastVisitedNode = dfsVisitor.getLastNodeVisited();
+            if (lastVisitedNode != null && startNode != null && dfsVisitor.getNbOfVisitedNode() == nodes.Count())
+            {
+                yield return startNode.Value;
+            }
+            yield break;
         }
 
     }

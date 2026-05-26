@@ -7,10 +7,11 @@ using System.Transactions;
 
 namespace skiena.datastructures.graph
 {
-    public class EdgeClassifier<T> :DepthFirstSearchVisitor<T> where T:IEquatable<T>
+    public class ContentClassifier<T> :DepthFirstSearchVisitor<T> where T:IEquatable<T>
     {
         private Dictionary<GraphNode<T>, Dictionary<GraphNode<T>, enEdge>> edgeTypeByEdge = [];
         private Dictionary<GraphNode<T>, int> entryTimePerNode = [];
+        private Dictionary<GraphNode<T>, GraphNode<T>> parentByNode = [];
         private int time = 0;
         public override void preVisitNode(GraphNode<T> node)
         {
@@ -78,7 +79,7 @@ namespace skiena.datastructures.graph
         }
 
         private void setEdgeType(GraphNode<T> n1, GraphNode<T> n2, enEdge edge) 
-        {
+        {   
             if (!edgeTypeByEdge.ContainsKey(n1))
             {
                 edgeTypeByEdge.Add(n1, []);
