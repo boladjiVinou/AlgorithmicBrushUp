@@ -231,13 +231,19 @@ namespace skiena.datastructures.graph
         }
 
         public abstract IEnumerable<T> getPossibleRoots();
-        public List<GraphNode<T>> getArticulationNodes() 
+        public ISet<GraphNode<T>> getNonArticulationNodes() 
         {
-            return [];
+            var articulationFinder = new ContentClassifier<T>();
+            var roots = getPossibleRoots();
+            if (!roots.Any()) 
+            {
+                return new HashSet<GraphNode<T>>();
+            }
+            T root = roots.First();
+            nodePerValue[root].accept(articulationFinder);
+
+            return nodePerValue.Values.Where(x => !articulationFinder.isAnArticulationNode(x)).ToHashSet();
         }
-        public List<GraphNode<T>> getDeletionOrder()
-        {
-            return [];
-        }
+        public abstract List<GraphNode<T>> getDeletionOrder();
     }
 }

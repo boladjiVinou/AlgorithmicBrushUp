@@ -152,5 +152,9 @@ namespace skiena.datastructures.graph
                 reachableAncestorByNode[parent] = reachableAncestorByNode[node];
             }
         }
+        public bool isAnArticulationNode(GraphNode<T> node) 
+        {
+            return articulationByNode.ContainsKey(node);
+        }
     }
 }

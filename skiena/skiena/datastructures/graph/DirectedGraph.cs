@@ -51,7 +51,7 @@ namespace skiena.datastructures.graph
             var possibleRoots = getPossibleRoots().ToList();
             if (possibleRoots.Count == 1) 
             {
-                var classifier = new EdgeClassifier<T>();
+                var classifier = new ContentClassifier<T>();
                 nodePerValue[possibleRoots[0]].accept(classifier);
                 return areAllNodesReachableFrom(possibleRoots[0]) && 
                     !classifier.containsEdge(enEdge.Back);// no back edge means no cycle
@@ -108,6 +108,12 @@ namespace skiena.datastructures.graph
                 }
             }
             yield break;
+        }
+
+        public List<GraphNode<T>> getDeletionOrder()
+        {
+            var nonArticulationNodes = getNonArticulationNodes();
+            return [];// Todo wip
         }
 
     }

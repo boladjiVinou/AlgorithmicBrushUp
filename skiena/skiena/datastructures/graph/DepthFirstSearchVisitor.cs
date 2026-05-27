@@ -24,7 +24,6 @@ namespace skiena.datastructures.graph
                 {
                     continue;
                 }
-
                 neighbor.accept(this);
             }
         }

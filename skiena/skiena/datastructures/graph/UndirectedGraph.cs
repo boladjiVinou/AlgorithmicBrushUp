@@ -116,6 +116,18 @@ namespace skiena.datastructures.graph
             }
             yield break;
         }
+        public override List<GraphNode<T>> getDeletionOrder()
+        {
+            var postOrderVisitor = new PostOrderVisitor<T>();
+            var roots = getPossibleRoots();
+            if (!roots.Any())
+            {
+                return [];
+            }
+            T root = roots.First();
+            nodePerValue[root].accept(postOrderVisitor);
+            return postOrderVisitor.getPostOrder();
+        }
 
     }
 }
