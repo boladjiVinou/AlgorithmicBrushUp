@@ -80,7 +80,7 @@ namespace skiena.datastructures.graph
             
             var sccGraph = sccFinder.search(this, nodePerValue);
 
-            var inNode = sccGraph.nodePerValue.Values.Where(x => sccGraph.getDegree(x.Value) == 0).ToList();
+            var inNode = sccGraph.nodePerValue.Values.Where(x => sccGraph.getInDegree(x.Value) == 0).ToList();
 
             return inNode.Count == 1 && isAMotherVertex(inNode[0].Value.getNodes().First().Value);
 
@@ -110,10 +110,42 @@ namespace skiena.datastructures.graph
             yield break;
         }
 
-        public List<GraphNode<T>> getDeletionOrder()
+        public override List<GraphNode<T>> getDeletionOrder()
         {
-            var nonArticulationNodes = getNonArticulationNodes();
-            return [];// Todo wip
+            var sccFinder = new DirectedGraphSCCFinder<T>();
+
+            var sccGraph = sccFinder.search(this, nodePerValue);
+
+            List<GraphNode<T>> deletionOrder = [];
+            Queue<GraphNode<SCCNode<T>>> topologicalSortQueue = new Queue<GraphNode<SCCNode<T>>>();
+            foreach (var item in sccGraph.nodePerValue.Values.Where(x => sccGraph.getInDegree(x.Value) == 0))
+            {
+                topologicalSortQueue.Enqueue(item);
+            }
+            while (topologicalSortQueue.Count > 0) 
+            {
+                var scc = topologicalSortQueue.Dequeue();
+                foreach (var node in scc.Value.getNodes()) 
+                {
+                    deletionOrder.Add(node);
+                }
+               
+                foreach (var sccNeighbor in sccGraph.getNeighbors(scc.Value))
+                {
+                    sccGraph.disconnect(scc.Value, sccNeighbor);
+                    if (sccGraph.getInDegree(sccNeighbor) == 0) 
+                    {
+                        topologicalSortQueue.Enqueue(sccGraph.nodePerValue[sccNeighbor]);
+                    }
+                }
+            }
+            if (sccGraph.nodePerValue.Count > 0) 
+            {
+                return [];
+            }
+
+            deletionOrder.Reverse();
+            return deletionOrder;
         }
 
     }

@@ -190,7 +190,7 @@ namespace skiena.datastructures.graph
             }
             return generatedColors.Count;
         }
-        public virtual int getDegree(T n)
+        public int getInDegree(T n)
         {
             if (!nodePerValue.ContainsKey(n))
             {

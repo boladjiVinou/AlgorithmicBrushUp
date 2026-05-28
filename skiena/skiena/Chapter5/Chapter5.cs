@@ -189,7 +189,7 @@ namespace skiena.Chapter5
          */
         static HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
         {
-            return [.. tree.getVertices().Where(x => tree.getDegree(x) > 1)];
+            return [.. tree.getVertices().Where(x => tree.getInDegree(x) > 1)];
         }
         /*
          5.13.b
@@ -198,7 +198,7 @@ namespace skiena.Chapter5
         {
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new(graph);
-            var orderedVertices =  tmpGraph.getVertices().OrderByDescending(x => tmpGraph.getDegree(x)).ToList();
+            var orderedVertices =  tmpGraph.getVertices().OrderByDescending(x => tmpGraph.getInDegree(x)).ToList();
             foreach (var v in orderedVertices)
             {
                 HashSet<int> neighbors = tmpGraph.getNeighbors(v);
@@ -221,7 +221,7 @@ namespace skiena.Chapter5
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new UndirectedGraph<int>(graph);
             var orderedVertices = tmpGraph.getVertices()
-                .OrderByDescending(x => tmpGraph.getDegree(x) - weightByNode[x])
+                .OrderByDescending(x => tmpGraph.getInDegree(x) - weightByNode[x])
                 .ToList();
             foreach (var v in orderedVertices)
             {
@@ -309,7 +309,7 @@ namespace skiena.Chapter5
         static ISet<int> computeMaxIndependentSetB(Graph<int> tree, int root)
         {
             HashSet<int> independentSet = [];
-            computeMaxIndependentSetSize(tree, root, [], false, independentSet, (n) => tree.getDegree(n));
+            computeMaxIndependentSetSize(tree, root, [], false, independentSet, (n) => tree.getInDegree(n));
             return independentSet;
         }
 
@@ -435,7 +435,7 @@ namespace skiena.Chapter5
         static int computeDiameter(DirectedGraph<int> tree) 
         {
             int diameter = 0;
-            int maxDegree = tree.getVertices().MaxBy(x => tree.getDegree(x));
+            int maxDegree = tree.getVertices().MaxBy(x => tree.getInDegree(x));
             foreach (var item in tree.getPossibleRoots())
             {
                 Stack<Tuple<int,int>> stack = [];
@@ -504,7 +504,7 @@ namespace skiena.Chapter5
         static void reduceEdges(UndirectedGraph<int> graph) 
         {
             Queue<int> q = [];
-            foreach (int v in graph.getVertices().Where(x => graph.getDegree(x) == 2)) 
+            foreach (int v in graph.getVertices().Where(x => graph.getInDegree(x) == 2)) 
             {
                 q.Enqueue(v);
             }
@@ -517,11 +517,11 @@ namespace skiena.Chapter5
                     graph.disconnect(v, n);
                 }
                 graph.connect(neighbors[0], neighbors[1]);
-                if (graph.getDegree(neighbors[0]) == 2) 
+                if (graph.getInDegree(neighbors[0]) == 2) 
                 {
                     q.Enqueue(neighbors[0]);
                 }
-                if (graph.getDegree(neighbors[1]) == 2) 
+                if (graph.getInDegree(neighbors[1]) == 2) 
                 {
                     q.Enqueue(neighbors[1]);
                 }
@@ -534,7 +534,7 @@ namespace skiena.Chapter5
          */
         static List<int> getLineOrderA(DirectedGraph<int> relations) 
         {
-            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getDegree(y));
+            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
             Queue<int> q = [];
             foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0)) 
             {
@@ -561,7 +561,7 @@ namespace skiena.Chapter5
          */
         static int getLineOrderB(DirectedGraph<int> relations) 
         {
-            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getDegree(y));
+            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
             Queue<Tuple<int,int>> q = [];
             foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0))
             {

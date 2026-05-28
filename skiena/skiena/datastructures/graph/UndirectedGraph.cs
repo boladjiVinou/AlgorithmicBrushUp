@@ -66,7 +66,7 @@ namespace skiena.datastructures.graph
                     {
                         var node = q.Dequeue();
                         var nodeNeighbors = graph.getNeighbors(node);
-                        bool breakLink = graph.getDegree(node) < minDegree;
+                        bool breakLink = graph.getInDegree(node) < minDegree;
                         foreach (var item1 in nodeNeighbors)
                         {
                             q.Enqueue(item1);
