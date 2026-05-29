@@ -613,5 +613,19 @@ namespace skiena.Chapter5
         {
             return graph.getHamiltonianPath();
         }
+        /*
+         5.28
+         */
+        public static IEnumerable<int> getNonArticulationNodes(Graph<int> graph) 
+        {
+            return graph.getNonArticulationNodes().Select(x=> x.Value);
+        }
+        /*
+         5.29
+         */
+        public static List<int> getDeletionOrder(Graph<int> graph) 
+        {
+            return [.. graph.getDeletionOrder().Select(x=>x.Value)];
+        }
     }
 }

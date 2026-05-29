@@ -14,7 +14,7 @@ namespace skiena.datastructures.graph
         public UndirectedGraph(Graph<T> graph):base(graph)
         {
         }
-        public override void connect(T n1, T n2)
+        public override UndirectedGraph<T> connect(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
             {
@@ -27,14 +27,15 @@ namespace skiena.datastructures.graph
 
             nodePerValue[n1].connectTo(nodePerValue[n2]);
             nodePerValue[n2].connectTo(nodePerValue[n1]);
+            return this;
         }
 
 
-        public override void disconnect(T n1, T n2)
+        public override UndirectedGraph<T> disconnect(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1) || !nodePerValue.ContainsKey(n2))
             {
-                return;
+                return this;
             }
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
@@ -49,6 +50,7 @@ namespace skiena.datastructures.graph
             {
                 nodePerValue.Remove(n2);
             }
+            return this;
         }
 
         public UndirectedGraph<T> computeMaximumInducedSubgraph(int minDegree)

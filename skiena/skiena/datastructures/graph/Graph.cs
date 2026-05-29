@@ -23,8 +23,8 @@ namespace skiena.datastructures.graph
             nodePerValue = new Dictionary<T,GraphNode<T>>(graph.nodePerValue);
         }
 
-        public abstract void connect(T n1, T n2);
-        public abstract void disconnect(T n1, T n2);
+        public abstract Graph<T> connect(T n1, T n2);
+        public abstract Graph<T> disconnect(T n1, T n2);
 
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 
@@ -231,7 +231,7 @@ namespace skiena.datastructures.graph
         }
 
         public abstract IEnumerable<T> getPossibleRoots();
-        public ISet<GraphNode<T>> getNonArticulationNodes() 
+        public IEnumerable<GraphNode<T>> getNonArticulationNodes() 
         {
             var articulationFinder = new ContentClassifier<T>();
             var roots = getPossibleRoots();
@@ -242,7 +242,7 @@ namespace skiena.datastructures.graph
             T root = roots.First();
             nodePerValue[root].accept(articulationFinder);
 
-            return nodePerValue.Values.Where(x => !articulationFinder.isAnArticulationNode(x)).ToHashSet();
+            return nodePerValue.Values.Where(x => !articulationFinder.isAnArticulationNode(x));
         }
         public abstract List<GraphNode<T>> getDeletionOrder();
     }
