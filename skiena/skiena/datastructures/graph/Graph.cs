@@ -21,6 +21,13 @@ namespace skiena.datastructures.graph
         public Graph(Graph<T> graph) 
         {
             nodePerValue = new Dictionary<T,GraphNode<T>>(graph.nodePerValue);
+            foreach (var item in nodePerValue.Values)
+            {
+                foreach (var neighbor in graph.getNeighbors(item.Value))
+                {
+                    connect(item.Value, neighbor);
+                }
+            }
         }
 
         public abstract Graph<T> connect(T n1, T n2);
@@ -163,33 +170,6 @@ namespace skiena.datastructures.graph
             return node;
         }
         
-        public int computeChromaticNumberGreedy() 
-        {
-            Dictionary<GraphNode<T>, int> colorByNode = [];
-            HashSet<int> generatedColors = [];
-            foreach (var node in nodePerValue.Values) 
-            {
-                HashSet<int> neighborsColors = new HashSet<int>();
-                foreach (var neighbor in node.getNeighbors()) 
-                {
-                    if (colorByNode.ContainsKey(neighbor)) 
-                    {
-                        neighborsColors.Add(colorByNode[neighbor]);
-                    }
-                }
-                var availableColors = generatedColors.Where(x => !neighborsColors.Contains(x));
-                if (availableColors.Any())
-                {
-                    colorByNode.Add(node, availableColors.Min());
-                }
-                else 
-                {
-                    colorByNode.Add(node, generatedColors.Count+1);
-                }
-                generatedColors.Add(colorByNode[node]);
-            }
-            return generatedColors.Count;
-        }
         public int getInDegree(T n)
         {
             if (!nodePerValue.ContainsKey(n))
@@ -245,5 +225,33 @@ namespace skiena.datastructures.graph
             return nodePerValue.Values.Where(x => !articulationFinder.isAnArticulationNode(x));
         }
         public abstract List<GraphNode<T>> getDeletionOrder();
+        public static int computeChromaticNumberGreedy(Graph<T> graph)
+        {
+            Dictionary<GraphNode<T>, int> colorByNode = [];
+            HashSet<int> generatedColors = [];
+
+            foreach (var node in graph.nodePerValue.Values)
+            {
+                HashSet<int> neighborsColors = new HashSet<int>();
+                foreach (var neighbor in node.getNeighbors())
+                {
+                    if (colorByNode.ContainsKey(neighbor))
+                    {
+                        neighborsColors.Add(colorByNode[neighbor]);
+                    }
+                }
+                var availableColors = generatedColors.Where(x => !neighborsColors.Contains(x));
+                if (availableColors.Any())
+                {
+                    colorByNode.Add(node, availableColors.Min());
+                }
+                else
+                {
+                    colorByNode.Add(node, generatedColors.Count + 1);
+                }
+                generatedColors.Add(colorByNode[node]);
+            }
+            return generatedColors.Count;
+        }
     }
 }

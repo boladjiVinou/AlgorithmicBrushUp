@@ -21,7 +21,7 @@ namespace skiena.Chapter5
          */
         public static int computeChromaticNumber(Graph<int> graph) 
         {
-            return graph.computeChromaticNumberGreedy();
+            return new UndirectedGraph<int>(graph).computeChromaticNumberGreedy();
         }
         /*
          5-6

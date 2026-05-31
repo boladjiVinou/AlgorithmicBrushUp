@@ -13,6 +13,13 @@ namespace skiena.datastructures.graph
         }
         public UndirectedGraph(Graph<T> graph):base(graph)
         {
+            foreach (var item in nodePerValue.Values)
+            {
+                foreach (var neighbor in graph.getNeighbors(item.Value)) 
+                {
+                    connect(item.Value, neighbor);
+                }
+            }
         }
         public override UndirectedGraph<T> connect(T n1, T n2)
         {
@@ -53,6 +60,10 @@ namespace skiena.datastructures.graph
             return this;
         }
 
+        public int computeChromaticNumberGreedy()
+        {
+            return computeChromaticNumberGreedy(this);
+        }
         public UndirectedGraph<T> computeMaximumInducedSubgraph(int minDegree)
         {
             var graph = new UndirectedGraph<T>(this);

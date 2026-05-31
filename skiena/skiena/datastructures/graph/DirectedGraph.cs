@@ -88,6 +88,11 @@ namespace skiena.datastructures.graph
 
         }
 
+        public int computeDichromaticNumberGreedy()
+        {
+            return computeChromaticNumberGreedy(this);
+        }
+
         public override IEnumerable<T> getPossibleRoots()
         {
             var dfsVisitor = new DepthFirstSearchVisitor<T>();
