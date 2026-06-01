@@ -20,7 +20,7 @@ namespace skiena.datastructures.graph
         {
             foreach (var neighbor in node.getNeighbors()) 
             {
-                if (visited.Contains(neighbor) || visitInProgress.Contains(node)) 
+                if (visited.Contains(neighbor) || visitInProgress.Contains(neighbor)) 
                 {
                     continue;
                 }

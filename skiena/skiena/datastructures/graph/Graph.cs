@@ -32,7 +32,10 @@ namespace skiena.datastructures.graph
 
         public void insertNode(T val)
         {
-            nodePerValue.Add(val,createNode(val));
+            if (!nodePerValue.ContainsKey(val)) 
+            {
+                nodePerValue.Add(val, createNode(val));
+            }
         }
 
         public abstract Graph<T> connect(T n1, T n2);
