@@ -30,6 +30,11 @@ namespace skiena.datastructures.graph
             }
         }
 
+        public void insertNode(T val)
+        {
+            nodePerValue.Add(val,createNode(val));
+        }
+
         public abstract Graph<T> connect(T n1, T n2);
         public abstract Graph<T> disconnect(T n1, T n2);
 
@@ -87,16 +92,16 @@ namespace skiena.datastructures.graph
         public static Dictionary<T, Dictionary<T, int>> convertToIncidenceMatrix(Dictionary<T, HashSet<T>> adjacencyList) 
         {
             Dictionary<T, Dictionary<T, int>> incidenceMatrix = new Dictionary<T, Dictionary<T, int>>();
-            var edges = adjacencyList.SelectMany(x => x.Value).ToHashSet();
+            var neighborhood = adjacencyList.SelectMany(x => x.Value).ToHashSet();
             foreach (var node in adjacencyList.Keys) 
             {
                 if (!incidenceMatrix.ContainsKey(node)) 
                 {
                     incidenceMatrix.Add(node, []);
                 }
-                foreach (var edge in edges) 
+                foreach (var neighbor in neighborhood) 
                 {
-                    incidenceMatrix[node].Add(edge, adjacencyList[node].Contains(edge) ? 1: 0);
+                    incidenceMatrix[node].Add(neighbor, adjacencyList[node].Contains(neighbor) ? 1: 0);
                 }
             }
             return incidenceMatrix;
@@ -178,6 +183,15 @@ namespace skiena.datastructures.graph
             }
             var node = nodePerValue[n];
             return node.getInDegree();
+        }
+        public int getOutDegree(T n)
+        {
+            if (!nodePerValue.ContainsKey(n))
+            {
+                return 0;
+            }
+            var node = nodePerValue[n];
+            return node.getOutDegree();
         }
         public bool isBipartite(out Dictionary<T, int> colorByNode) 
         {
