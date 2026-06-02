@@ -43,5 +43,59 @@ namespace skienaTests
 
             Assert.AreEqual(expectedChromaticNumber, Chapter5.computeChromaticNumber(graph));
         }
+
+        [TestMethod]
+        public void givenPreOrderAndInOrder_WeShouldComputeTheRightBst() 
+        {
+            var preorderList = new List<int>() { 50, 30, 20, 40, 70, 60, 80 };
+            var inOrderList = new List<int>() { 20, 30, 40, 50, 60, 70, 80 };
+            var postOrderList = new List<int>() { 20, 40, 30, 60, 80, 70, 50 };
+
+            var bst = Chapter5.reconstructTreeWithPreOrderAndInOrder(preorderList, inOrderList);
+
+            var resultPreOrder = bst.preOrderIteration().ToList();
+            var resultInOrder = bst.inOrderIteration().ToList();
+            var resultPostOrder = bst.postOrderIteration().ToList();
+            Assert.IsTrue(preorderList.Count == resultPreOrder.Count);
+            Assert.IsTrue(inOrderList.Count == resultInOrder.Count);
+            Assert.IsTrue(postOrderList.Count == resultPostOrder.Count);
+
+            for (int i = 0; i < preorderList.Count; i++) 
+            {
+                Assert.AreEqual(preorderList[i], resultPreOrder[i]);
+                Assert.AreEqual(inOrderList[i], resultInOrder[i]);
+                Assert.AreEqual(postOrderList[i], resultPostOrder[i]);
+            }
+        }
+
+        [TestMethod]
+        public void givenPostOrderAndInOrder_WeShouldComputeTheRightBst()
+        {
+            var preorderList = new List<int>() { 50, 30, 20, 40, 70, 60, 80 };
+            var inOrderList = new List<int>() { 20, 30, 40, 50, 60, 70, 80 };
+            var postOrderList = new List<int>() { 20, 40, 30, 60, 80, 70, 50 };
+
+            var bst = Chapter5.reconstructTreeWithPostOrderAndInOrder(postOrderList, inOrderList);
+
+            var resultPreOrder = bst.preOrderIteration().ToList();
+            var resultInOrder = bst.inOrderIteration().ToList();
+            var resultPostOrder = bst.postOrderIteration().ToList();
+            Assert.IsTrue(preorderList.Count == resultPreOrder.Count);
+            Assert.IsTrue(inOrderList.Count == resultInOrder.Count);
+            Assert.IsTrue(postOrderList.Count == resultPostOrder.Count);
+
+            for (int i = 0; i < preorderList.Count; i++)
+            {
+                Assert.AreEqual(preorderList[i], resultPreOrder[i]);
+                Assert.AreEqual(inOrderList[i], resultInOrder[i]);
+                Assert.AreEqual(postOrderList[i], resultPostOrder[i]);
+            }
+        }
+
+        [TestMethod]
+        public void givenAnArithmeticExpressionAsTree_WeShouldComputeTheRightResult() 
+        {
+
+        }
     }
 }
