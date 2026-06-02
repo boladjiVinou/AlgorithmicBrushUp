@@ -202,17 +202,6 @@ namespace skienaTests.dataStructures
             Assert.IsTrue(tmpVertices.Contains(0));
             Assert.IsTrue(tmpVertices.Contains(199));
         }
-
-        [TestMethod]
-        public void givenAGraph_ThePossibleRootsShouldBeCorrect()
-        {
-            var tmpGraph = createGraph();
-            tmpGraph.connect(0, 1).connect(1,2).connect(3,2);
-
-            var possibleRoots = tmpGraph.getPossibleRoots();
-
-            Assert.IsTrue(possibleRoots.Contains(0)|| possibleRoots.Contains(3));
-        }
         [TestMethod]
         public void givenAGraph_TheDeletionOrderShouldBeCorrect() 
         {
@@ -231,5 +220,23 @@ namespace skienaTests.dataStructures
         }
 
         protected abstract Graph<int> createGraph();
+
+
+        protected void registerNodeIfNeeded(int u)
+        {
+            if (!incidenceMatrix.ContainsKey(u))
+            {
+                incidenceMatrix.Add(u, []);
+            }
+            if (!adjencySet.ContainsKey(u))
+            {
+                adjencySet.Add(u, []);
+            }
+            if (!adjencyMatrix.ContainsKey(u))
+            {
+                adjencyMatrix.Add(u, []);
+            }
+        }
+
     }
 }

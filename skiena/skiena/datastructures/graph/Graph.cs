@@ -160,6 +160,10 @@ namespace skiena.datastructures.graph
 
        public HashSet<T> getNeighbors(T n) 
         {
+            if (!nodePerValue.ContainsKey(n)) 
+            {
+                return [];
+            }
             return nodePerValue[n].getNeighbors().Select(x => x.Value).ToHashSet();
         }
 
@@ -201,7 +205,7 @@ namespace skiena.datastructures.graph
             // 0 red, 1 blue
             colorByNode = [];
             Queue<T> q = [];
-            foreach (var root in getPossibleRoots())
+            foreach (var root in getPossibleRoot())
             {
                 q.Enqueue(root);
                 colorByNode.Add(root, 0);
@@ -227,11 +231,11 @@ namespace skiena.datastructures.graph
             return true;
         }
 
-        public abstract IEnumerable<T> getPossibleRoots();
+        public abstract IEnumerable<T> getPossibleRoot();
         public IEnumerable<GraphNode<T>> getNonArticulationNodes() 
         {
             var articulationFinder = new ContentClassifier<T>();
-            var roots = getPossibleRoots();
+            var roots = getPossibleRoot();
             if (!roots.Any()) 
             {
                 return new HashSet<GraphNode<T>>();

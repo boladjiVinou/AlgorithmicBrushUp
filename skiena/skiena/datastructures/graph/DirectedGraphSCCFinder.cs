@@ -33,7 +33,7 @@ namespace skiena.datastructures.graph
                     lowLinkByNode[node] = Math.Min(lowLinkByNode[node], idByNode[neighbor]);
                     continue;
                 }
-                if (!visitInProgress.Contains(node)) 
+                if (!visitInProgress.Contains(neighbor)) 
                 {
                     neighbor.accept(this);
                 }

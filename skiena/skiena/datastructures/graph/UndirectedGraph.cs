@@ -71,7 +71,7 @@ namespace skiena.datastructures.graph
             while (inspectGraph)
             {
                 inspectGraph = false;
-                foreach (var item in graph.getPossibleRoots())
+                foreach (var item in graph.getPossibleRoot())
                 {
                     Queue<T> q = [];
                     q.Enqueue(item);
@@ -111,7 +111,7 @@ namespace skiena.datastructures.graph
             return [];
         }
 
-        public override IEnumerable<T> getPossibleRoots()
+        public override IEnumerable<T> getPossibleRoot()
         {
             var dfsVisitor = new DepthFirstSearchVisitor<T>();
             var nodes = nodePerValue.Values.Where(x => x != null);
@@ -132,7 +132,7 @@ namespace skiena.datastructures.graph
         public override List<GraphNode<T>> getDeletionOrder()
         {
             var postOrderVisitor = new PostOrderVisitor<T>();
-            var roots = getPossibleRoots();
+            var roots = getPossibleRoot();
             if (!roots.Any())
             {
                 return [];

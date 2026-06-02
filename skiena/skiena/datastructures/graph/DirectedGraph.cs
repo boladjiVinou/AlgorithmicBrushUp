@@ -50,7 +50,7 @@ namespace skiena.datastructures.graph
         }
         public bool containsAnArborescence()
         {
-            var possibleRoots = getPossibleRoots().ToList();
+            var possibleRoots = getPossibleRoot().ToList();
             if (possibleRoots.Count == 1) 
             {
                 var classifier = new ContentClassifier<T>();
@@ -93,7 +93,7 @@ namespace skiena.datastructures.graph
             return computeChromaticNumberGreedy(this);
         }
 
-        public override IEnumerable<T> getPossibleRoots()
+        public override IEnumerable<T> getPossibleRoot()
         {
             var dfsVisitor = new DepthFirstSearchVisitor<T>();
             foreach (var node in nodePerValue.Values)
@@ -139,10 +139,11 @@ namespace skiena.datastructures.graph
                
                 foreach (var sccNeighbor in sccGraph.getNeighbors(scc.Value))
                 {
+                    var sccNode = sccGraph.nodePerValue[sccNeighbor];
                     sccGraph.disconnect(scc.Value, sccNeighbor);
                     if (sccGraph.getInDegree(sccNeighbor) == 0) 
                     {
-                        topologicalSortQueue.Enqueue(sccGraph.nodePerValue[sccNeighbor]);
+                        topologicalSortQueue.Enqueue(sccNode);
                     }
                 }
             }

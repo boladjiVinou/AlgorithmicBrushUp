@@ -72,23 +72,6 @@ namespace skienaTests.dataStructures
                 }
             }
         }
-
-        private void registerNodeIfNeeded(int u)
-        {
-            if (!incidenceMatrix.ContainsKey(u))
-            {
-                incidenceMatrix.Add(u, []);
-            }
-            if (!adjencySet.ContainsKey(u))
-            {
-                adjencySet.Add(u, []);
-            }
-            if (!adjencyMatrix.ContainsKey(u))
-            {
-                adjencyMatrix.Add(u, []);
-            }
-        }
-
         [TestMethod]
         public void whenANodeIsConnected_TheInDegreeShouldBeUpdated()
         {
@@ -112,7 +95,16 @@ namespace skienaTests.dataStructures
             Assert.AreEqual(1, tmpGraph.getOutDegree(2));
             Assert.AreEqual(1, tmpGraph.getOutDegree(0));
         }
+        [TestMethod]
+        public void givenAGraph_ThePossibleRootsShouldBeCorrect()
+        {
+            var tmpGraph = createGraph();
+            tmpGraph.connect(0, 1).connect(1, 2).connect(3, 2);
 
+            var possibleRoots = tmpGraph.getPossibleRoot();
+
+            Assert.IsTrue(possibleRoots.Contains(0) || possibleRoots.Contains(3));
+        }
         protected override Graph<int> createGraph()
         {
            return new UndirectedGraph<int>();
