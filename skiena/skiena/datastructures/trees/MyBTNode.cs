@@ -28,7 +28,7 @@ namespace skiena.datastructures.trees
             MyBTNode<T>? latestFound = null;
             MyBTNode<T>? currChild = null;
             bool inserted = false;
-            while (queue.Any() && inserted)
+            while (queue.Any() && !inserted)
             {
                 latestFound = currChild;
                 currChild = queue.Dequeue();

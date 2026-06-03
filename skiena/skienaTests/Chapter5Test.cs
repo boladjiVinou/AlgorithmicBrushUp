@@ -1,5 +1,6 @@
 ﻿using skiena.Chapter5;
 using skiena.datastructures.graph;
+using skiena.datastructures.trees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +96,84 @@ namespace skienaTests
         [TestMethod]
         public void givenAnArithmeticExpressionAsTree_WeShouldComputeTheRightResult() 
         {
+            MyBT<string> expressionTree = new MyBT<string>();
+            /*
+             ((8 + 92 ) * (399 - 99))/ 10
 
+                                             /
+
+
+                         *                                   *
+
+               +                  -                  *               * 
+            8     82        399        99        10      1       1       1
+
+             */
+
+            expressionTree.add("/");
+            expressionTree.add("*");
+            expressionTree.add("*");
+            expressionTree.add("+");
+            expressionTree.add("-");
+            expressionTree.add("*");
+            expressionTree.add("*");
+            expressionTree.add("8");
+            expressionTree.add("92");
+            expressionTree.add("399");
+            expressionTree.add("99");
+            expressionTree.add("10");
+            expressionTree.add("1");
+            expressionTree.add("1");
+            expressionTree.add("1");
+
+            Assert.AreEqual(3000, Chapter5.evaluateExpression(expressionTree));
+        }
+        [TestMethod]
+        public void givenAListOfTriangles_WeShouldComputeTheRightTriangleGraph() 
+        {
+            /*
+             0 1 2 : t1
+             1 2 3 : t2
+             2 3 4 : t3
+             3 4 5 : t4
+             */
+            int[][] possibleTriangles = new int[50][];
+            for (int i = 0; i < 50; i++) 
+            {
+                int[] vertices = [i, i + 1, i + 2];
+                possibleTriangles[i] = vertices;
+            }
+            List<int[]> triangles = [];
+            Dictionary<int,int> originalIdxByInsertedIdx = [];
+            Random rand = new Random();
+            for (int i = 0; i < 30; i++) 
+            {
+                int idx = rand.Next() % 50;
+                if (originalIdxByInsertedIdx.ContainsKey(idx)) 
+                {
+                    continue;
+                }
+                originalIdxByInsertedIdx.Add(triangles.Count, idx);
+                triangles.Add(possibleTriangles[idx]);
+            }
+            var insertedTriangles = originalIdxByInsertedIdx.Keys.Order().ToList();
+
+
+
+
+            var connectedGraph = Chapter5.createDualGraph(triangles);
+
+
+
+
+
+            for (int i = 1; i < insertedTriangles.Count; i++) 
+            {
+                int t1OriginalIdx = originalIdxByInsertedIdx[insertedTriangles[i]];
+                int t2OriginalIdx = originalIdxByInsertedIdx[insertedTriangles[i - 1]];
+                bool isConnected = t1OriginalIdx - t2OriginalIdx == 1;
+                Assert.AreEqual(isConnected, connectedGraph.areNodeConnected(t1OriginalIdx, t2OriginalIdx));
+            }
         }
     }
 }

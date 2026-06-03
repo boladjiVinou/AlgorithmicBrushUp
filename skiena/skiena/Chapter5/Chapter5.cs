@@ -69,7 +69,7 @@ namespace skiena.Chapter5
                 { "*", (v) => resStack.Push(resStack.Pop() * v) },
                 { "/", (v) => resStack.Push(resStack.Pop() / v) }
             }; 
-            foreach (string data in tree.postOrderIteration()) 
+            foreach (string data in tree.postOrderIteration().Select(x=>x.Trim())) 
             {
                 if (long.TryParse(data, out long parameter))
                 {
@@ -94,6 +94,7 @@ namespace skiena.Chapter5
             for (int idx = 0; idx<triangles.Count; idx++) 
             {
                 int[] triangle = triangles[idx];
+                graph.insertNode(idx);
                 for (int i = 0; i < triangle.Length; i++)
                 {
                     var otherEdges = enumarateNeighbors(triangle, i).Select(x =>new CustomTuple<int>(triangle[i],x)).ToList();
