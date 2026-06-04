@@ -175,5 +175,47 @@ namespace skienaTests
                 Assert.AreEqual(isConnected, connectedGraph.areNodeConnected(t1OriginalIdx, t2OriginalIdx));
             }
         }
+
+        [TestMethod]
+        public void givenAdjencyList_WeShouldComputeTheRightSquaredGraph() 
+        {
+            DirectedGraph<int> graph = new DirectedGraph<int>();
+            graph.connect(1, 2).connect(2, 3).connect(3, 4).connect(4, 5);
+
+            var squaredGraph = Chapter5.generateSquaredGraph(graph.getAdjencyList());
+
+
+            Assert.IsTrue(squaredGraph[1].Count ==2 && squaredGraph[1].Contains(3));
+            Assert.IsTrue(squaredGraph[2].Count == 2 && squaredGraph[2].Contains(4));
+            Assert.IsTrue(squaredGraph[3].Count == 2 && squaredGraph[3].Contains(5));
+            Assert.IsTrue(squaredGraph[1].Contains(2));
+            Assert.IsTrue(squaredGraph[2].Contains(3));
+            Assert.IsTrue(squaredGraph[3].Contains(4));
+            Assert.IsTrue(squaredGraph[4].Contains(5));
+
+        }
+        [TestMethod]
+        public void givenAdjencyMatrix_WeShouldComputeTheRightSquaredGraph()
+        {
+            DirectedGraph<int> graph = new DirectedGraph<int>();
+            graph.connect(1, 2).connect(2, 3).connect(3, 4).connect(4, 5);
+
+            var squaredGraph = Chapter5.generateSquaredGraph(graph.getAdjencyMatrice());
+
+            Assert.IsFalse(squaredGraph[1][4]);
+            Assert.IsFalse(squaredGraph[1][5]);
+            Assert.IsFalse(squaredGraph[2][5]);
+            foreach (var u in graph.getVertices()) 
+            {
+                foreach (var v in graph.getNeighbors(u)) 
+                {
+                    foreach (var w in graph.getNeighbors(v))
+                    {
+                        Assert.AreEqual(true, squaredGraph[u][w]);
+                    }                      
+                }
+            }
+
+        }
     }
 }

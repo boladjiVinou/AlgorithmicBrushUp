@@ -134,29 +134,25 @@ namespace skiena.Chapter5
          5-12
          Complexity: (E*E/V) + E, => E^2
          */
-        static Dictionary<int, HashSet<int>> generateSquaredGraph(Dictionary<int, HashSet<int>> graph) 
+        public static Dictionary<int, HashSet<int>> generateSquaredGraph(Dictionary<int, HashSet<int>> graph) 
         {
-            Dictionary<int, HashSet<int>> squaredGraph = new Dictionary<int, HashSet<int>>(graph);
-            Dictionary<int, HashSet<int>> parentByNode = new Dictionary<int, HashSet<int>>(graph);
+            Dictionary<int, HashSet<int>> squaredGraph = new Dictionary<int, HashSet<int>>();
 
-            foreach (var n in graph.Keys) 
+            foreach (var u in graph.Keys)
             {
-                foreach (var v in graph[n]) 
+                if (!squaredGraph.ContainsKey(u)) 
                 {
-                    if (!parentByNode.ContainsKey(v))
-                    {
-                        parentByNode.Add(v, new HashSet<int>());
-                    }
-                    parentByNode[v].Add(n);
+                    squaredGraph.Add(u, new HashSet<int>());
                 }
-            }
-            foreach (var v in graph.Keys)
-            {
-                foreach (var w in graph[v])
+                foreach (var v in graph[u])
                 {
-                    foreach (var u in parentByNode[v]) 
+                    squaredGraph[u].Add(v);
+                    foreach (var w in graph[v]) 
                     {
-                        squaredGraph[u].Add(w);
+                        if (u != w) 
+                        {
+                            squaredGraph[u].Add(w);
+                        }
                     }
                 }
             }
@@ -164,18 +160,30 @@ namespace skiena.Chapter5
             return squaredGraph;
         }
 
-        static Dictionary<int, Dictionary<int, bool>> generateSquaredGraph(Dictionary<int, Dictionary<int,bool>> graph)
+       public static Dictionary<int, Dictionary<int, bool>> generateSquaredGraph(Dictionary<int, Dictionary<int,bool>> graph)
         {
-            Dictionary<int, Dictionary<int, bool>> squaredGraph = new Dictionary<int, Dictionary<int, bool>>(graph);
+            Dictionary<int, Dictionary<int, bool>> squaredGraph = new Dictionary<int, Dictionary<int, bool>>();
+            foreach (var u in graph.Keys) 
+            {
+                squaredGraph.Add(u, []);
+                foreach (var v in graph[u].Keys)
+                {
+                    squaredGraph[u].Add(v, false);
+                }
+            }
             foreach (var u in graph.Keys)
             {
                 foreach (var v in graph[u].Keys) 
                 {
+
                     if (graph[u][v]) 
                     {
                         foreach (var w in graph[v].Keys) 
                         {
-                            squaredGraph[u][w] = true;
+                            if (graph[v][w]) 
+                            {
+                                squaredGraph[u][w] = true;
+                            }
                         }
                     }
                 }
@@ -188,14 +196,14 @@ namespace skiena.Chapter5
         there is no cycle -> each edge lead to an uncovered node
         an edge is composed by 2 nodes -> by removing the leaves the cover is the remaining nodes, we cant have less than that
          */
-        static HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
+        public static HashSet<int> minimumSizeVerticesA(Graph<int> tree) 
         {
             return [.. tree.getVertices().Where(x => tree.getInDegree(x) > 1)];
         }
         /*
          5.13.b
          */
-        static HashSet<int> minimumSizeVertexVersionB(UndirectedGraph<int> graph) 
+        public static HashSet<int> minimumSizeVertexVersionB(UndirectedGraph<int> graph) 
         {
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new(graph);
@@ -217,7 +225,7 @@ namespace skiena.Chapter5
         /*
          5.13.c
          */
-        static HashSet<int> minimumWeightCover(UndirectedGraph<int> graph, Dictionary<int,int> weightByNode) 
+        public static HashSet<int> minimumWeightCover(UndirectedGraph<int> graph, Dictionary<int,int> weightByNode) 
         {
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new UndirectedGraph<int>(graph);
@@ -266,7 +274,7 @@ namespace skiena.Chapter5
          5.15
         It means the graph is bipartite
          */
-        static bool containsIndependantSet(Graph<int> graph)
+        public static bool containsIndependantSet(Graph<int> graph)
         {
             /*var cover = minimumSizeVertexVersionB(graph);
             var edges = graph.getEdges();
@@ -294,7 +302,7 @@ namespace skiena.Chapter5
         /**
          5.16.a
          */
-        static ISet<int> computeMaxIndependentSetA(Graph<int> tree, int root) 
+       public static ISet<int> computeMaxIndependentSetA(Graph<int> tree, int root) 
         {
             HashSet<int> independentSet = [];
             int maxSize= computeMaxIndependentSetSize(tree, root, [],false,independentSet, (n)=> 1);
@@ -307,7 +315,7 @@ namespace skiena.Chapter5
         /*
          5.16.b
         */
-        static ISet<int> computeMaxIndependentSetB(Graph<int> tree, int root)
+        public static ISet<int> computeMaxIndependentSetB(Graph<int> tree, int root)
         {
             HashSet<int> independentSet = [];
             computeMaxIndependentSetSize(tree, root, [], false, independentSet, (n) => tree.getInDegree(n));
@@ -317,7 +325,7 @@ namespace skiena.Chapter5
         /*
          5.16.c
         */
-        static ISet<int> computeMaxIndependentSetC(Graph<int> tree,Dictionary<int,int> vertexWeights, int root)
+        public static ISet<int> computeMaxIndependentSetC(Graph<int> tree,Dictionary<int,int> vertexWeights, int root)
         {
             HashSet<int> independentSet = [];
             computeMaxIndependentSetSize(tree, root, [], false,
@@ -325,7 +333,7 @@ namespace skiena.Chapter5
             return independentSet;
         }
 
-        static int computeMaxIndependentSetSize(Graph<int> tree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet, Func<int,int> weightProvider) 
+       public static int computeMaxIndependentSetSize(Graph<int> tree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet, Func<int,int> weightProvider) 
         {
             if (memo.TryGetValue(node, out int value)) 
             {
@@ -367,7 +375,7 @@ namespace skiena.Chapter5
         /*
          5.17
          */
-        static bool findTriangleVersionA(Graph<int> graph) 
+        public static bool findTriangleVersionA(Graph<int> graph) 
         {
             foreach (var n1 in graph.getVertices()) 
             {
@@ -384,7 +392,7 @@ namespace skiena.Chapter5
             }
             return false;
         }
-        static bool findTriangleVersionB(Graph<int> graph) 
+        public static bool findTriangleVersionB(Graph<int> graph) 
         {
             foreach (var root in graph.getPossibleRoot())
             {
@@ -395,7 +403,7 @@ namespace skiena.Chapter5
             }
             return false;
         }
-        static bool checkTriangleWithDfs(Graph<int> graph, int node, ISet<int> encountered) 
+       public static bool checkTriangleWithDfs(Graph<int> graph, int node, ISet<int> encountered) 
         {
             encountered.Add(node);
             foreach (var item in graph.getNeighbors(node))
@@ -416,7 +424,7 @@ namespace skiena.Chapter5
         /*
          5.18
          */
-        static Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
+        public static Dictionary<int, int> findSchedule(List<Tuple<int,int>> desiredMoviesPerClient) 
         {
             UndirectedGraph<int> graph = new UndirectedGraph<int>();
             foreach (var item in desiredMoviesPerClient)
@@ -433,7 +441,7 @@ namespace skiena.Chapter5
         /*
          5.19
          */
-        static int computeDiameter(DirectedGraph<int> tree) 
+        public static int computeDiameter(DirectedGraph<int> tree) 
         {
             int diameter = 0;
             int maxDegree = tree.getVertices().MaxBy(x => tree.getInDegree(x));
@@ -462,7 +470,7 @@ namespace skiena.Chapter5
         /*
          5.20
          */
-        static UndirectedGraph<int> computeMaximumInducedSubgraph(UndirectedGraph<int> graph, int k) 
+        public static UndirectedGraph<int> computeMaximumInducedSubgraph(UndirectedGraph<int> graph, int k) 
         {
             return graph.computeMaximumInducedSubgraph(k);
         }
@@ -473,7 +481,7 @@ namespace skiena.Chapter5
         record NodeData(int value, int pathLength) 
         {
         }
-        static int findNumberOfShortestPath(Graph<int> directedGraph, int v, int w) 
+       public static int findNumberOfShortestPath(Graph<int> directedGraph, int v, int w) 
         {
             int pathLength = -1;
             int nbPath = 0;
@@ -502,7 +510,7 @@ namespace skiena.Chapter5
         /*
          5.22
          */
-        static void reduceEdges(UndirectedGraph<int> graph) 
+        public static void reduceEdges(UndirectedGraph<int> graph) 
         {
             Queue<int> q = [];
             foreach (int v in graph.getVertices().Where(x => graph.getInDegree(x) == 2)) 
@@ -533,7 +541,7 @@ namespace skiena.Chapter5
          5.23
         a) directed edge when 1 -> 2,  1 hates 2
          */
-        static List<int> getLineOrderA(DirectedGraph<int> relations) 
+       public  static List<int> getLineOrderA(DirectedGraph<int> relations) 
         {
             var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
             Queue<int> q = [];
@@ -560,7 +568,7 @@ namespace skiena.Chapter5
         /*
          5.23 b)
          */
-        static int getLineOrderB(DirectedGraph<int> relations) 
+       public  static int getLineOrderB(DirectedGraph<int> relations) 
         {
             var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
             Queue<Tuple<int,int>> q = [];
