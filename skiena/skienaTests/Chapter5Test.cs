@@ -217,5 +217,65 @@ namespace skienaTests
             }
 
         }
+        [TestMethod]
+        public void givenATree_WhenSearchingForTheVertexCover_WeShouldComputeTheRightValue() 
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0,1).connect(0,2).connect(1,3).connect(1,4).connect(2,5).connect(2,6);
+
+            var cover = Chapter5.minimumSizeVerticesA(tree);
+
+            for (int i = 0; i < 3; i++) 
+            {
+                Assert.IsTrue(cover.Contains(i));
+            }
+            for (int i = 3; i < 7; i++)
+            {
+                Assert.IsFalse(cover.Contains(i));
+            }
+        }
+
+        [TestMethod]
+        public void givenATreeOfDegrees_WhenSearchingForTheVertexCover_WeShouldComputeTheMnimumWeightCover()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(1, 3).connect(1, 4).connect(2, 5).connect(2, 6);
+
+            var cover = Chapter5.minimumSizeVertexVersionB(tree);
+
+            Assert.IsTrue(tree.getEdges().All(e => cover.Contains(e.Item1) || cover.Contains(e.Item2)));
+        }
+
+        [TestMethod]
+        public void givenATree_WhenSearchingForTheMinimumDegreeVertexCover_WeShouldComputeTheMnimumDegreeCover()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
+
+            var cover = Chapter5.minimumSizeVertexVersionB(tree);
+
+            Assert.IsTrue(cover.Count == 1);
+            Assert.IsTrue(tree.getEdges().All(e => cover.Contains(e.Item1) || cover.Contains(e.Item2)));
+        }
+
+
+        [TestMethod]
+        public void givenATree_WhenSearchingForTheMinimumWeighteVertexCover_WeShouldComputeTheMnimumWeightCover()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
+            Dictionary<int, int> weightByNode = new();
+            weightByNode.Add(0, 1000);
+            weightByNode.Add(1, 1);
+            weightByNode.Add(2, 2);
+            weightByNode.Add(3, 3);
+            weightByNode.Add(4, 4);
+
+            var cover = Chapter5.minimumWeightCover(tree, weightByNode);
+
+            Assert.IsTrue(cover.Count == 4);
+            Assert.IsTrue(tree.getEdges().All(e => cover.Contains(e.Item1) || cover.Contains(e.Item2)));
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using skiena.datastructures;
+﻿using MoreLinq.Extensions;
+using skiena.datastructures;
 using skiena.datastructures.graph;
 using skiena.datastructures.trees;
 using System;
@@ -202,48 +203,84 @@ namespace skiena.Chapter5
         }
         /*
          5.13.b
+        the graph is expected to be a tree
          */
-        public static HashSet<int> minimumSizeVertexVersionB(UndirectedGraph<int> graph) 
+        private class MinimumCoverNode<T>
+        {
+             public T node { get; set; }
+             public T neighbor { get; set; }
+
+            public MinimumCoverNode(T node, T neighbor)
+            {
+                this.node = node;
+                this.neighbor = neighbor;
+            }
+        }
+        public static HashSet<int> minimumSizeVertexVersionB(UndirectedGraph<int> tree) 
         {
             HashSet<int> minimumVerticeSet = [];
-            UndirectedGraph<int> tmpGraph = new(graph);
-            var orderedVertices =  tmpGraph.getVertices().OrderByDescending(x => tmpGraph.getInDegree(x)).ToList();
-            foreach (var v in orderedVertices)
+            UndirectedGraph<int> tmpGraph = new(tree);
+            PriorityQueue<MinimumCoverNode<int>,int> verticeQueue = new();
+            foreach (var v in tmpGraph.getVertices().Where(x=>tmpGraph.getInDegree(x) > 0))
             {
-                HashSet<int> neighbors = tmpGraph.getNeighbors(v);
-                if (neighbors.Count != 0) 
+                var neighbor = tree.getNeighbors(v).First();
+                var inDegree = tmpGraph.getInDegree(v);
+                verticeQueue.Enqueue(new MinimumCoverNode<int>(v,neighbor), -inDegree);
+            }
+            while (verticeQueue.Count>0)
+            {
+                var vertice = verticeQueue.Dequeue();
+                if (!minimumVerticeSet.Contains(vertice.node) && !minimumVerticeSet.Contains(vertice.neighbor))
                 {
-                    minimumVerticeSet.Add(v);
-                    foreach (var neighbor in neighbors)
+                    minimumVerticeSet.Add(vertice.node);
+                }
+               
+                foreach(var neighbor in tmpGraph.getNeighbors(vertice.node))
+                {
+                    tmpGraph.disconnect(vertice.node, neighbor);
+                    var neighBorDegree = tmpGraph.getInDegree(neighbor);
+                    if (neighBorDegree > 0) 
                     {
-                        tmpGraph.disconnect(v, neighbor);
+                        var neighborNeighbor = tree.getNeighbors(neighbor).First();
+                        verticeQueue.Enqueue(new MinimumCoverNode<int>(neighbor, neighborNeighbor), -neighBorDegree);
                     }
                 }
             }
+            
             return minimumVerticeSet;
         }
         /*
          5.13.c
          */
-        public static HashSet<int> minimumWeightCover(UndirectedGraph<int> graph, Dictionary<int,int> weightByNode) 
+        public static HashSet<int> minimumWeightCover(UndirectedGraph<int> tree, Dictionary<int,int> weightByNode) 
         {
             HashSet<int> minimumVerticeSet = [];
-            UndirectedGraph<int> tmpGraph = new UndirectedGraph<int>(graph);
-            var orderedVertices = tmpGraph.getVertices()
-                .OrderByDescending(x => tmpGraph.getInDegree(x) - weightByNode[x])
-                .ToList();
-            foreach (var v in orderedVertices)
+            UndirectedGraph<int> tmpGraph = new(tree);
+            PriorityQueue<MinimumCoverNode<int>, int> verticeQueue = new();
+            foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x) > 0))
             {
-                HashSet<int> neighbors = tmpGraph.getNeighbors(v);
-                if (neighbors.Count != 0)
+                var neighbor = tree.getNeighbors(v).FirstOrDefault();
+                verticeQueue.Enqueue(new MinimumCoverNode<int>(v, neighbor), weightByNode[v]);
+            }
+            while (verticeQueue.Count > 0)
+            {
+                var vertice = verticeQueue.Dequeue();
+                if ( (!minimumVerticeSet.Contains(vertice.node) && !minimumVerticeSet.Contains(vertice.neighbor)))
                 {
-                    minimumVerticeSet.Add(v);
-                    foreach (var neighbor in neighbors)
+                    minimumVerticeSet.Add(vertice.node);
+                }
+
+                foreach (var neighbor in tmpGraph.getNeighbors(vertice.node))
+                {
+                    tmpGraph.disconnect(vertice.node, neighbor);
+                    if (tmpGraph.getInDegree(neighbor) > 0)
                     {
-                        tmpGraph.disconnect(v, neighbor);
+                        var neighborNeighbor = tree.getNeighbors(neighbor).First();
+                        verticeQueue.Enqueue(new MinimumCoverNode<int>(neighbor, neighborNeighbor), weightByNode[neighbor]);
                     }
                 }
             }
+
             return minimumVerticeSet;
         }
 
@@ -444,7 +481,7 @@ namespace skiena.Chapter5
         public static int computeDiameter(DirectedGraph<int> tree) 
         {
             int diameter = 0;
-            int maxDegree = tree.getVertices().MaxBy(x => tree.getInDegree(x));
+          //  int maxDegree = tree.getVertices().Max(x => tree.getInDegree(x));
             foreach (var item in tree.getPossibleRoot())
             {
                 Stack<Tuple<int,int>> stack = [];
