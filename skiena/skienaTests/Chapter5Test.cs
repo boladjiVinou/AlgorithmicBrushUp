@@ -276,6 +276,64 @@ namespace skienaTests
             Assert.IsTrue(cover.Count == 4);
             Assert.IsTrue(tree.getEdges().All(e => cover.Contains(e.Item1) || cover.Contains(e.Item2)));
         }
+        [TestMethod]
+        public void givenATree_WhenSearchingForMaxIndependentSet_WeShouldFindIt()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
 
+            var set = Chapter5.computeMaxIndependentSetA(tree);
+
+            Assert.IsTrue(set.Count == 4);
+            Assert.IsTrue(tree.getEdges().All(e => !set.Contains(e.Item1) || !set.Contains(e.Item2)));
+        }
+
+        [TestMethod]
+        public void givenATree_WhenSearchingForMaxDegreeIndependentSet_WeShouldFindIt()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
+
+            var set = Chapter5.computeMaxIndependentSetB(tree);
+
+            Assert.IsTrue(set.Count == 1);
+            Assert.IsTrue(tree.getEdges().All(e => !set.Contains(e.Item1) || !set.Contains(e.Item2)));
+        }
+
+
+        [TestMethod]
+        public void givenATree_WhenSearchingForMaxWeightIndependentSet_WeShouldFindIt()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
+            Dictionary<int, int> weightByNode = [];
+            weightByNode.Add(0, 1000);
+            weightByNode.Add(1, 500);
+            weightByNode.Add(2, 501);
+            weightByNode.Add(3, 1);
+            weightByNode.Add(4, 1);
+
+            var set = Chapter5.computeMaxIndependentSetC(tree, weightByNode);
+
+            Assert.IsTrue(set.Count == 4);
+            Assert.IsTrue(tree.getEdges().All(e => !set.Contains(e.Item1) || !set.Contains(e.Item2)));
+        }
+        [TestMethod]
+        public void givenATreeWithOneCentralNodeWithHighestValue_WhenSearchingForMaxWeightIndependentSet_WeShouldFindIt()
+        {
+            UndirectedGraph<int> tree = new UndirectedGraph<int>();
+            tree.connect(0, 1).connect(0, 2).connect(0, 3).connect(0, 4);
+            Dictionary<int, int> weightByNode = [];
+            weightByNode.Add(0, 10000);
+            weightByNode.Add(1, 500);
+            weightByNode.Add(2, 501);
+            weightByNode.Add(3, 1);
+            weightByNode.Add(4, 1);
+
+            var set = Chapter5.computeMaxIndependentSetC(tree, weightByNode);
+
+            Assert.IsTrue(set.Count == 1);
+            Assert.IsTrue(tree.getEdges().All(e => !set.Contains(e.Item1) || !set.Contains(e.Item2)));
+        }
     }
 }

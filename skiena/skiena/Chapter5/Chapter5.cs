@@ -205,12 +205,12 @@ namespace skiena.Chapter5
          5.13.b
         the graph is expected to be a tree
          */
-        private class MinimumCoverNode<T>
+        private class TempNode<T>
         {
              public T node { get; set; }
              public T neighbor { get; set; }
 
-            public MinimumCoverNode(T node, T neighbor)
+            public TempNode(T node, T neighbor)
             {
                 this.node = node;
                 this.neighbor = neighbor;
@@ -220,12 +220,12 @@ namespace skiena.Chapter5
         {
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new(tree);
-            PriorityQueue<MinimumCoverNode<int>,int> verticeQueue = new();
+            PriorityQueue<TempNode<int>,int> verticeQueue = new();
             foreach (var v in tmpGraph.getVertices().Where(x=>tmpGraph.getInDegree(x) > 0))
             {
                 var neighbor = tree.getNeighbors(v).First();
                 var inDegree = tmpGraph.getInDegree(v);
-                verticeQueue.Enqueue(new MinimumCoverNode<int>(v,neighbor), -inDegree);
+                verticeQueue.Enqueue(new TempNode<int>(v,neighbor), -inDegree);
             }
             while (verticeQueue.Count>0)
             {
@@ -242,7 +242,7 @@ namespace skiena.Chapter5
                     if (neighBorDegree > 0) 
                     {
                         var neighborNeighbor = tree.getNeighbors(neighbor).First();
-                        verticeQueue.Enqueue(new MinimumCoverNode<int>(neighbor, neighborNeighbor), -neighBorDegree);
+                        verticeQueue.Enqueue(new TempNode<int>(neighbor, neighborNeighbor), -neighBorDegree);
                     }
                 }
             }
@@ -256,11 +256,12 @@ namespace skiena.Chapter5
         {
             HashSet<int> minimumVerticeSet = [];
             UndirectedGraph<int> tmpGraph = new(tree);
-            PriorityQueue<MinimumCoverNode<int>, int> verticeQueue = new();
+            PriorityQueue<TempNode<int>, int> verticeQueue = new();
             foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x) > 0))
             {
-                var neighbor = tree.getNeighbors(v).FirstOrDefault();
-                verticeQueue.Enqueue(new MinimumCoverNode<int>(v, neighbor), weightByNode[v]);
+                var neighbor = tree.getNeighbors(v).First();
+                var inDegree = tmpGraph.getInDegree(v);
+                verticeQueue.Enqueue(new TempNode<int>(v, neighbor), weightByNode[v] + inDegree);// at same weight favor nodes with multiple connections
             }
             while (verticeQueue.Count > 0)
             {
@@ -273,10 +274,11 @@ namespace skiena.Chapter5
                 foreach (var neighbor in tmpGraph.getNeighbors(vertice.node))
                 {
                     tmpGraph.disconnect(vertice.node, neighbor);
-                    if (tmpGraph.getInDegree(neighbor) > 0)
+                    int neighborDegree = tmpGraph.getInDegree(neighbor);
+                    if (neighborDegree > 0)
                     {
                         var neighborNeighbor = tree.getNeighbors(neighbor).First();
-                        verticeQueue.Enqueue(new MinimumCoverNode<int>(neighbor, neighborNeighbor), weightByNode[neighbor]);
+                        verticeQueue.Enqueue(new TempNode<int>(neighbor, neighborNeighbor), weightByNode[neighbor] + neighborDegree);// at same weight favor nodes with multiple connections
                     }
                 }
             }
@@ -339,74 +341,156 @@ namespace skiena.Chapter5
         /**
          5.16.a
          */
-       public static ISet<int> computeMaxIndependentSetA(Graph<int> tree, int root) 
+       public static ISet<int> computeMaxIndependentSetA(Graph<int> tree) 
         {
-            HashSet<int> independentSet = [];
-            int maxSize= computeMaxIndependentSetSize(tree, root, [],false,independentSet, (n)=> 1);
-            if (maxSize != independentSet.Count) 
+            HashSet<int> minimumVerticeSet = [];
+            UndirectedGraph<int> tmpGraph = new(tree);
+            Queue<TempNode<int>> verticeQueue = new();
+            foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x) == 0))
             {
-                throw new ApplicationException("computed set size mismatch");
+                minimumVerticeSet.Add(v);
             }
-            return independentSet;
+            foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x)  == 1))
+            {
+                var neighbor = tree.getNeighbors(v).First();
+                verticeQueue.Enqueue(new TempNode<int>(v, neighbor));
+            }
+            while (verticeQueue.Count > 0)
+            {
+                var vertice = verticeQueue.Dequeue();
+                if (!minimumVerticeSet.Contains(vertice.node) && !minimumVerticeSet.Contains(vertice.neighbor))
+                {
+                    minimumVerticeSet.Add(vertice.node);
+                }
+
+                foreach (var neighbor in tmpGraph.getNeighbors(vertice.node))
+                {
+                    tmpGraph.disconnect(vertice.node, neighbor);
+                    var neighBorDegree = tmpGraph.getInDegree(neighbor);
+                    if (neighBorDegree == 1)
+                    {
+                        var neighborNeighbor = tree.getNeighbors(neighbor).First();
+                        verticeQueue.Enqueue(new TempNode<int>(neighbor, neighborNeighbor));
+                    }
+                }
+            }
+
+            return minimumVerticeSet;
         }
         /*
          5.16.b
         */
-        public static ISet<int> computeMaxIndependentSetB(Graph<int> tree, int root)
+        public static ISet<int> computeMaxIndependentSetB(Graph<int> tree)
         {
-            HashSet<int> independentSet = [];
-            computeMaxIndependentSetSize(tree, root, [], false, independentSet, (n) => tree.getInDegree(n));
-            return independentSet;
+
+            HashSet<int> minimumVerticeSet = [];
+            UndirectedGraph<int> tmpGraph = new(tree);
+            PriorityQueue<TempNode<int>, int> verticeQueue = new();
+            foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x) == 0))
+            {
+                minimumVerticeSet.Add(v);
+            }
+            foreach (var v in tmpGraph.getVertices().Where(x => tmpGraph.getInDegree(x) > 0))
+            {
+                var neighbor = tree.getNeighbors(v).First();
+                var inDegree = tmpGraph.getInDegree(v);
+                verticeQueue.Enqueue(new TempNode<int>(v, neighbor), -inDegree);
+            }
+            while (verticeQueue.Count > 0)
+            {
+                var vertice = verticeQueue.Dequeue();
+                if (!minimumVerticeSet.Contains(vertice.node) && !minimumVerticeSet.Contains(vertice.neighbor))
+                {
+                    minimumVerticeSet.Add(vertice.node);
+                }
+
+                foreach (var neighbor in tmpGraph.getNeighbors(vertice.node))
+                {
+                    tmpGraph.disconnect(vertice.node, neighbor);
+                    var neighBorDegree = tmpGraph.getInDegree(neighbor);
+                    if (neighBorDegree > 0)
+                    {
+                        var neighborNeighbor = tree.getNeighbors(neighbor).First();
+                        verticeQueue.Enqueue(new TempNode<int>(neighbor, neighborNeighbor), -neighBorDegree);
+                    }
+                }
+            }
+
+            return minimumVerticeSet;
         }
 
         /*
          5.16.c
         */
-        public static ISet<int> computeMaxIndependentSetC(Graph<int> tree,Dictionary<int,int> vertexWeights, int root)
+        public static ISet<int> computeMaxIndependentSetC(Graph<int> tree,Dictionary<int,int> vertexWeights)
         {
-            HashSet<int> independentSet = [];
-            computeMaxIndependentSetSize(tree, root, [], false,
-                independentSet, (n) => vertexWeights.TryGetValue(n, out int weight) ? weight : 1);
-            return independentSet;
+            HashSet<int> maxSet = [];
+            int maxWeight = 0;
+
+            foreach (var v in tree.getVertices())
+            {
+                HashSet<int> tmpSet1 = new HashSet<int>();
+                int size1 = computeBestWeightIndependantSet(tree, v,  tmpSet1, n => vertexWeights[n], [],0);
+
+                if (size1 > maxWeight) 
+                {
+                    maxSet = tmpSet1;
+                    maxWeight = size1;
+                }
+            }
+
+            return maxSet;
         }
 
-       public static int computeMaxIndependentSetSize(Graph<int> tree, int node, Dictionary<int, int> memo, bool parentIncluded, ISet<int> independentSet, Func<int,int> weightProvider) 
+        public static int computeBestWeightIndependantSet(Graph<int> tree, int node, HashSet<int> set, Func<int, int> weightProvider, HashSet<int> excludedNode,int currWeight)
         {
-            if (memo.TryGetValue(node, out int value)) 
+            // when excluding the curr node
+            int weightWithoutNode = currWeight;
+            HashSet<int> setWhenNodeNotAdded = [];
+            excludedNode.Add(node);
+            foreach (var n in tree.getNeighbors(node).Where(x => !excludedNode.Contains(x)))
             {
-                return value;
+                weightWithoutNode = computeBestWeightIndependantSet(tree, n, setWhenNodeNotAdded, weightProvider, excludedNode, weightWithoutNode);
             }
 
-            if (!parentIncluded) 
+            // when taking the curr node
+
+            excludedNode.Remove(node);
+            int weightWithNode = currWeight + weightProvider(node);
+            foreach (var n in tree.getNeighbors(node))
             {
-                independentSet.Add(node);
+                excludedNode.Add(n);
+            }
+            HashSet<int> setWhenNodeAdded = [];
+            foreach (var n in tree.getNeighbors(node).Where(x => !excludedNode.Contains(x)).SelectMany(y => tree.getNeighbors(y).Where(z => z != node && !excludedNode.Contains(z))))
+            {
+
+                weightWithNode = computeBestWeightIndependantSet(tree, n, setWhenNodeAdded, weightProvider, excludedNode, weightWithNode);
             }
 
-            int sizeWithNodeIncluded = parentIncluded ? 0 : tree.getNeighbors(node)
-                .Where(x => !independentSet.Contains(x))
-                .Sum(x => computeMaxIndependentSetSize(tree, x, memo, true, independentSet,weightProvider)) + weightProvider(node);
+            // comparing and taking the best
 
-            if (!parentIncluded)
+            if (weightWithNode > weightWithoutNode)
             {
-                independentSet.Remove(node);
-            }
-
-            int sizeWithNodeExcluded = tree.getNeighbors(node)
-                .Where(x => !independentSet.Contains(x))
-                .Sum(x => computeMaxIndependentSetSize(tree, x, memo, false, independentSet,weightProvider));
-
-            int finalResult = 0;
-            if (sizeWithNodeIncluded > sizeWithNodeExcluded)
-            {
-                independentSet.Add(value);
-                finalResult = sizeWithNodeIncluded;
+                foreach (var item in setWhenNodeAdded)
+                {
+                    set.Add(item);
+                }
+                set.Add(node);
+                return weightWithNode;
             }
             else 
             {
-                finalResult = sizeWithNodeExcluded;
+                foreach (var n in tree.getNeighbors(node))
+                {
+                    excludedNode.Add(n);
+                }
+                foreach (var item in setWhenNodeNotAdded)
+                {
+                    set.Add(item);
+                }
+                return weightWithoutNode;
             }
-            memo.Add(node, finalResult);
-            return finalResult;
         }
 
         /*
