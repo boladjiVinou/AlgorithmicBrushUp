@@ -335,5 +335,22 @@ namespace skienaTests
             Assert.IsTrue(set.Count == 1);
             Assert.IsTrue(tree.getEdges().All(e => !set.Contains(e.Item1) || !set.Contains(e.Item2)));
         }
+
+        [TestMethod]
+        public void givenAGraphWithATriangle_whenSearchingForTriangle_WeShouldFindIt() 
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(2, 3);
+
+            Assert.IsTrue(Chapter5.findTriangleVersionB(graph));
+        }
+        [TestMethod]
+        public void givenAGraphWithoutATriangle_whenSearchingForTriangle_WeShouldFindIt()
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(1, 3);
+
+            Assert.IsFalse(Chapter5.findTriangleVersionB(graph));
+        }
     }
 }

@@ -493,6 +493,7 @@ namespace skiena.Chapter5
             }
         }
 
+
         /*
          5.17
          */
@@ -533,9 +534,15 @@ namespace skiena.Chapter5
                 {
                     return true;
                 }
-                if (checkTriangleWithDfs(graph, item, encountered)) 
+                graph.disconnect(node, item);
+                if (checkTriangleWithDfs(graph, item, encountered))
                 {
+                    graph.connect(node, item);
                     return true;
+                }
+                else 
+                {
+                    graph.connect(node, item);
                 }
             }
             encountered.Remove(node);
