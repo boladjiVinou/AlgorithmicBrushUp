@@ -414,5 +414,28 @@ namespace skienaTests
             Assert.AreEqual(expectedDiameter, Chapter5.computeDiameter(graph));
         }
 
+        [TestMethod]
+        public void givenThereIsAMaxInducedSubGraph_WeShouldFindIt()
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(0, 3).connect(1, 4).connect(1, 5);
+
+            var maxGraph = Chapter5.computeMaximumInducedSubgraph(graph, 3);
+
+            Assert.IsTrue(maxGraph.getVertices().All(x => maxGraph.getInDegree(x) >= 3));
+        }
+
+
+        [TestMethod]
+        public void givenThereIsNoMaxInducedSubGraph_WeShouldNotFindIt()
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(1, 4).connect(1, 5);
+
+            var maxGraph = Chapter5.computeMaximumInducedSubgraph(graph, 3);
+
+            Assert.IsFalse(maxGraph.getVertices().Any(x => maxGraph.getInDegree(x) >= 3));
+        }
+
     }
 }
