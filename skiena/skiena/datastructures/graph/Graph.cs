@@ -205,7 +205,7 @@ namespace skiena.datastructures.graph
             // 0 red, 1 blue
             colorByNode = [];
             Queue<T> q = [];
-            foreach (var root in getPossibleRoot())
+            foreach (var root in getPossibleCommonRoot())
             {
                 q.Enqueue(root);
                 colorByNode.Add(root, 0);
@@ -231,11 +231,11 @@ namespace skiena.datastructures.graph
             return true;
         }
 
-        public abstract IEnumerable<T> getPossibleRoot();
+        public abstract IEnumerable<T> getPossibleCommonRoot();
         public IEnumerable<GraphNode<T>> getNonArticulationNodes() 
         {
             var articulationFinder = new ContentClassifier<T>();
-            var roots = getPossibleRoot();
+            var roots = getPossibleCommonRoot();
             if (!roots.Any()) 
             {
                 return new HashSet<GraphNode<T>>();

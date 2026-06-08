@@ -99,7 +99,7 @@ namespace skienaTests.dataStructures
             var tmpGraph = createGraph();
             tmpGraph.connect(0, 1).connect(1, 2).connect(3, 2);
 
-            var possibleRoots = tmpGraph.getPossibleRoot();
+            var possibleRoots = tmpGraph.getPossibleCommonRoot();
 
             Assert.IsTrue(!possibleRoots.Any());
         }
@@ -110,7 +110,7 @@ namespace skienaTests.dataStructures
             var tmpGraph = createGraph();
             tmpGraph.connect(1,2).connect(0,1).connect(2,1);
 
-            var possibleRoots = tmpGraph.getPossibleRoot().ToList();
+            var possibleRoots = tmpGraph.getPossibleCommonRoot().ToList();
 
             Assert.IsTrue(possibleRoots.Contains(0));
         }

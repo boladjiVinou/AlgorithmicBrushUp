@@ -149,14 +149,13 @@ namespace skienaTests
             for (int i = 0; i < 30; i++) 
             {
                 int idx = rand.Next() % 50;
-                if (originalIdxByInsertedIdx.ContainsKey(idx)) 
+                if (originalIdxByInsertedIdx.ContainsValue(idx)) 
                 {
                     continue;
                 }
                 originalIdxByInsertedIdx.Add(triangles.Count, idx);
                 triangles.Add(possibleTriangles[idx]);
             }
-            var insertedTriangles = originalIdxByInsertedIdx.Keys.Order().ToList();
 
 
 
@@ -164,15 +163,19 @@ namespace skienaTests
             var connectedGraph = Chapter5.createDualGraph(triangles);
 
 
-
-
-
-            for (int i = 1; i < insertedTriangles.Count; i++) 
+            for (int i = 0; i < triangles.Count; i++) 
             {
-                int t1OriginalIdx = originalIdxByInsertedIdx[insertedTriangles[i]];
-                int t2OriginalIdx = originalIdxByInsertedIdx[insertedTriangles[i - 1]];
-                bool isConnected = t1OriginalIdx - t2OriginalIdx == 1;
-                Assert.AreEqual(isConnected, connectedGraph.areNodeConnected(t1OriginalIdx, t2OriginalIdx));
+                int t1OriginalIdx = originalIdxByInsertedIdx[i];
+                for(int j = 0; j< triangles.Count; j++) 
+                {
+                    if (i == j) 
+                    {
+                        continue;
+                    }
+                    int t2OriginalIdx = originalIdxByInsertedIdx[j];
+                    bool isConnected = Math.Abs(t1OriginalIdx - t2OriginalIdx) == 1;
+                    Assert.AreEqual(isConnected, connectedGraph.areNodeConnected(i, j));
+                }
             }
         }
 
@@ -340,17 +343,54 @@ namespace skienaTests
         public void givenAGraphWithATriangle_whenSearchingForTriangle_WeShouldFindIt() 
         {
             UndirectedGraph<int> graph = new UndirectedGraph<int>();
-            graph.connect(0, 1).connect(0, 2).connect(2, 3);
+            graph.connect(0, 1).connect(0, 2).connect(2,1);
 
             Assert.IsTrue(Chapter5.findTriangleVersionB(graph));
         }
         [TestMethod]
-        public void givenAGraphWithoutATriangle_whenSearchingForTriangle_WeShouldFindIt()
+        public void givenAGraphWithoutATriangle_whenSearchingForTriangle_WeShouldFindNotIt()
         {
             UndirectedGraph<int> graph = new UndirectedGraph<int>();
             graph.connect(0, 1).connect(0, 2).connect(1, 3);
 
             Assert.IsFalse(Chapter5.findTriangleVersionB(graph));
         }
+
+        [TestMethod]
+        public void givenAGraphWithoutATriangleV2_whenSearchingForTriangle_WeShouldFindNotIt()
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(2, 3);
+
+            Assert.IsFalse(Chapter5.findTriangleVersionB(graph));
+        }
+
+        [TestMethod]
+        public void whenItIsImpossibleToHaveAMovieOneDayOnly_WeShouldDetectIt() 
+        {
+            List<Tuple<int, int>> desiredMovies = [];
+            desiredMovies.Add(new Tuple<int, int>(0, 1));
+            desiredMovies.Add(new Tuple<int, int>(2, 3));
+            desiredMovies.Add(new Tuple<int, int>(4,5));
+
+
+            desiredMovies.Add(new Tuple<int, int>(1, 0));
+            var possibleSchedule = Chapter5.findSchedule(desiredMovies);
+
+            Assert.IsTrue(possibleSchedule.Keys.Count == 0);
+        }
+        [TestMethod]
+        public void whenItIsPossibleToHaveAScheduleForEachDay_WeShouldDetectIt() 
+        {
+            List<Tuple<int, int>> desiredMovies = [];
+            desiredMovies.Add(new Tuple<int, int>(0, 1));
+            desiredMovies.Add(new Tuple<int, int>(2, 1));
+            desiredMovies.Add(new Tuple<int, int>(0, 3));
+
+            var possibleSchedule = Chapter5.findSchedule(desiredMovies);
+
+            Assert.IsTrue(possibleSchedule.Keys.Count == 4);
+        }
+
     }
 }

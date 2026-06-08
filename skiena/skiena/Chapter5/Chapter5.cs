@@ -86,50 +86,41 @@ namespace skiena.Chapter5
         /*
          5.11
         return a graph of connected triangle indexes
-        Complexity O(n * 6) n being nb of triangles
+        Complexity O(n * 3 * n) n being nb of triangles
          */
         public static Graph<int> createDualGraph(List<int[]> triangles) 
         {
             UndirectedGraph<int> graph = new UndirectedGraph<int>();
-            Dictionary<CustomTuple<int>,int> prevTriangleLinkedToEdge = [];
+            Dictionary<CustomTuple<int>,HashSet<int>> prevTriangleLinkedToEdge = [];
             for (int idx = 0; idx<triangles.Count; idx++) 
             {
                 int[] triangle = triangles[idx];
                 graph.insertNode(idx);
-                for (int i = 0; i < triangle.Length; i++)
-                {
-                    var otherEdges = enumarateNeighbors(triangle, i).Select(x =>new CustomTuple<int>(triangle[i],x)).ToList();
+                var edges = new List<CustomTuple<int>>() 
+                { new(triangle[0], triangle[1]), 
+                    new(triangle[0], triangle[2]),
+                    new(triangle[2], triangle[1])};
 
-                    foreach(var edge in otherEdges) 
+                foreach (var edge in edges)
+                {
+                    if (prevTriangleLinkedToEdge.ContainsKey(edge))
                     {
-                        if (prevTriangleLinkedToEdge.ContainsKey(edge) && prevTriangleLinkedToEdge[edge] != idx)
+                        foreach (var otherTriangle in prevTriangleLinkedToEdge[edge])
                         {
-                            graph.connect(prevTriangleLinkedToEdge[edge], idx);
-                        }
-                        if (!prevTriangleLinkedToEdge.ContainsKey(edge))
-                        {
-                            prevTriangleLinkedToEdge.Add(edge, idx);
-                        }
-                        else 
-                        {
-                            prevTriangleLinkedToEdge[edge] = idx;
+                            graph.connect(otherTriangle, idx);
                         }
                     }
                 }
+                foreach (var edge in edges)
+                {
+                    if (!prevTriangleLinkedToEdge.ContainsKey(edge))
+                    {
+                        prevTriangleLinkedToEdge.Add(edge, new HashSet<int>());
+                    }
+                    prevTriangleLinkedToEdge[edge].Add(idx);
+                }
             }
             return graph;
-        }
-
-        static IEnumerable<int> enumarateNeighbors(int[] triangle, int curr) 
-        {
-            for (int i = 0; i < triangle.Length; ++i) 
-            {
-                if (i == curr) 
-                {
-                    continue;
-                }
-                yield return triangle[i];
-            }
         }
         /*
          5-12
@@ -516,7 +507,7 @@ namespace skiena.Chapter5
         }
         public static bool findTriangleVersionB(Graph<int> graph) 
         {
-            foreach (var root in graph.getPossibleRoot())
+            foreach (var root in graph.getPossibleCommonRoot())
             {
                 if (checkTriangleWithDfs(graph, root, new HashSet<int>())) 
                 {
@@ -559,6 +550,7 @@ namespace skiena.Chapter5
             {
                 graph.connect(item.Item1, item.Item2);
             }
+            
             Dictionary<int, int> colorByNode;
             if (graph.isBipartite(out colorByNode))
             {
@@ -573,7 +565,7 @@ namespace skiena.Chapter5
         {
             int diameter = 0;
           //  int maxDegree = tree.getVertices().Max(x => tree.getInDegree(x));
-            foreach (var item in tree.getPossibleRoot())
+            foreach (var item in tree.getPossibleCommonRoot())
             {
                 Stack<Tuple<int,int>> stack = [];
                 stack.Push(new Tuple<int,int>(item,0));

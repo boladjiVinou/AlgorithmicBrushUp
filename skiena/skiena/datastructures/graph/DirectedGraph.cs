@@ -50,7 +50,7 @@ namespace skiena.datastructures.graph
         }
         public bool containsAnArborescence()
         {
-            var possibleRoots = getPossibleRoot().ToList();
+            var possibleRoots = getPossibleCommonRoot().ToList();
             if (possibleRoots.Count == 1) 
             {
                 var classifier = new ContentClassifier<T>();
@@ -93,7 +93,7 @@ namespace skiena.datastructures.graph
             return computeChromaticNumberGreedy(this);
         }
 
-        public override IEnumerable<T> getPossibleRoot()
+        public override IEnumerable<T> getPossibleCommonRoot()
         {
             var dfsVisitor = new DepthFirstSearchVisitor<T>();
             foreach (var node in nodePerValue.Values)
