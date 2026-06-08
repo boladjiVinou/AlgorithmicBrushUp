@@ -437,5 +437,25 @@ namespace skienaTests
             Assert.IsFalse(maxGraph.getVertices().Any(x => maxGraph.getInDegree(x) >= 3));
         }
 
+        public static IEnumerable<object[]> numberOfShortestPathTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }, 2, 0, 0 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }, 0, 2, 1 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new (2, 4) }, 2, 4 ,1 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(0, 3), new(3, 2) }, 0, 2, 2 };
+        }
+        [TestMethod]
+        [DynamicData(nameof(numberOfShortestPathTestInput), DynamicDataSourceType.Method)]
+        public void whenComputingTheNumberOfShortestPathFromUToV_WeShouldComputeTheRightValue(List<Tuple<int, int>> connections, int u, int v,int expectedNumber) 
+        {
+            var graph = new DirectedGraph<int>();
+            foreach (var item in connections)
+            {
+                graph.connect(item.Item1, item.Item2);
+            }
+
+            Assert.AreEqual(expectedNumber, Chapter5.findNumberOfShortestPath(graph, u, v));
+        }
+
     }
 }
