@@ -392,5 +392,27 @@ namespace skienaTests
             Assert.IsTrue(possibleSchedule.Keys.Count == 4);
         }
 
+
+        public static IEnumerable<object[]> graphDiameterTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>(), 0 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1) }, 1 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) },1 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4)}, 4 };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new(4,0) }, 4 };
+        }
+        [TestMethod]
+        [DynamicData(nameof(graphDiameterTestInput), DynamicDataSourceType.Method)]
+        public void whenComputingTheDiameterOfATree_WeShouldGetTheRightValue(List<Tuple<int, int>> connections, int expectedDiameter) 
+        {
+            var graph = new DirectedGraph<int>();
+            foreach (var item in connections)
+            {
+                graph.connect(item.Item1, item.Item2);
+            }
+
+            Assert.AreEqual(expectedDiameter, Chapter5.computeDiameter(graph));
+        }
+
     }
 }

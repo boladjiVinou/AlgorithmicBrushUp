@@ -569,10 +569,12 @@ namespace skiena.Chapter5
             {
                 Stack<Tuple<int,int>> stack = [];
                 stack.Push(new Tuple<int,int>(item,0));
+                HashSet<int> visited = [];
                 while (stack.Count > 0) 
                 {
                     var currData = stack.Pop();
-                    var neighbors = tree.getNeighbors(currData.Item1).Where(x => x != currData.Item1);
+                    visited.Add(currData.Item1);
+                    var neighbors = tree.getNeighbors(currData.Item1).Where(x => !visited.Contains(x));
                     foreach (var item1 in neighbors)
                     {
                         stack.Push(new Tuple<int, int>(item1, currData.Item2 + 1));
