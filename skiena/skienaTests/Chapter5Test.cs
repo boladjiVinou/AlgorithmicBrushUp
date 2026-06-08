@@ -1,11 +1,6 @@
 ﻿using skiena.Chapter5;
 using skiena.datastructures.graph;
 using skiena.datastructures.trees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace skienaTests
 {
@@ -455,6 +450,31 @@ namespace skienaTests
             }
 
             Assert.AreEqual(expectedNumber, Chapter5.findNumberOfShortestPath(graph, u, v));
+        }
+
+        public static IEnumerable<object[]> reducingGraphTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }};
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }};
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new(2, 4) } };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(0, 3), new(3, 2) }};
+        }
+        [TestMethod]
+        [DynamicData(nameof(reducingGraphTestInput), DynamicDataSourceType.Method)]
+        public void whenReducingAGraph_WeShouldNotFindNodeOfDegree2(List<Tuple<int, int>> connections)
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            foreach (var item in connections)
+            {
+                graph.connect(item.Item1, item.Item2);
+            }
+
+            Chapter5.reduceEdges(graph);
+
+            bool reduced = !graph.getVertices().Any(x => graph.getInDegree(x) >= 2);
+            bool graphNotEmpty = graph.getVertices().Any();
+
+            Assert.IsTrue(graphNotEmpty && reduced);
         }
 
     }

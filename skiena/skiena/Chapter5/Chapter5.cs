@@ -635,26 +635,42 @@ namespace skiena.Chapter5
         public static void reduceEdges(UndirectedGraph<int> graph) 
         {
             Queue<int> q = [];
-            foreach (int v in graph.getVertices().Where(x => graph.getInDegree(x) == 2)) 
+            foreach (int v in graph.getVertices().Where(x => graph.getInDegree(x) >= 2)) 
             {
                 q.Enqueue(v);
             }
+            HashSet<int> visited = [];
             while (q.Count > 0)
             {
                 int v = q.Dequeue();
+                if (visited.Contains(v) && graph.getInDegree(v) < 2) 
+                {
+                    continue;
+                }
+                visited.Add(v);
                 var neighbors = graph.getNeighbors(v).ToList();
                 foreach (var n in neighbors)
                 {
-                    graph.disconnect(v, n);
+                    if (graph.getInDegree(v) >= 2)
+                    {
+                        graph.disconnect(v, n);
+                        q.Enqueue(n);
+                        var neighborNeighbors = graph.getNeighbors(n).ToList();
+                        foreach (var n2 in neighborNeighbors)
+                        {
+                            graph.connect(v, n2);
+                            graph.disconnect(n, n2);
+                            q.Enqueue(n2);
+                        }
+                    }
+                    else
+                    {
+                        q.Enqueue(n);
+                    }
                 }
-                graph.connect(neighbors[0], neighbors[1]);
-                if (graph.getInDegree(neighbors[0]) == 2) 
+                if (graph.getInDegree(v) >= 2)
                 {
-                    q.Enqueue(neighbors[0]);
-                }
-                if (graph.getInDegree(neighbors[1]) == 2) 
-                {
-                    q.Enqueue(neighbors[1]);
+                    q.Enqueue(v);
                 }
             }
         }
