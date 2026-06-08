@@ -660,17 +660,8 @@ namespace skiena.Chapter5
                         {
                             graph.connect(v, n2);
                             graph.disconnect(n, n2);
-                            q.Enqueue(n2);
                         }
                     }
-                    else
-                    {
-                        q.Enqueue(n);
-                    }
-                }
-                if (graph.getInDegree(v) >= 2)
-                {
-                    q.Enqueue(v);
                 }
             }
         }
