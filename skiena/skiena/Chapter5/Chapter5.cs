@@ -672,9 +672,9 @@ namespace skiena.Chapter5
          */
        public  static List<int> getLineOrderA(DirectedGraph<int> relations) 
         {
-            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
+            var relationsCopy = new DirectedGraph<int>(relations);
             Queue<int> q = [];
-            foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0)) 
+            foreach (var e in relationsCopy.getVertices().Where(x => relationsCopy.getInDegree(x) == 0)) 
             {
                 q.Enqueue(e);
             }
@@ -682,44 +682,47 @@ namespace skiena.Chapter5
             while (q.Count > 0) 
             {
                 int v = q.Dequeue();
-                result.Add(v);
-                foreach (var e in relations.getNeighbors(v)) 
+                foreach (var e in relationsCopy.getNeighbors(v)) 
                 {
-                    --degreesByNode[e];
-                    if(degreesByNode[e] == 0) 
+                    relationsCopy.disconnect(v, e);
+                    if(relationsCopy.getInDegree(e) == 0) 
                     {
                         q.Enqueue(e);
                     }
                 }
+                result.Add(v);
             }
-            return degreesByNode.Values.Any(x =>x > 0) ? []:result;
+            return relationsCopy.getVertices().Any(x =>relationsCopy.getOutDegree(x) > 0) ? [] : result;
         }
         /*
          5.23 b)
+        In this version we can place multiple children in same row
          */
        public  static int getLineOrderB(DirectedGraph<int> relations) 
         {
-            var degreesByNode = relations.getVertices().ToDictionary(x => x, y => relations.getInDegree(y));
-            Queue<Tuple<int,int>> q = [];
-            foreach (var e in degreesByNode.Keys.Where(x => degreesByNode[x] == 0))
+            var relationsCopy = new DirectedGraph<int>(relations);
+            Queue<Tuple<int, int>> q = [];
+            foreach (var e in relationsCopy.getVertices().Where(x => relationsCopy.getInDegree(x) == 0))
             {
-                q.Enqueue(new Tuple<int, int>(e,0));
+                q.Enqueue(new Tuple<int, int>(e, 0));
             }
+            List<int> result = [];
             int minRow = 0;
             while (q.Count > 0)
             {
-                var tmp = q.Dequeue();
-                minRow = Math.Max(minRow, tmp.Item2);
-                foreach (var e in relations.getNeighbors(tmp.Item1))
+                var verticeAndRow = q.Dequeue();
+                minRow = Math.Max(minRow, verticeAndRow.Item2);
+                foreach (var e in relationsCopy.getNeighbors(verticeAndRow.Item1))
                 {
-                    --degreesByNode[e];
-                    if (degreesByNode[e] == 0)
+                    relationsCopy.disconnect(verticeAndRow.Item1, e);
+                    if (relationsCopy.getInDegree(e) == 0)
                     {
-                        q.Enqueue(new Tuple<int, int>(e, tmp.Item2+1));
+                        q.Enqueue(new Tuple<int, int>(e, verticeAndRow.Item2 + 1));
                     }
                 }
             }
-            return degreesByNode.Values.Any(x => x > 0) ? -1:  minRow;
+
+            return relationsCopy.getVertices().Any(x => relationsCopy.getOutDegree(x) > 0) ? -1 : minRow;
         }
         /*
          5.25

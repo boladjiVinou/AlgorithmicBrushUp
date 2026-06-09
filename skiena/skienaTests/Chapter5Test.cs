@@ -1,4 +1,5 @@
-﻿using skiena.Chapter5;
+﻿using Microsoft.Testing.Platform.Extensions.Messages;
+using skiena.Chapter5;
 using skiena.datastructures.graph;
 using skiena.datastructures.trees;
 
@@ -475,6 +476,61 @@ namespace skienaTests
             bool graphNotEmpty = graph.getVertices().Any();
 
             Assert.IsTrue(graphNotEmpty && reduced);
+        }
+        public static IEnumerable<object[]> illBehavedChildrenTestInput()
+        {
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>() },
+                {3, new HashSet<int> {1 } }},true };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>{ 1} }},false };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>{ 3} },
+                {3, new HashSet<int> {1 } }},false };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int> { 2 ,3,4} },
+                { 2, new HashSet<int>() },
+                {3, new HashSet<int> () },
+                {4,new HashSet<int>() } },true };
+
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int>() },
+                { 2, new HashSet<int>() },
+                {3, new HashSet<int> () },
+                {4,new HashSet<int>() } },true };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> { 
+                { 1, new HashSet<int>{ 2,3,4,5} },
+                { 2, new HashSet<int>{ 3,4,5} },
+                {3, new HashSet<int> {4,5 } },
+                {4,new HashSet<int>{ 5}} },true };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(illBehavedChildrenTestInput), DynamicDataSourceType.Method)]
+        public void whenTryingToArrangeIllBehavedChildren_WeShouldFindTheRightOrder(Dictionary<int, HashSet<int>> relations, bool expectedResult) 
+        {
+            var graph = new DirectedGraph<int>();
+            foreach(var item in relations.Keys) 
+            {
+                graph.insertNode(item);
+                foreach(var val in relations[item]) 
+                {
+                    graph.connect(item, val);
+                }
+            }
+            
+
+            var order =  Chapter5.getLineOrderA(graph);
+
+            Assert.AreEqual(expectedResult, order.Any());
         }
 
     }

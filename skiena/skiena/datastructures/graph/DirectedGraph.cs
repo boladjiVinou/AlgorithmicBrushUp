@@ -156,5 +156,18 @@ namespace skiena.datastructures.graph
             return deletionOrder;
         }
 
+        public DirectedGraph<T> getInvertedGraph() 
+        {
+            DirectedGraph<T> invertedGraph = new DirectedGraph<T>();
+            foreach(var v in getVertices()) 
+            {
+                foreach(var n in getNeighbors(v)) 
+                {
+                    invertedGraph.connect(n, v);
+                }
+            }
+            return invertedGraph;
+        }
+
     }
 }
