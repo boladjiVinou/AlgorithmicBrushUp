@@ -533,5 +533,62 @@ namespace skienaTests
             Assert.AreEqual(expectedResult, order.Any());
         }
 
+
+        public static IEnumerable<object[]> illBehavedChildrenTestInputB()
+        {
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>() },
+                { 3, new HashSet<int> {1 } }}, 3 };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>{ 1} }} ,-1 };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int> { 2 } },
+                { 2, new HashSet<int>{ 3} },
+                {3, new HashSet<int> {1 } }}, -1 };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int> { 2 ,3,4} },
+                { 2, new HashSet<int>() },
+                {3, new HashSet<int> () },
+                {4,new HashSet<int>() } }, 2 };
+
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int>() },
+                { 2, new HashSet<int>() },
+                {3, new HashSet<int> () },
+                {4,new HashSet<int>() } }, 1 };
+
+            yield return new object[] { new Dictionary<int, HashSet<int>> {
+                { 1, new HashSet<int>{ 2,3,4,5} },
+                { 2, new HashSet<int>{ 3,4,5} },
+                {3, new HashSet<int> {4,5 } },
+                {4,new HashSet<int>{ 5}} },5 };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(illBehavedChildrenTestInputB), DynamicDataSourceType.Method)]
+        public void whenTryingToArrangeIllBehavedChildren_WeShouldFindTheRightMinimumNumberOfRows(Dictionary<int, HashSet<int>> relations, int expectedResult)
+        {
+            var graph = new DirectedGraph<int>();
+            foreach (var item in relations.Keys)
+            {
+                graph.insertNode(item);
+                foreach (var val in relations[item])
+                {
+                    graph.connect(item, val);
+                }
+            }
+
+
+            var nbRows = Chapter5.getLineOrderB(graph);
+
+            Assert.AreEqual(expectedResult, nbRows);
+        }
+
     }
 }

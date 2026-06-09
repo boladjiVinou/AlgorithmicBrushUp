@@ -722,7 +722,7 @@ namespace skiena.Chapter5
                 }
             }
 
-            return relationsCopy.getVertices().Any(x => relationsCopy.getOutDegree(x) > 0) ? -1 : minRow;
+            return relationsCopy.getVertices().Any(x => relationsCopy.getOutDegree(x) > 0) ? -1 : minRow+1;
         }
         /*
          5.25
