@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures.graph
 {
-    public class UndirectedGraph<T> : Graph<T> where T : IEquatable<T>
+    public class UndirectedGraph<T> : Graph<T> where T : IEquatable<T>, IComparable<T>
     {
         public UndirectedGraph() : base()
         {

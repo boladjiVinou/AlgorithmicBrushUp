@@ -1,4 +1,5 @@
-﻿using System;
+﻿using skiena.Chapter5;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,37 +7,41 @@ using System.Threading.Tasks;
 
 namespace skiena.datastructures.graph
 {
-    public class HamiltonianPathFinder<T> : DepthFirstSearchVisitor<T>  where T : IEquatable<T>
+    public class HamiltonianPathFinder<T> : INodeVisitor<T> where T : IEquatable<T>, IComparable<T>
     {
         private Stack<GraphNode<T>> path = [];
         private int nbNodesToVisit;
+        private HashSet<CustomTuple<T>> usedEdges = [];
 
         public HamiltonianPathFinder(int nbNodesToVisit) 
         {
             this.nbNodesToVisit = nbNodesToVisit;
         }
-        public override void preVisitNode(GraphNode<T> node)
+        public void preVisitNode(GraphNode<T> node)
         {
-            base.preVisitNode(node);
-
-            path.Push(node);
         }
 
-        public override void postVisitNode(GraphNode<T> node)
+        public void visitNode(GraphNode<T> node)
         {
-            base.postVisitNode(node);
-
-            if (visited.Count != nbNodesToVisit) 
+            foreach (var neighbor in node.getNeighbors())
             {
-                if (path.Count > 0 && path.Peek() != node)
+                var edge = new CustomTuple<T>(node.Value, neighbor.Value);
+                if (usedEdges.Contains(edge))
                 {
-                    throw new InvalidOperationException("Bad visiting state");
+                    continue;
                 }
-                if (path.Count > 0)
-                {
-                    path.Pop();
-                    visited.Remove(node);
-                }
+                usedEdges.Add(edge);
+                neighbor.accept(this);
+            }
+        }
+
+        public void postVisitNode(GraphNode<T> node)
+        {
+            path.Push(node);
+
+            if (path.Count > 0 && path.Peek() != node) 
+            {
+                throw new InvalidOperationException("Bad visiting state");
             }
         }
         public bool hasFoundAPath() 

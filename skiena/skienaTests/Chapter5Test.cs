@@ -657,5 +657,54 @@ namespace skienaTests
             Assert.AreEqual(containsMotherVertice, Chapter5.containsAMotherVertex(graph));
         }
 
+        public static IEnumerable<object[]> hamiltonienPathTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4) , new (1,4)} };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 1), new(1, 3), new(3,2) } };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 1), new(1, 4), new (4,0) } };
+        }
+        [TestMethod]
+        [DynamicData(nameof(hamiltonienPathTestInput), DynamicDataSourceType.Method)]
+        public void givenAGraphWithHamiltonienPath_WeShouldDetectIt(List<Tuple<int,int>> connections) 
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+
+            foreach (var rel in connections)
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            var path = Chapter5.getHamiltonianPath(graph);
+            HashSet<CustomTuple<int>> edges = [];
+            for(int i = 1; i<path.Count;i++)
+            {
+                var edge = new CustomTuple<int>(path[i-1], path[i]);
+                if (edges.Contains(edge)) 
+                {
+                    Assert.Fail();
+                }
+                edges.Add(edge);
+            }
+        }
+
+        public static IEnumerable<object[]> noHamiltonienPathTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0,2), new(0, 3), new(0, 4), new(1, 4) } };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 1)} };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(noHamiltonienPathTestInput), DynamicDataSourceType.Method)]
+        public void givenAGraphWithoutHamiltonienPath_WeShouldNotFindAny(List<Tuple<int, int>> connections) 
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            foreach (var rel in connections)
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            var path = Chapter5.getHamiltonianPath(graph);
+            Assert.IsFalse(path.Any());
+        }
     }
 }
