@@ -142,7 +142,7 @@ namespace skiena.datastructures.graph
                 articulationByNode.Add(node, enArticulationNode.ParentArticulation);
             }
 
-            if(reachableAncestorByNode.ContainsKey(node) && reachableAncestorByNode[node] == node && treeOutDegreeByNode[node] > 0)
+            if(!articulationByNode.ContainsKey(node) && reachableAncestorByNode.ContainsKey(node) && reachableAncestorByNode[node] == node && treeOutDegreeByNode[node] > 0)
             {
                 articulationByNode.Add(node, enArticulationNode.BridgeArticulation);
             }

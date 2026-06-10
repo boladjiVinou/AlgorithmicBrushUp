@@ -584,10 +584,31 @@ namespace skienaTests
                 }
             }
 
-
             var nbRows = Chapter5.getLineOrderB(graph);
 
             Assert.AreEqual(expectedResult, nbRows);
+        }
+
+        public static IEnumerable<object[]> arborescenceTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }, true};
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(4, 3), new(5, 4) }, false};
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new(2, 4) },true };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(0, 3) }, true};
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(arborescenceTestInput), DynamicDataSourceType.Method)]
+        public void whenAGraphContainsAnArborescence_WeShouldFindIt(List<Tuple<int, int>> connections, bool containsArborescence) 
+        {
+            DirectedGraph<int> graph = new DirectedGraph<int>();
+
+            foreach (var rel in connections) 
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            Assert.AreEqual(containsArborescence, Chapter5.graphContainsAnArborescence(graph));
         }
 
     }
