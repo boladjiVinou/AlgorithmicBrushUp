@@ -2,6 +2,7 @@
 using skiena.Chapter5;
 using skiena.datastructures.graph;
 using skiena.datastructures.trees;
+using System.Xml.Linq;
 
 namespace skienaTests
 {
@@ -609,6 +610,51 @@ namespace skienaTests
             }
 
             Assert.AreEqual(containsArborescence, Chapter5.graphContainsAnArborescence(graph));
+        }
+
+        public static IEnumerable<object[]> motherVertexTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) },0, true };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(4, 3), new(5, 4) },4, false };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new(2, 4) }, 0,true };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(0, 3) },2 ,false };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(motherVertexTestInput), DynamicDataSourceType.Method)]
+        public void givenAGraph_WeShouldIdentifyMotherVertex(List<Tuple<int,int>> connections, int node, bool isMotherVertice)
+        {
+            DirectedGraph<int> graph = new DirectedGraph<int>();
+
+            foreach (var rel in connections)
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            Assert.AreEqual(isMotherVertice, Chapter5.isAMotherVertex(graph, node));
+        }
+
+        public static IEnumerable<object[]> motherVertexExistenceTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(0, 3), new(0, 4) }, true };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(4, 3), new(5, 4) }, false };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(2, 3), new(3, 4), new(2, 4) }, true };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(1, 2), new(0, 3) }, true };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(motherVertexExistenceTestInput), DynamicDataSourceType.Method)]
+        public void givenAGraph_WeShouldDetectIfItContainsAMotherVertice(List<Tuple<int, int>> connections, bool containsMotherVertice) 
+        {
+
+            DirectedGraph<int> graph = new DirectedGraph<int>();
+
+            foreach (var rel in connections)
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            Assert.AreEqual(containsMotherVertice, Chapter5.containsAMotherVertex(graph));
         }
 
     }
