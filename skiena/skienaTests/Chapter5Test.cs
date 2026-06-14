@@ -706,5 +706,27 @@ namespace skienaTests
             var path = Chapter5.getHamiltonianPath(graph);
             Assert.IsFalse(path.Any());
         }
+
+        public static IEnumerable<object[]> nonArticulationNodePresenceTestInput()
+        {
+            yield return new object[] { new List<Tuple<int, int>>() {new(0,1),new(0,2), new(1,3), new (2,4), new (3,0), new (4,0) , new (3,5)}, new HashSet<int>() { 1,2,4,5} };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 1), new(0, 2), new(2, 1) }, new HashSet<int>() {0,1,2} };
+            yield return new object[] { new List<Tuple<int, int>>() { new(0, 0) }, new HashSet<int>() { 0} };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(nonArticulationNodePresenceTestInput), DynamicDataSourceType.Method)]
+        public void givenAGraphWithNonArticulationNode_WeShouldIdentifyThem(List<Tuple<int, int>> connections, ISet<int> expectedResult)
+        {
+            UndirectedGraph<int> graph = new UndirectedGraph<int>();
+            foreach (var rel in connections)
+            {
+                graph.connect(rel.Item1, rel.Item2);
+            }
+
+            var nonArticulationVertices =  Chapter5.getNonArticulationNodes(graph).Order().ToHashSet();
+            Assert.IsTrue(nonArticulationVertices.All(x => expectedResult.Contains(x)));
+            Assert.IsTrue(expectedResult.All(x => nonArticulationVertices.Contains(x)));
+        }
     }
 }
