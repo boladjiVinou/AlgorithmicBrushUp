@@ -728,5 +728,28 @@ namespace skienaTests
             Assert.IsTrue(nonArticulationVertices.All(x => expectedResult.Contains(x)));
             Assert.IsTrue(expectedResult.All(x => nonArticulationVertices.Contains(x)));
         }
+
+        [TestMethod]
+        public void givenAGraphWeShouldComputeTheRightDeletionOrder()
+        {
+            var graph = new UndirectedGraph<int>();
+            graph.connect(0, 1).connect(0, 2).connect(1, 3).connect(2, 4).connect(3, 0).connect(4, 0).connect(3, 5);
+
+            var deletionOrder = Chapter5.getDeletionOrder(graph);
+
+            Assert.IsTrue(deletionOrder.Count == 6);
+            foreach(var node in deletionOrder)
+            {
+                foreach(var neighbor in graph.getNeighbors(node)) 
+                {
+                    graph.disconnect(node, neighbor);
+                }
+                var currVertices = graph.getVertices();
+                if(currVertices.Count > 1) 
+                {
+                    Assert.IsTrue(!currVertices.Any(x => graph.getInDegree(x) == 0));
+                }
+            }
+        }
     }
 }
