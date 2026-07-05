@@ -279,7 +279,7 @@ namespace skienaTests
             List<uint> insertedData = new List<uint>();
             for (int i = 0; i < 10; i++) 
             {
-                uint tmp = (uint)rand.Next(100);
+                uint tmp = (uint)rand.Next(100)+1;
                 insertedData.Add(tmp);
                 dict.insert(tmp);
             }

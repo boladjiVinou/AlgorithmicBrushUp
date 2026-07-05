@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace skiena.datastructures.graph
+﻿namespace skiena.datastructures.graph.basegraph
 {
-    public class UndirectedGraph<T> : Graph<T> where T : IEquatable<T>, IComparable<T>
+    public class BaseUndirectedGraph<T> : Graph<T> where T : IEquatable<T>, IComparable<T>
     {
-        public UndirectedGraph() : base()
+        public BaseUndirectedGraph() : base()
         {
         }
-        public UndirectedGraph(Graph<T> graph):base(graph)
+        public BaseUndirectedGraph(Graph<T> graph) : base(graph)
         {
             foreach (var item in nodePerValue.Values)
             {
-                foreach (var neighbor in graph.getNeighbors(item.Value)) 
+                foreach (var neighbor in graph.getNeighbors(item.Value))
                 {
-                    connect(item.Value, neighbor);
+                    connectImpl(item.Value, neighbor);
                 }
             }
         }
-        public override UndirectedGraph<T> connect(T n1, T n2)
+        protected override BaseUndirectedGraph<T> connectImpl(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
             {
@@ -38,7 +32,7 @@ namespace skiena.datastructures.graph
         }
 
 
-        public override UndirectedGraph<T> disconnect(T n1, T n2)
+        protected override BaseUndirectedGraph<T> disconnectImpl(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1) || !nodePerValue.ContainsKey(n2))
             {
@@ -64,9 +58,9 @@ namespace skiena.datastructures.graph
         {
             return computeChromaticNumberGreedy(this);
         }
-        public UndirectedGraph<T> computeMaximumInducedSubgraph(int minDegree)
+        public BaseUndirectedGraph<T> computeMaximumInducedSubgraph(int minDegree)
         {
-            var graph = new UndirectedGraph<T>(this);
+            var graph = new BaseUndirectedGraph<T>(this);
             bool inspectGraph = true;
             while (inspectGraph)
             {
@@ -85,7 +79,7 @@ namespace skiena.datastructures.graph
                             q.Enqueue(item1);
                             if (breakLink)
                             {
-                                graph.disconnect(node, item1);
+                                graph.disconnectImpl(node, item1);
                                 inspectGraph = true;
                             }
                         }
@@ -96,14 +90,14 @@ namespace skiena.datastructures.graph
 
         }
 
-        public List<T> getHamiltonianPath() 
+        public List<T> getHamiltonianPath()
         {
-            var nodes = nodePerValue.Values.Where(x => x !=null).ToList();
-            foreach (var start in nodes) 
+            var nodes = nodePerValue.Values.Where(x => x != null).ToList();
+            foreach (var start in nodes)
             {
                 var pathFinder = new HamiltonianPathFinder<T>(nodes.Count);
                 start.accept(pathFinder);
-                if (pathFinder.hasFoundAPath()) 
+                if (pathFinder.hasFoundAPath())
                 {
                     return [.. pathFinder.getPath().Select(x => x.Value)];
                 }
@@ -116,12 +110,12 @@ namespace skiena.datastructures.graph
             var dfsVisitor = new DepthFirstSearchVisitor<T>();
             var nodes = nodePerValue.Values.Where(x => x != null);
             GraphNode<T>? startNode = null;
-            if (nodes.Any()) 
+            if (nodes.Any())
             {
                 startNode = nodes.First();
                 startNode.accept(dfsVisitor);
             }
-            
+
             var lastVisitedNode = dfsVisitor.getLastNodeVisited();
             if (lastVisitedNode != null && startNode != null && dfsVisitor.getNbOfVisitedNode() == nodes.Count())
             {

@@ -1,6 +1,9 @@
 ﻿using MoreLinq.Extensions;
 using skiena.datastructures;
 using skiena.datastructures.graph;
+using skiena.datastructures.graph.basegraph;
+using skiena.datastructures.graph.interfaces;
+using skiena.datastructures.graph.specificgraph;
 using skiena.datastructures.trees;
 using System;
 using System.Collections.Concurrent;
@@ -505,7 +508,7 @@ namespace skiena.Chapter5
             }
             return false;
         }
-        public static bool findTriangleVersionB(Graph<int> graph) 
+        public static bool findTriangleVersionB(UndirectedGraph<int> graph) 
         {
             foreach (var root in graph.getPossibleCommonRoot())
             {
@@ -516,7 +519,7 @@ namespace skiena.Chapter5
             }
             return false;
         }
-       public static bool checkTriangleWithDfs(Graph<int> graph, int node, ISet<int> encountered) 
+       public static bool checkTriangleWithDfs(UndirectedGraph<int> graph, int node, ISet<int> encountered) 
         {
             encountered.Add(node);
             foreach (var item in graph.getNeighbors(node))
@@ -592,7 +595,7 @@ namespace skiena.Chapter5
         /*
          5.20
          */
-        public static UndirectedGraph<int> computeMaximumInducedSubgraph(UndirectedGraph<int> graph, int k) 
+        public static BaseUndirectedGraph<int> computeMaximumInducedSubgraph(UndirectedGraph<int> graph, int k) 
         {
             return graph.computeMaximumInducedSubgraph(k);
         }

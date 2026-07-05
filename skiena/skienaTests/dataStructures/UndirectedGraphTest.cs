@@ -1,9 +1,4 @@
 ﻿using skiena.datastructures.graph;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace skienaTests.dataStructures
 {
@@ -105,7 +100,7 @@ namespace skienaTests.dataStructures
 
             Assert.IsTrue(possibleRoots.Contains(0) || possibleRoots.Contains(3));
         }
-        protected override Graph<int> createGraph()
+        protected override UndirectedGraph<int> createGraph()
         {
            return new UndirectedGraph<int>();
         }

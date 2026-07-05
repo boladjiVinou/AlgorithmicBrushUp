@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="datastructures\graph\WeightedGraph.cs~RF1620d37e.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="morelinq" Version="4.4.0" />
   </ItemGroup>
 

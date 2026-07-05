@@ -1,15 +1,4 @@
-﻿using skiena.datastructures.trees;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace skiena.datastructures.graph
+﻿namespace skiena.datastructures.graph.basegraph
 {
     public abstract class Graph<T> where T : IEquatable<T>
     {
@@ -25,7 +14,7 @@ namespace skiena.datastructures.graph
             {
                 foreach (var neighbor in graph.getNeighbors(item.Value))
                 {
-                    connect(item.Value, neighbor);
+                    connectImpl(item.Value, neighbor);
                 }
             }
         }
@@ -38,8 +27,8 @@ namespace skiena.datastructures.graph
             }
         }
 
-        public abstract Graph<T> connect(T n1, T n2);
-        public abstract Graph<T> disconnect(T n1, T n2);
+        protected abstract Graph<T> connectImpl(T n1, T n2);
+        protected abstract Graph<T> disconnectImpl(T n1, T n2);
 
 
         public Dictionary<T,Dictionary<T, bool>> getAdjencyMatrice() 

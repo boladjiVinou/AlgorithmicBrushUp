@@ -1,6 +1,7 @@
 ﻿using Microsoft.Testing.Platform.Extensions.Messages;
 using skiena.Chapter5;
 using skiena.datastructures.graph;
+using skiena.datastructures.graph.specificgraph;
 using skiena.datastructures.trees;
 using System.Xml.Linq;
 

@@ -1,4 +1,4 @@
-﻿using skiena.datastructures.graph;
+﻿using skiena.datastructures.graph.specificgraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,7 +115,7 @@ namespace skienaTests.dataStructures
             Assert.IsTrue(possibleRoots.Contains(0));
         }
 
-        protected override Graph<int> createGraph()
+        protected override DirectedGraph<int> createGraph()
         {
             return new DirectedGraph<int>();
         }

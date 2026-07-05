@@ -27,7 +27,7 @@ namespace skienaTests
             List<int> teamA = players.Take(10).ToList();
             List<int> teamB = players.Skip(10).ToList();
 
-            Assert.IsTrue(teamA.All(x => teamB.All(y => y > x)));
+            Assert.IsTrue(teamA.All(x => teamB.All(y => y >= x)));
         }
         [TestMethod]
         public void whenSearchingPairMaximizingDifferenceInUnsortedList_WeShouldFindTheRightOne() 

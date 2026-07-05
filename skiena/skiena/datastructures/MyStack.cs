@@ -12,7 +12,7 @@ namespace skiena.datastructures
     {
         private LinkedNode<T>? root;
         private int size = 0;
-        public void push(T val)
+        public virtual void push(T val)
         {
             var next = new LinkedNode<T>(val);
             if (root == null)
@@ -27,7 +27,7 @@ namespace skiena.datastructures
             ++size;
         }
 
-        public T pop()
+        public virtual T pop()
         {
             if (root == null)
             {

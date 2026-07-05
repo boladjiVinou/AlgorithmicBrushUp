@@ -1,4 +1,6 @@
-﻿using System;
+﻿using skiena.datastructures.graph.basegraph;
+using skiena.datastructures.graph.specificgraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,7 +64,7 @@ namespace skiena.datastructures.graph
 
         }
 
-        public DirectedGraph<SCCNode<T>> search(DirectedGraph<T> graph, Dictionary<T, GraphNode<T>> nodePerValue) 
+        public BaseDirectedGraph<SCCNode<T>> search(BaseDirectedGraph<T> graph, Dictionary<T, GraphNode<T>> nodePerValue) 
         {
             lowLinkByNode = [];
             idByNode = [];
@@ -83,7 +85,7 @@ namespace skiena.datastructures.graph
             return buildCompressedSCCGraph([.. lowLinkByNode.GroupBy(x => x.Value, y =>y.Key).Select(x => x.ToHashSet())]);
         }
 
-        private DirectedGraph<SCCNode<T>> buildCompressedSCCGraph(List<HashSet<GraphNode<T>>> connectedComponents) 
+        private BaseDirectedGraph<SCCNode<T>> buildCompressedSCCGraph(List<HashSet<GraphNode<T>>> connectedComponents) 
         {
             DirectedGraph<SCCNode<T>> compressedGraph = new DirectedGraph<SCCNode<T>>();
             Dictionary<GraphNode<T>, SCCNode<T>> nodeByCompressedScc = [];

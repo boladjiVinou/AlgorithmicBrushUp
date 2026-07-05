@@ -1,6 +1,9 @@
 ﻿using MoreLinq.Extensions;
 using skiena.Chapter5;
 using skiena.datastructures.graph;
+using skiena.datastructures.graph.basegraph;
+using skiena.datastructures.graph.interfaces;
+using skiena.datastructures.graph.specificgraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +15,7 @@ namespace skienaTests.dataStructures
     [TestClass]
     public abstract class MyGraphTest
     {
-        protected Graph<int> graph;
+        protected IUnweightedGraph<int> graph;
         protected Dictionary<int, Dictionary<int, bool>> adjencyMatrix;
         protected Dictionary<int, HashSet<int>> adjencySet;
         protected Dictionary<int, Dictionary<int, int>> incidenceMatrix;
@@ -219,7 +222,7 @@ namespace skienaTests.dataStructures
             }
         }
 
-        protected abstract Graph<int> createGraph();
+        protected abstract IUnweightedGraph<int> createGraph();
 
 
         protected void registerNodeIfNeeded(int u)

@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace skiena.datastructures.graph
+﻿namespace skiena.datastructures.graph.basegraph
 {
-    public class DirectedGraph<T> : Graph<T> where T : IEquatable<T>
+    public class BaseDirectedGraph<T> : Graph<T> where T : IEquatable<T>
     {
-        protected Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> reversedLinks = [];
+        //protected Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> reversedLinks = [];
 
-        public DirectedGraph() : base()
+        public BaseDirectedGraph() : base()
         {
         }
-        public DirectedGraph(Graph<T> graph) : base(graph)
+        public BaseDirectedGraph(Graph<T> graph) : base(graph)
         {
         }
-        public override DirectedGraph<T> connect(T n1, T n2)
+
+        protected override BaseDirectedGraph<T> connectImpl(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1))
             {
@@ -29,7 +24,7 @@ namespace skiena.datastructures.graph
             nodePerValue[n1].connectTo(nodePerValue[n2]);
             return this;
         }
-        public override DirectedGraph<T> disconnect(T n1, T n2)
+        protected override BaseDirectedGraph<T> disconnectImpl(T n1, T n2)
         {
             if (!nodePerValue.ContainsKey(n1) || !nodePerValue.ContainsKey(n2))
             {
@@ -38,7 +33,7 @@ namespace skiena.datastructures.graph
             var node1 = nodePerValue[n1];
             var node2 = nodePerValue[n2];
             node1.disconnectFrom(node2);
-            if(node1.getInDegree() == 0 && node1.getOutDegree() == 0)
+            if (node1.getInDegree() == 0 && node1.getOutDegree() == 0)
             {
                 nodePerValue.Remove(n1);
             }
@@ -51,16 +46,16 @@ namespace skiena.datastructures.graph
         public bool containsAnArborescence()
         {
             var possibleRoots = getPossibleCommonRoot().ToList();
-            if (possibleRoots.Count == 1) 
+            if (possibleRoots.Count == 1)
             {
                 var classifier = new ContentClassifier<T>();
                 nodePerValue[possibleRoots[0]].accept(classifier);
-                return areAllNodesReachableFrom(possibleRoots[0]) && 
+                return areAllNodesReachableFrom(possibleRoots[0]) &&
                     !classifier.containsEdge(enEdge.Back);// no back edge means no cycle
             }
             return false;
         }
-        public bool isAMotherVertex(T val) 
+        public bool isAMotherVertex(T val)
         {
             if (nodePerValue.ContainsKey(val) && nodePerValue[val] != null)
             {
@@ -76,10 +71,10 @@ namespace skiena.datastructures.graph
             return dfsVisitor.getVisitedNodes().Count == nodePerValue.Values.Where(x => x != null).Count();
         }
 
-        public bool containsAMotherVertex() 
+        public bool containsAMotherVertex()
         {
             var sccFinder = new DirectedGraphSCCFinder<T>();
-            
+
             var sccGraph = sccFinder.search(this, nodePerValue);
 
             var inNode = sccGraph.nodePerValue.Values.Where(x => sccGraph.getInDegree(x.Value) == 0).ToList();
@@ -129,25 +124,25 @@ namespace skiena.datastructures.graph
             {
                 topologicalSortQueue.Enqueue(item);
             }
-            while (topologicalSortQueue.Count > 0) 
+            while (topologicalSortQueue.Count > 0)
             {
                 var scc = topologicalSortQueue.Dequeue();
-                foreach (var node in scc.Value.getNodes()) 
+                foreach (var node in scc.Value.getNodes())
                 {
                     deletionOrder.Add(node);
                 }
-               
+
                 foreach (var sccNeighbor in sccGraph.getNeighbors(scc.Value))
                 {
                     var sccNode = sccGraph.nodePerValue[sccNeighbor];
-                    sccGraph.disconnect(scc.Value, sccNeighbor);
-                    if (sccGraph.getInDegree(sccNeighbor) == 0) 
+                    sccGraph.disconnectImpl(scc.Value, sccNeighbor);
+                    if (sccGraph.getInDegree(sccNeighbor) == 0)
                     {
                         topologicalSortQueue.Enqueue(sccNode);
                     }
                 }
             }
-            if (sccGraph.nodePerValue.Count > 0) 
+            if (sccGraph.nodePerValue.Count > 0)
             {
                 return [];
             }
@@ -156,18 +151,17 @@ namespace skiena.datastructures.graph
             return deletionOrder;
         }
 
-        public DirectedGraph<T> getInvertedGraph() 
+        public BaseDirectedGraph<T> getInvertedGraph()
         {
-            DirectedGraph<T> invertedGraph = new DirectedGraph<T>();
-            foreach(var v in getVertices()) 
+            BaseDirectedGraph<T> invertedGraph = new BaseDirectedGraph<T>();
+            foreach (var v in getVertices())
             {
-                foreach(var n in getNeighbors(v)) 
+                foreach (var n in getNeighbors(v))
                 {
-                    invertedGraph.connect(n, v);
+                    invertedGraph.connectImpl(n, v);
                 }
             }
             return invertedGraph;
         }
-
     }
 }
