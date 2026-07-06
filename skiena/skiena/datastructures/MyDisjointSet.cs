@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace skiena.datastructures
     {
         private Dictionary<T,T> roots = [];
         private Dictionary<T,int> ranks = [];
+        public MyDisjointSet() { }
 
         public MyDisjointSet(T[] data) 
         {
@@ -25,6 +27,10 @@ namespace skiena.datastructures
         }
         public void insert(T node) 
         {
+            if (roots.ContainsKey(node)) 
+            {
+                return;
+            }
             roots.Add(node, node);
             ranks.Add(node, 0);
         }

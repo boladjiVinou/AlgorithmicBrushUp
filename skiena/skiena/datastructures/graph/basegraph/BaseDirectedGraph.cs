@@ -2,8 +2,6 @@
 {
     public class BaseDirectedGraph<T> : Graph<T> where T : IEquatable<T>
     {
-        //protected Dictionary<GraphNode<T>, HashSet<GraphNode<T>>> reversedLinks = [];
-
         public BaseDirectedGraph() : base()
         {
         }
