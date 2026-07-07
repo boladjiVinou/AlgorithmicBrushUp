@@ -86,7 +86,6 @@ namespace skiena.datastructures.graph
 
         public WeightedUndirectedGraph<T, U> kruskalMinimumSpanningTree() 
         {
-            PriorityQueue<Tuple<T, T>, U> queue = new();
             WeightedUndirectedGraph<T, U> mst = new();
             MyDisjointSet<T> disjointSet = new();
             
@@ -111,5 +110,9 @@ namespace skiena.datastructures.graph
             return mst;
         }
 
+        public U getWeight(T n1, T n2)
+        {
+            return weightsByEdge[n1][n2];
+        }
     }
 }

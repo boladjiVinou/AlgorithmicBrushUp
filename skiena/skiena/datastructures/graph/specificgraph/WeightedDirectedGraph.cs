@@ -36,6 +36,11 @@ namespace skiena.datastructures.graph.specificgraph
             return this;
         }
 
+        public U getWeight(T n1, T n2)
+        {
+            return weightsByEdge[n1][n2];
+        }
+
         public void setWeight(T n1, T n2, U weight)
         {
             if (weightsByEdge.ContainsKey(n1) && weightsByEdge[n1].ContainsKey(n2))
