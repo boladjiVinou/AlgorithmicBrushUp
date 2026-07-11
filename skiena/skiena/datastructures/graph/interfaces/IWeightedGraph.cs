@@ -14,5 +14,6 @@ namespace skiena.datastructures.graph.interfaces
         public IWeightedGraph<T, U> disconnect(T n1, T n2);
 
         public void setWeight(T n1, T n2, U weight);
+        public U getWeight(T n1, T n2);
     }
 }
