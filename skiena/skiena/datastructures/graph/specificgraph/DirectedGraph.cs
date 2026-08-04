@@ -20,6 +20,11 @@ namespace skiena.datastructures.graph.specificgraph
             return this;
         }
 
+        public bool contains(T node)
+        {
+            return this.nodePerValue.ContainsKey(node) && nodePerValue[node] != null;
+        }
+
         public IUnweightedGraph<T> disconnect(T n1, T n2)
         {
             disconnectImpl(n1, n2);

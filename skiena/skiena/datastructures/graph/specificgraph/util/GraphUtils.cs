@@ -1,5 +1,4 @@
 ﻿using skiena.datastructures.graph.interfaces;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace skiena.datastructures.graph.specificgraph.util
@@ -203,6 +202,109 @@ namespace skiena.datastructures.graph.specificgraph.util
 
             return ancestry;
 
+        }
+
+        public U computeMaximumFlow(WeightedDirectedGraph<T, U> graph, T start, T end)
+        {
+            if (!graph.contains(start) || !graph.contains(end)) 
+            {
+                return U.MinValue;
+            }
+            WeightedDirectedGraph<T, U> residual = new(graph);
+            WeightedDirectedGraph<T, U> network = new(graph);
+
+            foreach (var v in network.getVertices()) 
+            {
+                foreach (var w in network.getNeighbors(v)) 
+                {
+                    network.setWeight(v, w, U.Zero);
+                }
+            }
+            var path = searchPath(residual, start, end, out U flow);
+            while (flow > U.Zero) 
+            {
+                for (int i = 1; i < path.Count; i++)
+                {
+                    T u = path[i - 1];
+                    T v = path[i];
+                    var prevFlow = network.getWeight(u, v);
+
+                    network.setWeight(u, v, prevFlow + flow);
+                    residual.setWeight(u, v, residual.getWeight(u, v) - flow);
+
+                    if (!residual.areNodeConnected(v,u)) 
+                    {
+                        residual.connect(v, u, -flow);
+                    }
+                    else 
+                    {
+                        residual.setWeight(v,u, residual.getWeight(v, u) - flow);
+                    }
+                }
+
+                path = searchPath(residual, start, end, out flow);
+            }
+
+            U maxFlow = U.Zero;
+            foreach (var edge in graph.getEdges().Where(x => x.Item2.Equals(end))) 
+            {
+                maxFlow += network.getWeight(edge.Item1, edge.Item2);
+            }
+            return maxFlow;
+        }
+        private List<T> searchPath(WeightedDirectedGraph<T, U> graph, T src, T dst, out U flow)
+        {
+            Queue<Node> queue = [];
+            queue.Enqueue(new( src,default, U.MaxValue));
+            HashSet<T> visited = [];
+            Node destinationNode = null;
+            while(queue.Count > 0)
+            {
+                var curr = queue.Dequeue();
+                visited.Add(curr.value);
+                if (curr.value.Equals(dst))
+                {
+                    destinationNode = curr;
+                    break;
+                }
+                foreach (var v in graph.getNeighbors(curr.value)) 
+                {
+                    if (visited.Contains(v) || graph.getWeight(curr.value, v) == U.Zero) 
+                    {
+                        continue;
+                    }
+
+                    queue.Enqueue(new(v,curr,U.Min(curr.flow, graph.getWeight(curr.value, v))));
+                }
+            }
+            List<T> path = [];
+            if (destinationNode != null) 
+            {
+                flow = destinationNode.flow;
+            }
+            else 
+            {
+                flow = U.Zero;
+            }
+            while (destinationNode != null)
+            {
+                path.Add(destinationNode.value);
+                destinationNode = destinationNode.previous;
+            }
+            path.Reverse();
+            return path;
+        }
+        private class Node
+        {
+            public T value { get; set; }
+            public Node previous { get; }
+            public U flow { get; set; }
+            public Node(T value, Node prev, U flow) 
+            {
+                previous = prev;
+                this.value = value;
+                this.flow = flow;
+            }
         }
     }
     

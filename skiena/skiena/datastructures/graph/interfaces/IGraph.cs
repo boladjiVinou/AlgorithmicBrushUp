@@ -11,5 +11,6 @@
         bool isBipartite(out Dictionary<T, int> colorByNode);
         bool areNodeConnected(T n1, T n2);
         List<GraphNode<T>> getDeletionOrder();
+        bool contains(T node);
     }
 }
