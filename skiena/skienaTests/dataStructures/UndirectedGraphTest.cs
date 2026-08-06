@@ -100,6 +100,44 @@ namespace skienaTests.dataStructures
 
             Assert.IsTrue(possibleRoots.Contains(0) || possibleRoots.Contains(3));
         }
+
+        [TestMethod]
+        public void givenAWeightedGraph_WhenUsingPrimAlgorithm_WeShouldComputeTheRightTree()
+        {
+            var tmpGraph = new WeightedUndirectedGraph<int,int>();
+            tmpGraph.connect(0, 1, 1).connect(1, 2, 2).connect(2, 3, 3).connect(3, 1, 2);
+
+            WeightedUndirectedGraph<int,int> mst =  tmpGraph.primMinimumSpanningTree(0);
+
+            var edges =  mst.getEdges();
+            var vertices = mst.getVertices();
+           
+            Assert.IsTrue(vertices.All(v =>tmpGraph.contains(v)));
+            Assert.IsFalse(mst.areNodeConnected(2, 3));
+            Assert.IsTrue(mst.areNodeConnected(0, 1));
+            Assert.IsTrue(mst.areNodeConnected(1, 2));
+            Assert.IsTrue(mst.areNodeConnected(3, 1));
+        }
+
+
+        [TestMethod]
+        public void givenAWeightedGraph_WhenUsingKruskalAlgorithm_WeShouldComputeTheRightTree()
+        {
+            var tmpGraph = new WeightedUndirectedGraph<int, int>();
+            tmpGraph.connect(0, 1, 1).connect(1, 2, 2).connect(2, 3, 3).connect(3, 1, 2);
+
+            WeightedUndirectedGraph<int, int> mst = tmpGraph.kruskalMinimumSpanningTree();
+
+            var edges = mst.getEdges();
+            var vertices = mst.getVertices();
+
+            Assert.IsTrue(vertices.All(v => tmpGraph.contains(v)));
+            Assert.IsFalse(mst.areNodeConnected(2, 3));
+            Assert.IsTrue(mst.areNodeConnected(0, 1));
+            Assert.IsTrue(mst.areNodeConnected(1, 2));
+            Assert.IsTrue(mst.areNodeConnected(3, 1));
+        }
+
         protected override UndirectedGraph<int> createGraph()
         {
            return new UndirectedGraph<int>();
