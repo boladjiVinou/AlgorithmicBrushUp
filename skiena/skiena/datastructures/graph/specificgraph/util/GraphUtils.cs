@@ -17,6 +17,21 @@ namespace skiena.datastructures.graph.specificgraph.util
                 distanceByNode.Add(v, U.MaxValue);
                 parentByNode.Add(v, v);
             }
+            if (!distanceByNode.ContainsKey(destination)) 
+            {
+                finalDistance = U.MaxValue;
+                return new WeightedDirectedGraph<T, U>();
+            }
+            foreach(var e in graph.getEdges()) 
+            {
+                if(graph.getWeight(e.Item1,e.Item2).CompareTo(U.Zero) < 0) 
+                {
+                    finalDistance = U.MaxValue;
+                    return new WeightedDirectedGraph<T, U>();
+                }
+            }
+
+
             distanceByNode[source] = U.Zero;
 
 
@@ -76,6 +91,7 @@ namespace skiena.datastructures.graph.specificgraph.util
                 parentByNode.Add(v, v);
             }
             int nVertices = distanceByNode.Keys.Count;
+            distanceByNode[start] = U.Zero;
             for (int i =0;i<nVertices-1;i++)
             {
                 foreach (var edge in graph.getEdges())
@@ -84,7 +100,7 @@ namespace skiena.datastructures.graph.specificgraph.util
                     {
                         continue;
                     }
-                    U newDistance = distanceByNode[edge.Item1] + graph.getWeight(start, end);
+                    U newDistance = distanceByNode[edge.Item1] + graph.getWeight(edge.Item1, edge.Item2);
                     if(distanceByNode[edge.Item2].CompareTo(newDistance) > 0) 
                     {
                         distanceByNode[edge.Item2] = newDistance;
@@ -95,7 +111,7 @@ namespace skiena.datastructures.graph.specificgraph.util
             // negative cycle detection
             foreach (var edge in graph.getEdges())
             {
-                U newDistance = distanceByNode[edge.Item1] + graph.getWeight(start, end);
+                U newDistance = distanceByNode[edge.Item1] + graph.getWeight(edge.Item1, edge.Item2);
                 if (distanceByNode[edge.Item2].CompareTo(newDistance) > 0)
                 {
                     distanceByNode[end] = U.MaxValue;
@@ -117,9 +133,13 @@ namespace skiena.datastructures.graph.specificgraph.util
             while (!pathFound)
             {
                 T parent = parentByNode[tmpCurr];
-                path.connect(parent, tmpCurr, graph.getWeight(parent, tmpCurr));
+                if(!parent.Equals( tmpCurr))
+                {
+                    path.connect(parent, tmpCurr, graph.getWeight(parent, tmpCurr));
+                }
+        
                 tmpCurr = parent;
-                pathFound = tmpCurr.Equals(end);
+                pathFound = tmpCurr.Equals(start);
             }
             return path;
         }

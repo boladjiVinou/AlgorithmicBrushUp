@@ -38,6 +38,7 @@ namespace skiena.datastructures.graph.specificgraph
             }
             weightsByEdge[n1][n2] = weight;
             weightsByEdge[n2][n1] = weight;
+            connectImpl(n1, n2);
             return this;
         }
 
@@ -56,6 +57,7 @@ namespace skiena.datastructures.graph.specificgraph
             {
                 weightsByEdge[n2].Remove(n1);
             }
+            disconnectImpl(n1, n2);
             return this;
         }
 
