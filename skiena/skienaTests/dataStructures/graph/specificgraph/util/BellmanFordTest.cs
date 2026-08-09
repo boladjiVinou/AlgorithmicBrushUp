@@ -2,11 +2,6 @@
 using skiena.datastructures.graph.interfaces;
 using skiena.datastructures.graph.specificgraph;
 using skiena.datastructures.graph.specificgraph.util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace skienaTests.dataStructures.graph.specificgraph.util
 {
@@ -29,20 +24,19 @@ namespace skienaTests.dataStructures.graph.specificgraph.util
             Assert.AreEqual(10, distance);
         }
         [TestMethod]
-        public void givenAStandarNegativeWeightedDirectedGraph_whenUsingBellmanWeShouldNotFindShortestPath()
+        public void givenAStandarNegativeWeightedDirectedGraph_whenUsingBellmanWeShouldFindShortestPath()
         {
             WeightedDirectedGraph<int, int> graph = new();
             createStandarGraph(graph);
-            foreach (var item in graph.getEdges())
-            {
-                graph.setWeight(item.Item1, item.Item2, -graph.getWeight(item.Item1, item.Item2));
-            }
-
+            graph.setWeight(1,3,-10);
 
             var path = GraphUtils<int, int>.bellmanFordShortestPath(graph, 0, 4, out int distance);
+            var adjencyList = path.getAdjencyList();
 
-            Assert.AreEqual(0, path.getVertices().Count);
-            Assert.AreEqual(int.MaxValue, distance);
+            Assert.IsTrue(adjencyList[0].Contains(1));
+            Assert.IsTrue(adjencyList[1].Contains(3));
+            Assert.IsTrue(adjencyList[3].Contains(4));
+            Assert.AreEqual(-1, distance);
         }
 
         [TestMethod]
@@ -120,20 +114,19 @@ namespace skienaTests.dataStructures.graph.specificgraph.util
         }
 
         [TestMethod]
-        public void givenAStandarNegativeWeightedUndirectedGraph_whenUsingBellmanWeShouldNotFindShortestPath()
+        public void givenAStandarNegativeWeightedUndirectedGraph_whenUsingBellmanWeShouldFindShortestPath()
         {
             WeightedUndirectedGraph<int, int> graph = new();
             createStandarGraph(graph);
-            foreach (var item in graph.getEdges())
-            {
-                graph.setWeight(item.Item1, item.Item2, -graph.getWeight(item.Item1, item.Item2));
-            }
-
+            graph.setWeight(1, 3, -10);
 
             var path = GraphUtils<int, int>.bellmanFordShortestPath(graph, 0, 4, out int distance);
+            var adjencyList = path.getAdjencyList();
 
-            Assert.AreEqual(0, path.getVertices().Count);
-            Assert.AreEqual(int.MaxValue, distance);
+            Assert.IsTrue(adjencyList[0].Contains(1));
+            Assert.IsTrue(adjencyList[1].Contains(3));
+            Assert.IsTrue(adjencyList[3].Contains(4));
+            Assert.AreEqual(-1, distance);
         }
 
         [TestMethod]

@@ -90,6 +90,12 @@ namespace skiena.datastructures.graph.specificgraph.util
                 distanceByNode.Add(v, U.MaxValue);
                 parentByNode.Add(v, v);
             }
+            if (!distanceByNode.ContainsKey(end)) 
+            {
+                finalDistance = U.MaxValue;
+                return new WeightedDirectedGraph<T, U>();
+            }
+
             int nVertices = distanceByNode.Keys.Count;
             distanceByNode[start] = U.Zero;
             for (int i =0;i<nVertices-1;i++)
