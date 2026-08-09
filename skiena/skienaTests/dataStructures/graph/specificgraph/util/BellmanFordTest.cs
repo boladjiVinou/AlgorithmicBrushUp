@@ -129,6 +129,21 @@ namespace skienaTests.dataStructures.graph.specificgraph.util
             Assert.AreEqual(-1, distance);
         }
 
+
+        [TestMethod]
+        public void givenAGraphWithNegativeCycle_whenUsingBellmanWeShouldNotFindShortestPath()
+        {
+            WeightedUndirectedGraph<int, int> graph = new();
+            createStandarGraph(graph);
+            graph.connect(4, 0, 9);
+            graph.setWeight(1, 3, -100);
+
+            var path = GraphUtils<int, int>.bellmanFordShortestPath(graph, 0, 4, out int distance);
+
+            Assert.AreEqual(int.MaxValue, distance);
+            Assert.AreEqual(0, path.getVertices().Count);
+        }
+
         [TestMethod]
         public void givenADisconnectedWeightedUndirectedGraph_whenUsingBellmanWeShouldNotFindShortestPath()
         {

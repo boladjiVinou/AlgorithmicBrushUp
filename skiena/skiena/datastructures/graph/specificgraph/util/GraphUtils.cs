@@ -153,14 +153,11 @@ namespace skiena.datastructures.graph.specificgraph.util
         {
             distanceByPair = [];
             Dictionary<T, Dictionary<T, T>> ancestry = [];
-            foreach (var edge in graph.getEdges()) 
-            {
-                distanceByPair[edge.Item1][edge.Item2] = graph.getWeight(edge.Item1, edge.Item2);
-            }
+
             var vertices = graph.getVertices();
-            foreach(var v in vertices) 
+            foreach (var v in vertices)
             {
-                if (!distanceByPair.ContainsKey(v)) 
+                if (!distanceByPair.ContainsKey(v))
                 {
                     distanceByPair.Add(v, new());
                 }
@@ -168,21 +165,26 @@ namespace skiena.datastructures.graph.specificgraph.util
                 {
                     distanceByPair[v].Add(v, U.Zero);
                 }
-                foreach (var w in vertices) 
+                foreach (var w in vertices)
                 {
                     if (!distanceByPair[v].ContainsKey(w))
                     {
-                        distanceByPair[v].Add(v, U.MaxValue);
+                        distanceByPair[v].Add(w, U.MaxValue);
                     }
                 }
             }
+            foreach (var edge in graph.getEdges()) 
+            {
+                distanceByPair[edge.Item1][edge.Item2] = graph.getWeight(edge.Item1, edge.Item2);
+            }
+
             foreach (var v1 in vertices)
             {
                 foreach(var v2 in vertices)  
                 {
                     foreach(var v3 in vertices) 
                     {
-                        if (distanceByPair[v2][v1] == U.MaxValue || distanceByPair[v1][v3] == U.MaxValue)
+                        if (v2.Equals(v3) || distanceByPair[v2][v1] == U.MaxValue || distanceByPair[v1][v3] == U.MaxValue)
                         {
                             continue;
                         }
@@ -213,13 +215,14 @@ namespace skiena.datastructures.graph.specificgraph.util
                 {
                     foreach (var v3 in vertices)
                     {
-                        if (distanceByPair[v2][v1] == U.MaxValue || distanceByPair[v1][v3] == U.MaxValue)
+                        if (v2.Equals(v3) || distanceByPair[v2][v1] == U.MaxValue || distanceByPair[v1][v3] == U.MaxValue)
                         {
                             continue;
                         }
                         var tmp = distanceByPair[v2][v1] + distanceByPair[v1][v3];
                         if (distanceByPair[v2][v3].CompareTo(tmp) > 0)
                         {
+                            distanceByPair = [];
                             return [];
                         }
                     }
