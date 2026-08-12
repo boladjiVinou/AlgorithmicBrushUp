@@ -64,8 +64,9 @@ namespace skienaTests.dataStructures.graph.specificgraph.util
             var adjencyList = path.getAdjencyList();
 
             Assert.IsTrue(adjencyList[0].Contains(2));
-            Assert.IsTrue(adjencyList[2].Contains(4));
-            Assert.AreEqual(7, distance);
+            Assert.IsTrue(adjencyList[2].Contains(3));
+            Assert.IsTrue(adjencyList[3].Contains(4));
+            Assert.AreEqual(8, distance);
 
         }
 
