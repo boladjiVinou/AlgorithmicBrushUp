@@ -161,5 +161,11 @@
             }
             return invertedGraph;
         }
+        public override bool areNodeConnected(T n1, T n2)
+        {
+            return nodePerValue.ContainsKey(n1) &&
+                nodePerValue.ContainsKey(n2) &&
+                nodePerValue[n1].isConnectedTo(nodePerValue[n2]);
+        }
     }
 }

@@ -156,7 +156,7 @@
             return nodePerValue[n].getNeighbors().Select(x => x.Value).ToHashSet();
         }
 
-        public bool areNodeConnected(T n1, T n2) 
+        public virtual bool areNodeConnected(T n1, T n2) 
         {
             if (nodePerValue.ContainsKey(n1) && nodePerValue.ContainsKey(n2)) 
             {

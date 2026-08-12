@@ -233,7 +233,7 @@ namespace skiena.datastructures.graph.specificgraph.util
 
         }
 
-        public U computeMaximumFlow(WeightedDirectedGraph<T, U> graph, T start, T end)
+        public static U computeMaximumFlow(WeightedDirectedGraph<T, U> graph, T start, T end)
         {
             if (!graph.contains(start) || !graph.contains(end)) 
             {
@@ -281,7 +281,7 @@ namespace skiena.datastructures.graph.specificgraph.util
             }
             return maxFlow;
         }
-        private List<T> searchPath(WeightedDirectedGraph<T, U> graph, T src, T dst, out U flow)
+        private static List<T> searchPath(WeightedDirectedGraph<T, U> graph, T src, T dst, out U flow)
         {
             Queue<Node> queue = [];
             queue.Enqueue(new( src,default, U.MaxValue));

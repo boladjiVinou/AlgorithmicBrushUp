@@ -15,7 +15,7 @@ namespace skiena.datastructures.graph
         {
             foreach (var v in graph.weightsByEdge.Keys)
             {
-                if (weightsByEdge.ContainsKey(v))
+                if (!weightsByEdge.ContainsKey(v))
                 {
                     weightsByEdge.Add(v, []);
                 }

@@ -16,7 +16,7 @@ namespace skiena.datastructures.graph.specificgraph
         {
             foreach (var v in graph.weightsByEdge.Keys)
             {
-                if (weightsByEdge.ContainsKey(v))
+                if (!weightsByEdge.ContainsKey(v))
                 {
                     weightsByEdge.Add(v, []);
                 }
@@ -37,7 +37,6 @@ namespace skiena.datastructures.graph.specificgraph
                 weightsByEdge.Add(n2, new Dictionary<T, U>());
             }
             weightsByEdge[n1][n2] = weight;
-            weightsByEdge[n2][n1] = weight;
             connectImpl(n1, n2);
             return this;
         }
