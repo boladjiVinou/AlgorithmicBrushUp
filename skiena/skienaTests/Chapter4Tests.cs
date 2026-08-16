@@ -517,7 +517,7 @@ namespace skienaTests
             }
 
             int result = Chapter4.findIdxBeingEqualToAssignedValueInSortedArray(data);
-            Assert.AreEqual(randIdx, result);
+            Assert.AreEqual(data[result], result);
         }
 
         [TestMethod]
