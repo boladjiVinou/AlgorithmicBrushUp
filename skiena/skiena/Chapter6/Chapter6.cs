@@ -21,14 +21,13 @@ namespace skiena.Chapter6
             
             foreach (var edge in graph.getEdges().Where(e => !mst.areNodeConnected(e.Item1, e.Item2))) 
             {
-                mst.connect(edge.Item1, edge.Item2, int.MaxValue);
                 var newWeight = findWeightForADifferentMST(edge.Item1, edge.Item2, mst);
                 var delta = graph.getWeight(edge.Item1, edge.Item2) - newWeight;
                 if (delta < minDelta) 
                 {
                     bestEdge = edge;
+                    minDelta = delta;
                 }
-                mst.disconnect(edge.Item1, edge.Item2);
             }
             if (bestEdge == null) 
             {
@@ -39,58 +38,44 @@ namespace skiena.Chapter6
 
         }
 
-        public static int findWeightForADifferentMST(char n1, char n2, WeightedUndirectedGraph<char, int> mst)
+        private static int findWeightForADifferentMST(char n1, char n2, WeightedUndirectedGraph<char, int> mst)
         {
-            mst.connect(n1,n2, int.MinValue);
-
-            Stack<Node> stack = [];
-            stack.Push(new Node(n1,null));
-            HashSet<char> visited = [];
-            while (stack.Count > 0)
+            Queue<Node> queue = [];
+            queue.Enqueue(new Node(n1,int.MinValue));
+            HashSet<char> visited = new HashSet<char>();
+            int change = int.MinValue;
+            while (queue.Count > 0)
             {
-                if (stack.Peek().value == n1 && visited.Contains(n1)) 
+                var curr = queue.Dequeue();
+                if (curr.value == n2)
                 {
-                    break;
-                }
-                var curr = stack.Pop();
-                if (visited.Contains(curr.value)) 
-                {
-                    continue;
+                    change = Math.Max(change, curr.weight);
                 }
                 foreach (var n in mst.getNeighbors(curr.value))
                 {
-                    stack.Push(new Node(n,curr));
+                    if (visited.Contains(n)) 
+                    {
+                        continue;
+                    }
+                    var next = new Node(n, Math.Max(curr.weight, mst.getWeight(curr.value, n)));
+                    queue.Enqueue(next);
                 }
                 visited.Add(curr.value);
             }
 
-            int change = int.MinValue;
-            if (stack.Count > 0 && stack.Peek().value == n1) 
-            {
-                var curr = stack.Pop();
-                while (curr != null) 
-                {
-                    if (curr.prev != null) 
-                    {
-                        change = Math.Max(change, mst.getWeight(curr.prev.value, curr.value));
-                    }
-                    curr = curr.prev;
-                }
-            }
-
-            mst.disconnect(n1, n2);
             return change - 1;
-
         }
+
+
 
         private class Node 
         {
             public char value { get; }
-            public Node? prev { get; }
-            public Node(char v, Node? parent)
+            public int weight { get; set; }
+            public Node(char v, int weight)
             {
-                this.prev = parent;
                 this.value = v;
+                this.weight = weight;
             }
         }
     }

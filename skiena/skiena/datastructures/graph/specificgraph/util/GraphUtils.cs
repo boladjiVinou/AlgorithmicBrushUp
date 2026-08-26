@@ -40,7 +40,7 @@ namespace skiena.datastructures.graph.specificgraph.util
             q.Enqueue(source, U.Zero);
             while(q.Count> 0) 
             {
-                if (q.TryDequeue(out T curr, out U distance) && !visited.Contains(curr))
+                if (q.TryDequeue(out T? curr, out U? distance) && !visited.Contains(curr))
                 {
                     if (distanceByNode[curr] < distance) 
                     {
@@ -286,7 +286,7 @@ namespace skiena.datastructures.graph.specificgraph.util
             Queue<Node> queue = [];
             queue.Enqueue(new( src,default, U.MaxValue));
             HashSet<T> visited = [];
-            Node destinationNode = null;
+            Node? destinationNode = null;
             while(queue.Count > 0)
             {
                 var curr = queue.Dequeue();
